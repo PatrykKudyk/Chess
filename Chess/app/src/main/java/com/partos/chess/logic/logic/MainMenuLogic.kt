@@ -10,11 +10,6 @@ class MainMenuLogic {
     private lateinit var gameButton: Button
 
     fun initFragment(rootView: View, fragmentManager: FragmentManager) {
-        attachViews(rootView)
         MainMenuListeners().initListeners(rootView, fragmentManager)
-    }
-
-    private fun attachViews(rootView: View) {
-
     }
 }
