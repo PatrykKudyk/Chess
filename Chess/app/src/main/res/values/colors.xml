@@ -6,4 +6,8 @@
 
     <color name="colorBoardBrown">#d18b47</color>
     <color name="colorBoardWhite">#ffce9e</color>
+    <color name="colorBackground">#FEF6EF</color>
+
+    <color name="colorBrown">#743C18</color>
+    <color name="colorBrownLight">#855435</color>
 </resources>
