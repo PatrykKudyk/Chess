@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.BoardFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorBackground">
 
-        <androidx.cardview.widget.CardView
+        <LinearLayout
             android:id="@+id/cardView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -44,7 +42,7 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </androidx.cardview.widget.CardView>
+        </LinearLayout>
 
         <View
             android:id="@+id/view3"
@@ -69,7 +67,7 @@
                 android:orientation="horizontal"
                 android:weightSum="80">
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -85,7 +83,7 @@
                             android:layout_marginStart="3dp"
                             android:fontFamily="@font/dustismo"
                             android:text="1"
-                            android:textSize="16sp"
+                            android:textSize="@dimen/board_text_size"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
@@ -97,9 +95,9 @@
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -111,9 +109,9 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -125,9 +123,9 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -139,9 +137,9 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -153,9 +151,9 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -167,9 +165,9 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -181,9 +179,9 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -195,7 +193,7 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
 
             </LinearLayout>
@@ -207,7 +205,7 @@
                 android:orientation="horizontal"
                 android:weightSum="80">
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -223,7 +221,7 @@
                             android:layout_marginStart="3dp"
                             android:fontFamily="@font/dustismo"
                             android:text="2"
-                            android:textSize="16sp"
+                            android:textSize="@dimen/board_text_size"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
@@ -235,9 +233,9 @@
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -249,9 +247,9 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -263,9 +261,9 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -277,9 +275,9 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -291,9 +289,9 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -305,9 +303,9 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -319,9 +317,9 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -333,7 +331,7 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
 
             </LinearLayout>
@@ -345,7 +343,7 @@
                 android:orientation="horizontal"
                 android:weightSum="80">
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -361,7 +359,7 @@
                             android:layout_marginStart="3dp"
                             android:fontFamily="@font/dustismo"
                             android:text="3"
-                            android:textSize="16sp"
+                            android:textSize="@dimen/board_text_size"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
@@ -373,9 +371,9 @@
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -387,9 +385,9 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -401,9 +399,9 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -415,9 +413,9 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -429,9 +427,9 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -443,9 +441,9 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -457,9 +455,9 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -471,7 +469,7 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
 
             </LinearLayout>
@@ -483,7 +481,7 @@
                 android:orientation="horizontal"
                 android:weightSum="80">
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -499,7 +497,7 @@
                             android:layout_marginStart="3dp"
                             android:fontFamily="@font/dustismo"
                             android:text="4"
-                            android:textSize="16sp"
+                            android:textSize="@dimen/board_text_size"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
@@ -511,9 +509,9 @@
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -525,9 +523,9 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -539,9 +537,9 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -553,9 +551,9 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -567,9 +565,9 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -581,9 +579,9 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -595,9 +593,9 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -609,7 +607,7 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
 
             </LinearLayout>
@@ -621,7 +619,7 @@
                 android:orientation="horizontal"
                 android:weightSum="80">
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -637,7 +635,7 @@
                             android:layout_marginStart="3dp"
                             android:fontFamily="@font/dustismo"
                             android:text="5"
-                            android:textSize="16sp"
+                            android:textSize="@dimen/board_text_size"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
@@ -649,9 +647,9 @@
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -663,9 +661,9 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -677,9 +675,9 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -691,9 +689,9 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -705,9 +703,9 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -719,9 +717,9 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -733,9 +731,9 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -747,7 +745,7 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
 
             </LinearLayout>
@@ -759,7 +757,7 @@
                 android:orientation="horizontal"
                 android:weightSum="80">
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -775,7 +773,7 @@
                             android:layout_marginStart="3dp"
                             android:fontFamily="@font/dustismo"
                             android:text="6"
-                            android:textSize="16sp"
+                            android:textSize="@dimen/board_text_size"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
@@ -787,9 +785,9 @@
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -801,9 +799,9 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -815,9 +813,9 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -829,9 +827,9 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -843,9 +841,9 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -857,9 +855,9 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -871,9 +869,9 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -885,7 +883,7 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
 
             </LinearLayout>
@@ -897,7 +895,7 @@
                 android:orientation="horizontal"
                 android:weightSum="80">
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -913,7 +911,7 @@
                             android:layout_marginStart="3dp"
                             android:fontFamily="@font/dustismo"
                             android:text="7"
-                            android:textSize="16sp"
+                            android:textSize="@dimen/board_text_size"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
@@ -925,9 +923,9 @@
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -939,9 +937,9 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -953,9 +951,9 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -967,9 +965,9 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -981,9 +979,9 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -995,9 +993,9 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -1009,9 +1007,9 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -1023,7 +1021,7 @@
                         android:layout_height="match_parent"
                         android:layout_margin="2dp" />
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
 
             </LinearLayout>
@@ -1035,7 +1033,7 @@
                 android:orientation="horizontal"
                 android:weightSum="80">
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -1051,7 +1049,7 @@
                             android:layout_marginStart="3dp"
                             android:fontFamily="@font/dustismo"
                             android:text="8"
-                            android:textSize="16sp"
+                            android:textSize="@dimen/board_text_size"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
@@ -1061,7 +1059,7 @@
                             android:layout_marginEnd="3dp"
                             android:fontFamily="@font/dustismo"
                             android:text="A"
-                            android:textSize="16sp"
+                            android:textSize="@dimen/board_text_size"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"/>
 
@@ -1073,9 +1071,9 @@
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -1091,7 +1089,7 @@
                             android:layout_marginEnd="3dp"
                             android:fontFamily="@font/dustismo"
                             android:text="B"
-                            android:textSize="16sp"
+                            android:textSize="@dimen/board_text_size"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"/>
 
@@ -1104,39 +1102,39 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
                     android:background="@color/colorBoardBrown">
 
-                  <androidx.constraintlayout.widget.ConstraintLayout
-                      android:layout_width="match_parent"
-                      android:layout_height="match_parent"
-                      >
-                      <TextView
-                          android:layout_width="wrap_content"
-                          android:layout_height="wrap_content"
-                          android:layout_marginEnd="3dp"
-                          android:fontFamily="@font/dustismo"
-                          android:text="C"
-                          android:textSize="16sp"
-                          app:layout_constraintEnd_toEndOf="parent"
-                          app:layout_constraintBottom_toBottomOf="parent"/>
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        >
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="3dp"
+                            android:fontFamily="@font/dustismo"
+                            android:text="C"
+                            android:textSize="@dimen/board_text_size"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"/>
 
-                      <ImageView
-                          android:id="@+id/board_image_7_2"
-                          android:layout_width="match_parent"
-                          android:layout_height="match_parent"
-                          android:layout_margin="2dp" />
+                        <ImageView
+                            android:id="@+id/board_image_7_2"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="2dp" />
 
-                  </androidx.constraintlayout.widget.ConstraintLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -1152,7 +1150,7 @@
                             android:layout_marginEnd="3dp"
                             android:fontFamily="@font/dustismo"
                             android:text="D"
-                            android:textSize="16sp"
+                            android:textSize="@dimen/board_text_size"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"/>
 
@@ -1164,9 +1162,9 @@
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -1182,7 +1180,7 @@
                             android:layout_marginEnd="3dp"
                             android:fontFamily="@font/dustismo"
                             android:text="E"
-                            android:textSize="16sp"
+                            android:textSize="@dimen/board_text_size"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"/>
 
@@ -1194,9 +1192,9 @@
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -1212,7 +1210,7 @@
                             android:layout_marginEnd="3dp"
                             android:fontFamily="@font/dustismo"
                             android:text="F"
-                            android:textSize="16sp"
+                            android:textSize="@dimen/board_text_size"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"/>
 
@@ -1224,9 +1222,9 @@
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -1242,7 +1240,7 @@
                             android:layout_marginEnd="3dp"
                             android:fontFamily="@font/dustismo"
                             android:text="G"
-                            android:textSize="16sp"
+                            android:textSize="@dimen/board_text_size"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"/>
 
@@ -1254,9 +1252,9 @@
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="10"
@@ -1272,7 +1270,7 @@
                             android:layout_marginEnd="3dp"
                             android:fontFamily="@font/dustismo"
                             android:text="H"
-                            android:textSize="16sp"
+                            android:textSize="@dimen/board_text_size"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"/>
 
@@ -1284,7 +1282,7 @@
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
 
             </LinearLayout>
@@ -1292,7 +1290,7 @@
         </LinearLayout>
 
 
-        <androidx.cardview.widget.CardView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:background="@color/colorBrownLight"
@@ -1302,8 +1300,10 @@
             app:layout_constraintStart_toStartOf="parent">
 
 
-        </androidx.cardview.widget.CardView>
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</FrameLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
