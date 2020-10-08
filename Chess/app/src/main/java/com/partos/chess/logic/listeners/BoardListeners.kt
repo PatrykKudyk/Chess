@@ -75,10 +75,17 @@ class BoardListeners {
                             moveX = j
                             moveY = i
                             chooseLayout.visibility = View.VISIBLE
-                            chooseBishop.setImageDrawable(context.getDrawable(R.drawable.bishop_white))
-                            chooseKnight.setImageDrawable(context.getDrawable(R.drawable.knight_white))
-                            chooseRook.setImageDrawable(context.getDrawable(R.drawable.rook_white))
-                            chooseQueen.setImageDrawable(context.getDrawable(R.drawable.queen_white))
+                            if (pieceFocused.color == 0) {
+                                chooseBishop.setImageDrawable(context.getDrawable(R.drawable.bishop_white))
+                                chooseKnight.setImageDrawable(context.getDrawable(R.drawable.knight_white))
+                                chooseRook.setImageDrawable(context.getDrawable(R.drawable.rook_white))
+                                chooseQueen.setImageDrawable(context.getDrawable(R.drawable.queen_white))
+                            } else {
+                                chooseBishop.setImageDrawable(context.getDrawable(R.drawable.bishop_black))
+                                chooseKnight.setImageDrawable(context.getDrawable(R.drawable.knight_black))
+                                chooseRook.setImageDrawable(context.getDrawable(R.drawable.rook_black))
+                                chooseQueen.setImageDrawable(context.getDrawable(R.drawable.queen_black))
+                            }
                         } else {
                             if (isPiece(board[i][j])) {
                                 findPiece(i, j).isActive = false
@@ -161,6 +168,60 @@ class BoardListeners {
                         }
                         if (!isPiece(board[pieceFocused.positionY - 1][pieceFocused.positionX])) {
                             movesList[pieceFocused.positionY - 1][pieceFocused.positionX] = true
+                        }
+                        isChoose = true
+                    }
+                } else {
+                    if (pieceFocused.positionY == 1) {
+                        if (pieceFocused.positionX > 0) {
+                            if (isPiece(board[pieceFocused.positionY + 1][pieceFocused.positionX - 1])) {
+                                movesList[pieceFocused.positionY + 1][pieceFocused.positionX - 1] =
+                                    true
+                            }
+                        }
+                        if (pieceFocused.positionX < 7) {
+                            if (isPiece(board[pieceFocused.positionY + 1][pieceFocused.positionX + 1])) {
+                                movesList[pieceFocused.positionY + 1][pieceFocused.positionX + 1] =
+                                    true
+                            }
+                        }
+                        if (!isPiece(board[pieceFocused.positionY + 1][pieceFocused.positionX])) {
+                            movesList[pieceFocused.positionY + 1][pieceFocused.positionX] = true
+                        }
+                        if (!isPiece(board[pieceFocused.positionY + 2][pieceFocused.positionX])) {
+                            movesList[pieceFocused.positionY + 2][pieceFocused.positionX] = true
+                        }
+                    } else if (pieceFocused.positionY < 6) {
+                        if (pieceFocused.positionX > 0) {
+                            if (isPiece(board[pieceFocused.positionY + 1][pieceFocused.positionX - 1])) {
+                                movesList[pieceFocused.positionY + 1][pieceFocused.positionX - 1] =
+                                    true
+                            }
+                        }
+                        if (pieceFocused.positionX < 7) {
+                            if (isPiece(board[pieceFocused.positionY + 1][pieceFocused.positionX + 1])) {
+                                movesList[pieceFocused.positionY + 1][pieceFocused.positionX + 1] =
+                                    true
+                            }
+                        }
+                        if (!isPiece(board[pieceFocused.positionY + 1][pieceFocused.positionX])) {
+                            movesList[pieceFocused.positionY + 1][pieceFocused.positionX] = true
+                        }
+                    } else if (pieceFocused.positionY == 6) {
+                        if (pieceFocused.positionX > 0) {
+                            if (isPiece(board[pieceFocused.positionY + 1][pieceFocused.positionX - 1])) {
+                                movesList[pieceFocused.positionY + 1][pieceFocused.positionX - 1] =
+                                    true
+                            }
+                        }
+                        if (pieceFocused.positionX < 7) {
+                            if (isPiece(board[pieceFocused.positionY + 1][pieceFocused.positionX + 1])) {
+                                movesList[pieceFocused.positionY + 1][pieceFocused.positionX + 1] =
+                                    true
+                            }
+                        }
+                        if (!isPiece(board[pieceFocused.positionY + 1][pieceFocused.positionX])) {
+                            movesList[pieceFocused.positionY + 1][pieceFocused.positionX] = true
                         }
                         isChoose = true
                     }
