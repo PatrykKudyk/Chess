@@ -3,21 +3,29 @@ package com.partos.chess.logic.listeners
 import android.content.Context
 import android.view.View
 import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.fragment.app.FragmentManager
 import com.partos.chess.R
 import com.partos.chess.logic.BoardHelper
-import com.partos.chess.logic.PiecesHelper
 import com.partos.chess.models.Piece
 
 class BoardListeners {
 
     private lateinit var backButton: ImageView
+    private lateinit var chooseLayout: LinearLayout
+    private lateinit var chooseBishop: ImageView
+    private lateinit var chooseKnight: ImageView
+    private lateinit var chooseRook: ImageView
+    private lateinit var chooseQueen: ImageView
     private lateinit var movesList: Array<Array<Boolean>>
     private lateinit var board: Array<Array<ImageView>>
     private lateinit var moves: Array<Array<ImageView>>
     private lateinit var piecesList: ArrayList<Piece>
     private lateinit var context: Context
     private lateinit var pieceFocused: Piece
+    private var isChoose = false
+    private var moveX = 0
+    private var moveY = 0
 
     fun initListeners(
         rootView: View,
@@ -63,20 +71,30 @@ class BoardListeners {
             for (j in 0..7) {
                 board[i][j].setOnClickListener {
                     if (isMove(i, j)) {
-                        if (isPiece(board[i][j])) {
-                            findPiece(i, j).isActive = false
-                        }
-                        piecesList.set(
-                            piecesList.indexOf(pieceFocused), Piece(
-                                pieceFocused.type,
-                                pieceFocused.color,
-                                j,
-                                i,
-                                true
+                        if (isChoose) {
+                            moveX = j
+                            moveY = i
+                            chooseLayout.visibility = View.VISIBLE
+                            chooseBishop.setImageDrawable(context.getDrawable(R.drawable.bishop_white))
+                            chooseKnight.setImageDrawable(context.getDrawable(R.drawable.knight_white))
+                            chooseRook.setImageDrawable(context.getDrawable(R.drawable.rook_white))
+                            chooseQueen.setImageDrawable(context.getDrawable(R.drawable.queen_white))
+                        } else {
+                            if (isPiece(board[i][j])) {
+                                findPiece(i, j).isActive = false
+                            }
+                            piecesList.set(
+                                piecesList.indexOf(pieceFocused), Piece(
+                                    pieceFocused.type,
+                                    pieceFocused.color,
+                                    j,
+                                    i,
+                                    true
+                                )
                             )
-                        )
-                        pieceFocused = Piece(0, 0, 0, 0, false)
-                        resetBoard()
+                            pieceFocused = Piece(0, 0, 0, 0, false)
+                            resetBoard()
+                        }
                     } else if (isPiece(board[i][j])) {
                         resetBoard()
                         pieceFocused = findPiece(i, j)
@@ -144,6 +162,7 @@ class BoardListeners {
                         if (!isPiece(board[pieceFocused.positionY - 1][pieceFocused.positionX])) {
                             movesList[pieceFocused.positionY - 1][pieceFocused.positionX] = true
                         }
+                        isChoose = true
                     }
                 }
                 resetMoves()
@@ -169,6 +188,7 @@ class BoardListeners {
     }
 
     private fun resetBoard() {
+        chooseLayout.visibility = View.GONE
         for (array in board) {
             for (image in array) {
                 image.setImageDrawable(null)
@@ -203,6 +223,78 @@ class BoardListeners {
             fragmentManager
                 .popBackStack()
         }
+        chooseBishop.setOnClickListener {
+            pieceFocused.type = 1
+            if (isPiece(board[moveY][moveX])) {
+                findPiece(moveY, moveX).isActive = false
+            }
+            piecesList.set(
+                piecesList.indexOf(pieceFocused), Piece(
+                    pieceFocused.type,
+                    pieceFocused.color,
+                    moveX,
+                    moveY,
+                    true
+                )
+            )
+            pieceFocused = Piece(0, 0, 0, 0, false)
+            resetBoard()
+            isChoose = false
+        }
+        chooseKnight.setOnClickListener {
+            pieceFocused.type = 2
+            if (isPiece(board[moveY][moveX])) {
+                findPiece(moveY, moveX).isActive = false
+            }
+            piecesList.set(
+                piecesList.indexOf(pieceFocused), Piece(
+                    pieceFocused.type,
+                    pieceFocused.color,
+                    moveX,
+                    moveY,
+                    true
+                )
+            )
+            pieceFocused = Piece(0, 0, 0, 0, false)
+            resetBoard()
+            isChoose = false
+        }
+        chooseRook.setOnClickListener {
+            pieceFocused.type = 3
+            if (isPiece(board[moveY][moveX])) {
+                findPiece(moveY, moveX).isActive = false
+            }
+            piecesList.set(
+                piecesList.indexOf(pieceFocused), Piece(
+                    pieceFocused.type,
+                    pieceFocused.color,
+                    moveX,
+                    moveY,
+                    true
+                )
+            )
+            pieceFocused = Piece(0, 0, 0, 0, false)
+            resetBoard()
+            isChoose = false
+        }
+        chooseQueen.setOnClickListener {
+            pieceFocused.type = 4
+            if (isPiece(board[moveY][moveX])) {
+                findPiece(moveY, moveX).isActive = false
+            }
+            piecesList.set(
+                piecesList.indexOf(pieceFocused), Piece(
+                    pieceFocused.type,
+                    pieceFocused.color,
+                    moveX,
+                    moveY,
+                    true
+                )
+            )
+            pieceFocused = Piece(0, 0, 0, 0, false)
+            resetBoard()
+            isChoose = false
+        }
     }
 
     private fun findPiece(i: Int, j: Int): Piece {
@@ -218,5 +310,10 @@ class BoardListeners {
 
     private fun attachViews(rootView: View) {
         backButton = rootView.findViewById(R.id.board_image_back)
+        chooseLayout = rootView.findViewById(R.id.board_choose_layout)
+        chooseBishop = rootView.findViewById(R.id.board_choose_bishop)
+        chooseKnight = rootView.findViewById(R.id.board_choose_knight)
+        chooseRook = rootView.findViewById(R.id.board_choose_rook)
+        chooseQueen = rootView.findViewById(R.id.board_choose_queen)
     }
 }
