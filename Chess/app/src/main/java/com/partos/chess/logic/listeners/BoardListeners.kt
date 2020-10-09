@@ -26,6 +26,7 @@ class BoardListeners {
     private var isChoose = false
     private var moveX = 0
     private var moveY = 0
+    private var turn = 0
 
     fun initListeners(
         rootView: View,
@@ -101,12 +102,21 @@ class BoardListeners {
                             )
                             pieceFocused = Piece(0, 0, 0, 0, false)
                             resetBoard()
+                            if (turn == 0) {
+                                turn = 1
+                            } else {
+                                turn = 0
+                            }
                         }
                     } else if (isPiece(board[i][j])) {
+                        isChoose = false
                         resetBoard()
-                        pieceFocused = findPiece(i, j)
-                        showMoves(pieceFocused)
+                        if (findPiece(i, j).color == turn) {
+                            pieceFocused = findPiece(i, j)
+                            showMoves(pieceFocused)
+                        }
                     } else {
+                        isChoose = false
                         resetBoard()
                     }
                 }
@@ -134,7 +144,7 @@ class BoardListeners {
                         if (!isPiece(board[pieceFocused.positionY - 1][pieceFocused.positionX])) {
                             movesList[pieceFocused.positionY - 1][pieceFocused.positionX] = true
                         }
-                        if (!isPiece(board[pieceFocused.positionY - 2][pieceFocused.positionX])) {
+                        if (!isPiece(board[pieceFocused.positionY - 2][pieceFocused.positionX]) && !isPiece(board[pieceFocused.positionY - 1][pieceFocused.positionX])) {
                             movesList[pieceFocused.positionY - 2][pieceFocused.positionX] = true
                         }
                     } else if (pieceFocused.positionY > 1) {
@@ -188,7 +198,7 @@ class BoardListeners {
                         if (!isPiece(board[pieceFocused.positionY + 1][pieceFocused.positionX])) {
                             movesList[pieceFocused.positionY + 1][pieceFocused.positionX] = true
                         }
-                        if (!isPiece(board[pieceFocused.positionY + 2][pieceFocused.positionX])) {
+                        if (!isPiece(board[pieceFocused.positionY + 2][pieceFocused.positionX]) && !isPiece(board[pieceFocused.positionY + 1][pieceFocused.positionX])) {
                             movesList[pieceFocused.positionY + 2][pieceFocused.positionX] = true
                         }
                     } else if (pieceFocused.positionY < 6) {
@@ -301,6 +311,11 @@ class BoardListeners {
             pieceFocused = Piece(0, 0, 0, 0, false)
             resetBoard()
             isChoose = false
+            if (turn == 0) {
+                turn = 1
+            } else {
+                turn = 0
+            }
         }
         chooseKnight.setOnClickListener {
             pieceFocused.type = 2
@@ -319,6 +334,11 @@ class BoardListeners {
             pieceFocused = Piece(0, 0, 0, 0, false)
             resetBoard()
             isChoose = false
+            if (turn == 0) {
+                turn = 1
+            } else {
+                turn = 0
+            }
         }
         chooseRook.setOnClickListener {
             pieceFocused.type = 3
@@ -337,6 +357,11 @@ class BoardListeners {
             pieceFocused = Piece(0, 0, 0, 0, false)
             resetBoard()
             isChoose = false
+            if (turn == 0) {
+                turn = 1
+            } else {
+                turn = 0
+            }
         }
         chooseQueen.setOnClickListener {
             pieceFocused.type = 4
@@ -355,6 +380,11 @@ class BoardListeners {
             pieceFocused = Piece(0, 0, 0, 0, false)
             resetBoard()
             isChoose = false
+            if (turn == 0) {
+                turn = 1
+            } else {
+                turn = 0
+            }
         }
     }
 
