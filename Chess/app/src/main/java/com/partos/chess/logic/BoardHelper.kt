@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.View
 import android.widget.ImageView
 import com.partos.chess.R
+import com.partos.chess.models.Piece
 
 class BoardHelper {
 
@@ -95,6 +96,94 @@ class BoardHelper {
         return arrayOf(array1, array2, array3, array4, array5, array6, array7, array8)
     }
 
+    fun createMovesArray(rootView: View): Array<Array<ImageView>> {
+        val move00 = rootView.findViewById<ImageView>(R.id.board_move_0_0)
+        val move01 = rootView.findViewById<ImageView>(R.id.board_move_0_1)
+        val move02 = rootView.findViewById<ImageView>(R.id.board_move_0_2)
+        val move03 = rootView.findViewById<ImageView>(R.id.board_move_0_3)
+        val move04 = rootView.findViewById<ImageView>(R.id.board_move_0_4)
+        val move05 = rootView.findViewById<ImageView>(R.id.board_move_0_5)
+        val move06 = rootView.findViewById<ImageView>(R.id.board_move_0_6)
+        val move07 = rootView.findViewById<ImageView>(R.id.board_move_0_7)
+        val array1 = arrayOf(move00, move01, move02, move03, move04, move05, move06, move07)
+
+        val move10 = rootView.findViewById<ImageView>(R.id.board_move_1_0)
+        val move11 = rootView.findViewById<ImageView>(R.id.board_move_1_1)
+        val move12 = rootView.findViewById<ImageView>(R.id.board_move_1_2)
+        val move13 = rootView.findViewById<ImageView>(R.id.board_move_1_3)
+        val move14 = rootView.findViewById<ImageView>(R.id.board_move_1_4)
+        val move15 = rootView.findViewById<ImageView>(R.id.board_move_1_5)
+        val move16 = rootView.findViewById<ImageView>(R.id.board_move_1_6)
+        val move17 = rootView.findViewById<ImageView>(R.id.board_move_1_7)
+        val array2 = arrayOf(move10, move11, move12, move13, move14, move15, move16, move17)
+
+        val move20 = rootView.findViewById<ImageView>(R.id.board_move_2_0)
+        val move21 = rootView.findViewById<ImageView>(R.id.board_move_2_1)
+        val move22 = rootView.findViewById<ImageView>(R.id.board_move_2_2)
+        val move23 = rootView.findViewById<ImageView>(R.id.board_move_2_3)
+        val move24 = rootView.findViewById<ImageView>(R.id.board_move_2_4)
+        val move25 = rootView.findViewById<ImageView>(R.id.board_move_2_5)
+        val move26 = rootView.findViewById<ImageView>(R.id.board_move_2_6)
+        val move27 = rootView.findViewById<ImageView>(R.id.board_move_2_7)
+        val array3 = arrayOf(move20, move21, move22, move23, move24, move25, move26, move27)
+
+        val move30 = rootView.findViewById<ImageView>(R.id.board_move_3_0)
+        val move31 = rootView.findViewById<ImageView>(R.id.board_move_3_1)
+        val move32 = rootView.findViewById<ImageView>(R.id.board_move_3_2)
+        val move33 = rootView.findViewById<ImageView>(R.id.board_move_3_3)
+        val move34 = rootView.findViewById<ImageView>(R.id.board_move_3_4)
+        val move35 = rootView.findViewById<ImageView>(R.id.board_move_3_5)
+        val move36 = rootView.findViewById<ImageView>(R.id.board_move_3_6)
+        val move37 = rootView.findViewById<ImageView>(R.id.board_move_3_7)
+        val array4 = arrayOf(move30, move31, move32, move33, move34, move35, move36, move37)
+
+
+        val move40 = rootView.findViewById<ImageView>(R.id.board_move_4_0)
+        val move41 = rootView.findViewById<ImageView>(R.id.board_move_4_1)
+        val move42 = rootView.findViewById<ImageView>(R.id.board_move_4_2)
+        val move43 = rootView.findViewById<ImageView>(R.id.board_move_4_3)
+        val move44 = rootView.findViewById<ImageView>(R.id.board_move_4_4)
+        val move45 = rootView.findViewById<ImageView>(R.id.board_move_4_5)
+        val move46 = rootView.findViewById<ImageView>(R.id.board_move_4_6)
+        val move47 = rootView.findViewById<ImageView>(R.id.board_move_4_7)
+        val array5 = arrayOf(move40, move41, move42, move43, move44, move45, move46, move47)
+
+
+        val move50 = rootView.findViewById<ImageView>(R.id.board_move_5_0)
+        val move51 = rootView.findViewById<ImageView>(R.id.board_move_5_1)
+        val move52 = rootView.findViewById<ImageView>(R.id.board_move_5_2)
+        val move53 = rootView.findViewById<ImageView>(R.id.board_move_5_3)
+        val move54 = rootView.findViewById<ImageView>(R.id.board_move_5_4)
+        val move55 = rootView.findViewById<ImageView>(R.id.board_move_5_5)
+        val move56 = rootView.findViewById<ImageView>(R.id.board_move_5_6)
+        val move57 = rootView.findViewById<ImageView>(R.id.board_move_5_7)
+        val array6 = arrayOf(move50, move51, move52, move53, move54, move55, move56, move57)
+
+
+        val move60 = rootView.findViewById<ImageView>(R.id.board_move_6_0)
+        val move61 = rootView.findViewById<ImageView>(R.id.board_move_6_1)
+        val move62 = rootView.findViewById<ImageView>(R.id.board_move_6_2)
+        val move63 = rootView.findViewById<ImageView>(R.id.board_move_6_3)
+        val move64 = rootView.findViewById<ImageView>(R.id.board_move_6_4)
+        val move65 = rootView.findViewById<ImageView>(R.id.board_move_6_5)
+        val move66 = rootView.findViewById<ImageView>(R.id.board_move_6_6)
+        val move67 = rootView.findViewById<ImageView>(R.id.board_move_6_7)
+        val array7 = arrayOf(move60, move61, move62, move63, move64, move65, move66, move67)
+
+
+        val move70 = rootView.findViewById<ImageView>(R.id.board_move_7_0)
+        val move71 = rootView.findViewById<ImageView>(R.id.board_move_7_1)
+        val move72 = rootView.findViewById<ImageView>(R.id.board_move_7_2)
+        val move73 = rootView.findViewById<ImageView>(R.id.board_move_7_3)
+        val move74 = rootView.findViewById<ImageView>(R.id.board_move_7_4)
+        val move75 = rootView.findViewById<ImageView>(R.id.board_move_7_5)
+        val move76 = rootView.findViewById<ImageView>(R.id.board_move_7_6)
+        val move77 = rootView.findViewById<ImageView>(R.id.board_move_7_7)
+        val array8 = arrayOf(move70, move71, move72, move73, move74, move75, move76, move77)
+
+        return arrayOf(array1, array2, array3, array4, array5, array6, array7, array8)
+    }
+
     fun initBoardPieces(board: Array<Array<ImageView>>, context: Context) {
         board[0][0].setImageDrawable(context.getDrawable(R.drawable.rook_black))
         board[0][7].setImageDrawable(context.getDrawable(R.drawable.rook_black))
@@ -133,5 +222,53 @@ class BoardHelper {
         board[6][6].setImageDrawable(context.getDrawable(R.drawable.pawn_white))
         board[6][7].setImageDrawable(context.getDrawable(R.drawable.pawn_white))
 
+    }
+
+    fun drawPiece(piece: Piece, board: Array<Array<ImageView>>, context: Context) {
+        when (piece.type) {
+            0 -> {
+                if (piece.color == 0) {
+                    board[piece.positionY][piece.positionX].setImageDrawable(context.getDrawable(R.drawable.pawn_white))
+                } else {
+                    board[piece.positionY][piece.positionX].setImageDrawable(context.getDrawable(R.drawable.pawn_black))
+                }
+            }
+            1 -> {
+                if (piece.color == 0) {
+                    board[piece.positionY][piece.positionX].setImageDrawable(context.getDrawable(R.drawable.bishop_white))
+                } else {
+                    board[piece.positionY][piece.positionX].setImageDrawable(context.getDrawable(R.drawable.bishop_black))
+                }
+            }
+
+            2 -> {
+                if (piece.color == 0) {
+                    board[piece.positionY][piece.positionX].setImageDrawable(context.getDrawable(R.drawable.knight_white))
+                } else {
+                    board[piece.positionY][piece.positionX].setImageDrawable(context.getDrawable(R.drawable.knight_black))
+                }
+            }
+            3 -> {
+                if (piece.color == 0) {
+                    board[piece.positionY][piece.positionX].setImageDrawable(context.getDrawable(R.drawable.rook_white))
+                } else {
+                    board[piece.positionY][piece.positionX].setImageDrawable(context.getDrawable(R.drawable.rook_black))
+                }
+            }
+            4 -> {
+                if (piece.color == 0) {
+                    board[piece.positionY][piece.positionX].setImageDrawable(context.getDrawable(R.drawable.queen_white))
+                } else {
+                    board[piece.positionY][piece.positionX].setImageDrawable(context.getDrawable(R.drawable.queen_black))
+                }
+            }
+            5 -> {
+                if (piece.color == 0) {
+                    board[piece.positionY][piece.positionX].setImageDrawable(context.getDrawable(R.drawable.king_white))
+                } else {
+                    board[piece.positionY][piece.positionX].setImageDrawable(context.getDrawable(R.drawable.king_black))
+                }
+            }
+        }
     }
 }

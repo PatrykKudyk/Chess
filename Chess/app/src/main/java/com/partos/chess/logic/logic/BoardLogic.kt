@@ -1,23 +1,32 @@
 package com.partos.chess.logic.logic
 
-import android.content.Context
 import android.view.View
 import android.widget.ImageView
 import androidx.fragment.app.FragmentManager
 import com.partos.chess.logic.BoardHelper
+import com.partos.chess.logic.PiecesHelper
 import com.partos.chess.logic.listeners.BoardListeners
+import com.partos.chess.models.Piece
 
 class BoardLogic {
 
     private lateinit var board: Array<Array<ImageView>>
+    private lateinit var moves: Array<Array<ImageView>>
+    private lateinit var piecesList: ArrayList<Piece>
 
     fun initFragment(rootView: View, fragmentManager: FragmentManager) {
-        board = BoardHelper().createBoardArray(rootView)
-        initBoard(rootView.context)
-        BoardListeners().initListeners(rootView, fragmentManager)
+        initBoard(rootView)
+        initPiecesList()
+        BoardListeners().initListeners(rootView, fragmentManager, board, moves, piecesList)
     }
 
-    private fun initBoard(context: Context) {
-        BoardHelper().initBoardPieces(board, context)
+    private fun initPiecesList() {
+        piecesList = PiecesHelper().initPieces()
+    }
+
+    private fun initBoard(rootView: View) {
+        board = BoardHelper().createBoardArray(rootView)
+        moves = BoardHelper().createMovesArray(rootView)
+        BoardHelper().initBoardPieces(board, rootView.context)
     }
 }
