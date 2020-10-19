@@ -150,7 +150,7 @@ class BoardListeners {
                             } else {
                                 turn = 0
                             }
-                        }  else if (i == pieceFocused.positionY - 2 && pieceFocused.color == 0 && pieceFocused.type == 0) {
+                        } else if (i == pieceFocused.positionY - 2 && pieceFocused.color == 0 && pieceFocused.type == 0) {
                             pawnSpecialX = pieceFocused.positionX
                             pawnSpecialY = pieceFocused.positionY - 2
                             pawnSpecialWhite = true
@@ -217,7 +217,420 @@ class BoardListeners {
                 } else {
                     showBlackPawnMoves(pieceFocused)
                 }
-                resetMoves()
+            }
+            1 -> {
+                if (pieceFocused.color == 0) {
+                    showBishopMoves(pieceFocused, 1)
+                } else {
+                    showBishopMoves(pieceFocused, 0)
+                }
+            }
+            2 -> {
+                if (pieceFocused.color == 0) {
+                    showKnightMoves(pieceFocused, 1)
+                } else {
+                    showKnightMoves(pieceFocused, 0)
+                }
+            }
+            3 -> {
+                if (pieceFocused.color == 0) {
+                    showRookMoves(pieceFocused, 1)
+                } else {
+                    showRookMoves(pieceFocused, 0)
+                }
+            }
+            4 -> {
+                if (pieceFocused.color == 0) {
+                    showQueenMoves(pieceFocused, 1)
+                } else {
+                    showQueenMoves(pieceFocused, 0)
+                }
+            }
+            5 -> {
+                if (pieceFocused.color == 0) {
+                    showKingMoves(pieceFocused, 1)
+                } else {
+                    showKingMoves(pieceFocused, 0)
+                }
+            }
+        }
+        resetMoves()
+    }
+
+    private fun showKingMoves(pieceFocused: Piece, color: Int) {
+        if (pieceFocused.positionY >= 1) {
+            if (!isPiece(board[pieceFocused.positionY - 1][pieceFocused.positionX])) {
+                movesList[pieceFocused.positionY - 1][pieceFocused.positionX] = true
+            } else {
+                if (findPiece(
+                        (pieceFocused.positionY - 1),
+                        (pieceFocused.positionX)
+                    ).color == color
+                ) {
+                    movesList[pieceFocused.positionY - 1][pieceFocused.positionX] = true
+                }
+            }
+        }
+        if (pieceFocused.positionY >= 1 && pieceFocused.positionX <= 6) {
+            if (!isPiece(board[pieceFocused.positionY - 1][pieceFocused.positionX + 1])) {
+                movesList[pieceFocused.positionY - 1][pieceFocused.positionX + 1] = true
+            } else {
+                if (findPiece(
+                        (pieceFocused.positionY - 1),
+                        (pieceFocused.positionX + 1)
+                    ).color == color
+                ) {
+                    movesList[pieceFocused.positionY - 1][pieceFocused.positionX + 1] = true
+                }
+            }
+        }
+        if (pieceFocused.positionX <= 6) {
+            if (!isPiece(board[pieceFocused.positionY][pieceFocused.positionX + 1])) {
+                movesList[pieceFocused.positionY][pieceFocused.positionX + 1] = true
+            } else {
+                if (findPiece(
+                        (pieceFocused.positionY),
+                        (pieceFocused.positionX + 1)
+                    ).color == color
+                ) {
+                    movesList[pieceFocused.positionY][pieceFocused.positionX + 1] = true
+                }
+            }
+        }
+        if (pieceFocused.positionY <= 6 && pieceFocused.positionX <= 6) {
+            if (!isPiece(board[pieceFocused.positionY + 1][pieceFocused.positionX + 1])) {
+                movesList[pieceFocused.positionY + 1][pieceFocused.positionX + 1] = true
+            } else {
+                if (findPiece(
+                        (pieceFocused.positionY + 1),
+                        (pieceFocused.positionX + 1)
+                    ).color == color
+                ) {
+                    movesList[pieceFocused.positionY + 1][pieceFocused.positionX + 1] = true
+                }
+            }
+        }
+        if (pieceFocused.positionY <= 6) {
+            if (!isPiece(board[pieceFocused.positionY + 1][pieceFocused.positionX])) {
+                movesList[pieceFocused.positionY + 1][pieceFocused.positionX] = true
+            } else {
+                if (findPiece(
+                        (pieceFocused.positionY + 1),
+                        (pieceFocused.positionX)
+                    ).color == color
+                ) {
+                    movesList[pieceFocused.positionY + 1][pieceFocused.positionX] = true
+                }
+            }
+        }
+        if (pieceFocused.positionY <= 6 && pieceFocused.positionX >= 1) {
+            if (!isPiece(board[pieceFocused.positionY + 1][pieceFocused.positionX - 1])) {
+                movesList[pieceFocused.positionY + 1][pieceFocused.positionX - 1] = true
+            } else {
+                if (findPiece(
+                        (pieceFocused.positionY + 1),
+                        (pieceFocused.positionX - 1)
+                    ).color == color
+                ) {
+                    movesList[pieceFocused.positionY + 1][pieceFocused.positionX - 1] = true
+                }
+            }
+        }
+        if (pieceFocused.positionX >= 1) {
+            if (!isPiece(board[pieceFocused.positionY][pieceFocused.positionX - 1])) {
+                movesList[pieceFocused.positionY][pieceFocused.positionX - 1] = true
+            } else {
+                if (findPiece(
+                        (pieceFocused.positionY),
+                        (pieceFocused.positionX - 1)
+                    ).color == color
+                ) {
+                    movesList[pieceFocused.positionY][pieceFocused.positionX - 1] = true
+                }
+            }
+        }
+        if (pieceFocused.positionY >= 1 && pieceFocused.positionX >= 1) {
+            if (!isPiece(board[pieceFocused.positionY - 1][pieceFocused.positionX - 1])) {
+                movesList[pieceFocused.positionY - 1][pieceFocused.positionX - 1] = true
+            } else {
+                if (findPiece(
+                        (pieceFocused.positionY - 1),
+                        (pieceFocused.positionX - 1)
+                    ).color == color
+                ) {
+                    movesList[pieceFocused.positionY - 1][pieceFocused.positionX - 1] = true
+                }
+            }
+        }
+    }
+
+    private fun showQueenMoves(pieceFocused: Piece, i: Int) {
+        showBishopMoves(pieceFocused, i)
+        showRookMoves(pieceFocused, i)
+    }
+
+    private fun showKnightMoves(pieceFocused: Piece, color: Int) {
+        if (pieceFocused.positionX + 1 <= 7 && pieceFocused.positionY - 2 >= 0) {
+            if (!isPiece(board[pieceFocused.positionY - 2][pieceFocused.positionX + 1])) {
+                movesList[pieceFocused.positionY - 2][pieceFocused.positionX + 1] = true
+            } else {
+                if (findPiece(
+                        (pieceFocused.positionY - 2),
+                        (pieceFocused.positionX + 1)
+                    ).color == color
+                ) {
+                    movesList[pieceFocused.positionY - 2][pieceFocused.positionX + 1] = true
+                }
+            }
+        }
+        if (pieceFocused.positionX + 2 <= 7 && pieceFocused.positionY - 1 >= 0) {
+            if (!isPiece(board[pieceFocused.positionY - 1][pieceFocused.positionX + 2])) {
+                movesList[pieceFocused.positionY - 1][pieceFocused.positionX + 2] = true
+            } else {
+                if (findPiece(
+                        (pieceFocused.positionY - 1),
+                        (pieceFocused.positionX + 2)
+                    ).color == color
+                ) {
+                    movesList[pieceFocused.positionY - 1][pieceFocused.positionX + 2] = true
+                }
+            }
+        }
+        if (pieceFocused.positionX + 2 <= 7 && pieceFocused.positionY + 1 <= 7) {
+            if (!isPiece(board[pieceFocused.positionY + 1][pieceFocused.positionX + 2])) {
+                movesList[pieceFocused.positionY + 1][pieceFocused.positionX + 2] = true
+            } else {
+                if (findPiece(
+                        (pieceFocused.positionY + 1),
+                        (pieceFocused.positionX + 2)
+                    ).color == color
+                ) {
+                    movesList[pieceFocused.positionY + 1][pieceFocused.positionX + 2] = true
+                }
+            }
+        }
+        if (pieceFocused.positionX + 1 <= 7 && pieceFocused.positionY + 2 <= 7) {
+            if (!isPiece(board[pieceFocused.positionY + 2][pieceFocused.positionX + 1])) {
+                movesList[pieceFocused.positionY + 2][pieceFocused.positionX + 1] = true
+            } else {
+                if (findPiece(
+                        (pieceFocused.positionY + 2),
+                        (pieceFocused.positionX + 1)
+                    ).color == color
+                ) {
+                    movesList[pieceFocused.positionY + 2][pieceFocused.positionX + 1] = true
+                }
+            }
+        }
+        if (pieceFocused.positionX - 1 >= 0 && pieceFocused.positionY + 2 <= 7) {
+            if (!isPiece(board[pieceFocused.positionY + 2][pieceFocused.positionX - 1])) {
+                movesList[pieceFocused.positionY + 2][pieceFocused.positionX - 1] = true
+            } else {
+                if (findPiece(
+                        (pieceFocused.positionY + 2),
+                        (pieceFocused.positionX - 1)
+                    ).color == color
+                ) {
+                    movesList[pieceFocused.positionY + 2][pieceFocused.positionX - 1] = true
+                }
+            }
+        }
+        if (pieceFocused.positionX - 2 >= 0 && pieceFocused.positionY + 1 <= 7) {
+            if (!isPiece(board[pieceFocused.positionY + 1][pieceFocused.positionX - 2])) {
+                movesList[pieceFocused.positionY + 1][pieceFocused.positionX - 2] = true
+            } else {
+                if (findPiece(
+                        (pieceFocused.positionY + 1),
+                        (pieceFocused.positionX - 2)
+                    ).color == color
+                ) {
+                    movesList[pieceFocused.positionY + 1][pieceFocused.positionX - 2] = true
+                }
+            }
+        }
+        if (pieceFocused.positionX - 2 >= 0 && pieceFocused.positionY - 1 >= 0) {
+            if (!isPiece(board[pieceFocused.positionY - 1][pieceFocused.positionX - 2])) {
+                movesList[pieceFocused.positionY - 1][pieceFocused.positionX - 2] = true
+            } else {
+                if (findPiece(
+                        (pieceFocused.positionY - 1),
+                        (pieceFocused.positionX - 2)
+                    ).color == color
+                ) {
+                    movesList[pieceFocused.positionY - 1][pieceFocused.positionX - 2] = true
+                }
+            }
+        }
+        if (pieceFocused.positionX - 1 >= 0 && pieceFocused.positionY - 2 >= 0) {
+            if (!isPiece(board[pieceFocused.positionY - 2][pieceFocused.positionX - 1])) {
+                movesList[pieceFocused.positionY - 2][pieceFocused.positionX - 1] = true
+            } else {
+                if (findPiece(
+                        (pieceFocused.positionY - 2),
+                        (pieceFocused.positionX - 1)
+                    ).color == color
+                ) {
+                    movesList[pieceFocused.positionY - 2][pieceFocused.positionX - 1] = true
+                }
+            }
+        }
+    }
+
+    private fun showRookMoves(pieceFocused: Piece, color: Int) {
+        for (i in 1..8) {
+            if ((pieceFocused.positionX + i) <= 7) {
+                if (!isPiece(board[pieceFocused.positionY][pieceFocused.positionX + i])) {
+                    movesList[pieceFocused.positionY][pieceFocused.positionX + i] = true
+                } else {
+                    if (findPiece(
+                            (pieceFocused.positionY),
+                            (pieceFocused.positionX + i)
+                        ).color == color
+                    ) {
+                        movesList[pieceFocused.positionY][pieceFocused.positionX + i] = true
+                    }
+                    break
+                }
+            } else {
+                break
+            }
+        }
+        for (i in 1..8) {
+            if ((pieceFocused.positionX - i) >= 0) {
+                if (!isPiece(board[pieceFocused.positionY][pieceFocused.positionX - i])) {
+                    movesList[pieceFocused.positionY][pieceFocused.positionX - i] = true
+                } else {
+                    if (findPiece(
+                            (pieceFocused.positionY),
+                            (pieceFocused.positionX - i)
+                        ).color == color
+                    ) {
+                        movesList[pieceFocused.positionY][pieceFocused.positionX - i] = true
+                    }
+                    break
+                }
+            } else {
+                break
+            }
+        }
+
+        for (i in 1..8) {
+            if ((pieceFocused.positionY - i) >= 0) {
+                if (!isPiece(board[pieceFocused.positionY - i][pieceFocused.positionX])) {
+                    movesList[pieceFocused.positionY - i][pieceFocused.positionX] = true
+                } else {
+                    if (findPiece(
+                            (pieceFocused.positionY - i),
+                            (pieceFocused.positionX)
+                        ).color == color
+                    ) {
+                        movesList[pieceFocused.positionY - i][pieceFocused.positionX] = true
+                    }
+                    break
+                }
+            } else {
+                break
+            }
+        }
+
+        for (i in 1..8) {
+            if ((pieceFocused.positionY + i) <= 7) {
+                if (!isPiece(board[pieceFocused.positionY + i][pieceFocused.positionX])) {
+                    movesList[pieceFocused.positionY + i][pieceFocused.positionX] = true
+                } else {
+                    if (findPiece(
+                            (pieceFocused.positionY + i),
+                            (pieceFocused.positionX)
+                        ).color == color
+                    ) {
+                        movesList[pieceFocused.positionY + i][pieceFocused.positionX] = true
+                    }
+                    break
+                }
+            } else {
+                break
+            }
+        }
+    }
+
+    private fun showBishopMoves(pieceFocused: Piece, color: Int) {
+        // Show top-left moves
+        for (i in 1..8) {
+            if (pieceFocused.positionX - i >= 0 && pieceFocused.positionY - i >= 0) {
+                if (!isPiece(board[pieceFocused.positionY - i][pieceFocused.positionX - i])) {
+                    movesList[pieceFocused.positionY - i][pieceFocused.positionX - i] = true
+                } else {
+                    if (findPiece(
+                            (pieceFocused.positionY - i),
+                            (pieceFocused.positionX - i)
+                        ).color == color
+                    ) {
+                        movesList[pieceFocused.positionY - i][pieceFocused.positionX - i] = true
+                    }
+                    break
+                }
+            } else {
+                break
+            }
+        }
+
+        // Show top-right moves
+        for (i in 1..8) {
+            if (pieceFocused.positionX + i <= 7 && pieceFocused.positionY - i >= 0) {
+                if (!isPiece(board[pieceFocused.positionY - i][pieceFocused.positionX + i])) {
+                    movesList[pieceFocused.positionY - i][pieceFocused.positionX + i] = true
+                } else {
+                    if (findPiece(
+                            (pieceFocused.positionY - i),
+                            (pieceFocused.positionX + i)
+                        ).color == color
+                    ) {
+                        movesList[pieceFocused.positionY - i][pieceFocused.positionX + i] = true
+                    }
+                    break
+                }
+            } else {
+                break
+            }
+        }
+
+        // Show bottom-right moves
+        for (i in 1..8) {
+            if (pieceFocused.positionX + i <= 7 && pieceFocused.positionY + i <= 7) {
+                if (!isPiece(board[pieceFocused.positionY + i][pieceFocused.positionX + i])) {
+                    movesList[pieceFocused.positionY + i][pieceFocused.positionX + i] = true
+                } else {
+                    if (findPiece(
+                            (pieceFocused.positionY + i),
+                            (pieceFocused.positionX + i)
+                        ).color == color
+                    ) {
+                        movesList[pieceFocused.positionY + i][pieceFocused.positionX + i] = true
+                    }
+                    break
+                }
+            } else {
+                break
+            }
+        }
+
+        // Show bottom-left moves
+        for (i in 1..8) {
+            if (pieceFocused.positionX - i >= 0 && pieceFocused.positionY + i <= 7) {
+                if (!isPiece(board[pieceFocused.positionY + i][pieceFocused.positionX - i])) {
+                    movesList[pieceFocused.positionY + i][pieceFocused.positionX - i] = true
+                } else {
+                    if (findPiece(
+                            (pieceFocused.positionY + i),
+                            (pieceFocused.positionX - i)
+                        ).color == color
+                    ) {
+                        movesList[pieceFocused.positionY + i][pieceFocused.positionX - i] = true
+                    }
+                    break
+                }
+            } else {
+                break
             }
         }
     }
@@ -226,14 +639,22 @@ class BoardListeners {
         if (pieceFocused.positionY == 1) {
             if (pieceFocused.positionX > 0) {
                 if (isPiece(board[pieceFocused.positionY + 1][pieceFocused.positionX - 1])) {
-                    if (findPiece((pieceFocused.positionY + 1), (pieceFocused.positionX - 1)).color == 0) {
+                    if (findPiece(
+                            (pieceFocused.positionY + 1),
+                            (pieceFocused.positionX - 1)
+                        ).color == 0
+                    ) {
                         movesList[pieceFocused.positionY + 1][pieceFocused.positionX - 1] = true
                     }
                 }
             }
             if (pieceFocused.positionX < 7) {
                 if (isPiece(board[pieceFocused.positionY + 1][pieceFocused.positionX + 1])) {
-                    if (findPiece((pieceFocused.positionY + 1), (pieceFocused.positionX + 1)).color == 0) {
+                    if (findPiece(
+                            (pieceFocused.positionY + 1),
+                            (pieceFocused.positionX + 1)
+                        ).color == 0
+                    ) {
                         movesList[pieceFocused.positionY + 1][pieceFocused.positionX + 1] = true
                     }
                 }
@@ -255,14 +676,22 @@ class BoardListeners {
             }
             if (pieceFocused.positionX > 0) {
                 if (isPiece(board[pieceFocused.positionY + 1][pieceFocused.positionX - 1])) {
-                    if (findPiece((pieceFocused.positionY + 1), (pieceFocused.positionX - 1)).color == 0) {
+                    if (findPiece(
+                            (pieceFocused.positionY + 1),
+                            (pieceFocused.positionX - 1)
+                        ).color == 0
+                    ) {
                         movesList[pieceFocused.positionY + 1][pieceFocused.positionX - 1] = true
                     }
                 }
             }
             if (pieceFocused.positionX < 7) {
                 if (isPiece(board[pieceFocused.positionY + 1][pieceFocused.positionX + 1])) {
-                    if (findPiece((pieceFocused.positionY + 1), (pieceFocused.positionX + 1)).color == 0) {
+                    if (findPiece(
+                            (pieceFocused.positionY + 1),
+                            (pieceFocused.positionX + 1)
+                        ).color == 0
+                    ) {
                         movesList[pieceFocused.positionY + 1][pieceFocused.positionX + 1] = true
                     }
                 }
@@ -273,14 +702,22 @@ class BoardListeners {
         } else if (pieceFocused.positionY < 6) {
             if (pieceFocused.positionX > 0) {
                 if (isPiece(board[pieceFocused.positionY + 1][pieceFocused.positionX - 1])) {
-                    if (findPiece((pieceFocused.positionY + 1), (pieceFocused.positionX - 1)).color == 0) {
+                    if (findPiece(
+                            (pieceFocused.positionY + 1),
+                            (pieceFocused.positionX - 1)
+                        ).color == 0
+                    ) {
                         movesList[pieceFocused.positionY + 1][pieceFocused.positionX - 1] = true
                     }
                 }
             }
             if (pieceFocused.positionX < 7) {
                 if (isPiece(board[pieceFocused.positionY + 1][pieceFocused.positionX + 1])) {
-                    if (findPiece((pieceFocused.positionY + 1), (pieceFocused.positionX + 1)).color == 0) {
+                    if (findPiece(
+                            (pieceFocused.positionY + 1),
+                            (pieceFocused.positionX + 1)
+                        ).color == 0
+                    ) {
                         movesList[pieceFocused.positionY + 1][pieceFocused.positionX + 1] = true
                     }
                 }
@@ -291,14 +728,22 @@ class BoardListeners {
         } else if (pieceFocused.positionY == 6) {
             if (pieceFocused.positionX > 0) {
                 if (isPiece(board[pieceFocused.positionY + 1][pieceFocused.positionX - 1])) {
-                    if (findPiece((pieceFocused.positionY + 1), (pieceFocused.positionX - 1)).color == 0) {
+                    if (findPiece(
+                            (pieceFocused.positionY + 1),
+                            (pieceFocused.positionX - 1)
+                        ).color == 0
+                    ) {
                         movesList[pieceFocused.positionY + 1][pieceFocused.positionX - 1] = true
                     }
                 }
             }
             if (pieceFocused.positionX < 7) {
                 if (isPiece(board[pieceFocused.positionY + 1][pieceFocused.positionX + 1])) {
-                    if (findPiece((pieceFocused.positionY + 1), (pieceFocused.positionX + 1)).color == 0) {
+                    if (findPiece(
+                            (pieceFocused.positionY + 1),
+                            (pieceFocused.positionX + 1)
+                        ).color == 0
+                    ) {
                         movesList[pieceFocused.positionY + 1][pieceFocused.positionX + 1] = true
                     }
                 }
