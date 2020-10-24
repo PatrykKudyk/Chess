@@ -54,6 +54,20 @@
             app:layout_constraintHeight_percent="0.125"
             app:layout_constraintTop_toBottomOf="@+id/cardView" />
 
+        <TextView
+            android:id="@+id/blackCheckTextView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:fontFamily="@font/dustismo_bold"
+            android:gravity="center"
+            android:text="CHECK"
+            android:textSize="40sp"
+            android:visibility="gone"
+            app:layout_constraintHeight_percent="0.125"
+            app:layout_constraintTop_toBottomOf="@id/cardView" />
+
+
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -2118,10 +2132,38 @@
 
         </LinearLayout>
 
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/winTextView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintHeight_percent="0.55"
+            app:layout_constraintTop_toBottomOf="@id/view3"
+            android:background="@color/colorBackground"
+            android:gravity="center"
+            android:fontFamily="@font/dustismo_bold"
+            android:text="BLACK WINS"
+            android:textSize="60dip"
+            />
+        <TextView
+            android:id="@+id/whiteCheckTextView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:fontFamily="@font/dustismo_bold"
+            android:gravity="center"
+            android:text="CHECK"
+            android:textSize="40sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/linear"
+            app:layout_constraintHeight_percent="0.125" />
+
         <LinearLayout
+            android:id="@+id/linear"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:background="@color/colorBrownLight"
+            android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight_percent="0.1"

@@ -4,10 +4,13 @@ import android.content.Context
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import com.partos.chess.R
 import com.partos.chess.logic.BoardHelper
+import com.partos.chess.logic.PiecesHelper
 import com.partos.chess.models.Piece
+import kotlin.math.abs
 
 class BoardListeners {
 
@@ -17,6 +20,9 @@ class BoardListeners {
     private lateinit var chooseKnight: ImageView
     private lateinit var chooseRook: ImageView
     private lateinit var chooseQueen: ImageView
+    private lateinit var checkBlackTextView: TextView
+    private lateinit var checkWhiteTextView: TextView
+    private lateinit var winTextView: TextView
     private lateinit var movesList: Array<Array<Boolean>>
     private lateinit var board: Array<Array<ImageView>>
     private lateinit var moves: Array<Array<ImageView>>
@@ -31,6 +37,8 @@ class BoardListeners {
     private var pawnSpecialY = 0
     private var pawnSpecialWhite = false
     private var pawnSpecialBlack = false
+    private var checkBlack = false
+    private var checkWhite = false
 
     fun initListeners(
         rootView: View,
@@ -102,8 +110,10 @@ class BoardListeners {
                                     true
                                 )
                             )
-                            pieceFocused = Piece(0, 0, 0, 0, false)
+                            resetMovesList()
                             resetBoard()
+                            checkChecks()
+                            pieceFocused = Piece(0, 0, 0, 0, false)
                             pawnSpecialBlack = false
                             if (turn == 0) {
                                 turn = 1
@@ -122,8 +132,10 @@ class BoardListeners {
                                     true
                                 )
                             )
-                            pieceFocused = Piece(0, 0, 0, 0, false)
+                            resetMovesList()
                             resetBoard()
+                            checkChecks()
+                            pieceFocused = Piece(0, 0, 0, 0, false)
                             pawnSpecialWhite = false
                             if (turn == 0) {
                                 turn = 1
@@ -143,8 +155,10 @@ class BoardListeners {
                                     true
                                 )
                             )
-                            pieceFocused = Piece(0, 0, 0, 0, false)
+                            resetMovesList()
                             resetBoard()
+                            checkChecks()
+                            pieceFocused = Piece(0, 0, 0, 0, false)
                             if (turn == 0) {
                                 turn = 1
                             } else {
@@ -163,8 +177,10 @@ class BoardListeners {
                                     true
                                 )
                             )
-                            pieceFocused = Piece(0, 0, 0, 0, false)
+                            resetMovesList()
                             resetBoard()
+                            checkChecks()
+                            pieceFocused = Piece(0, 0, 0, 0, false)
                             if (turn == 0) {
                                 turn = 1
                             } else {
@@ -183,8 +199,10 @@ class BoardListeners {
                                     true
                                 )
                             )
-                            pieceFocused = Piece(0, 0, 0, 0, false)
+                            resetMovesList()
                             resetBoard()
+                            checkChecks()
+                            pieceFocused = Piece(0, 0, 0, 0, false)
                             pawnSpecialWhite = false
                             pawnSpecialBlack = false
                             if (turn == 0) {
@@ -195,6 +213,7 @@ class BoardListeners {
                         }
                     } else if (isPiece(board[i][j])) {
                         isChoose = false
+                        resetMovesList()
                         resetBoard()
                         if (findPiece(i, j).color == turn) {
                             pieceFocused = findPiece(i, j)
@@ -202,11 +221,59 @@ class BoardListeners {
                         }
                     } else {
                         isChoose = false
+                        resetMovesList()
                         resetBoard()
                     }
                 }
             }
         }
+    }
+
+    private fun checkChecks() {
+        if (isWhiteCheck()) {
+            if (isWhiteCheckMate()) {
+                checkWhiteTextView.visibility = View.GONE
+                checkBlackTextView.visibility = View.GONE
+                winTextView.text = "BLACK WINS"
+                winTextView.visibility = View.VISIBLE
+            } else {
+                checkWhite = true
+                checkWhiteTextView.visibility = View.VISIBLE
+            }
+        } else {
+            checkWhite = false
+            checkWhiteTextView.visibility = View.GONE
+        }
+        if (isBlackCheck()) {
+            if (isBlackCheckMate()) {
+                checkWhiteTextView.visibility = View.GONE
+                checkBlackTextView.visibility = View.GONE
+                winTextView.text = "WHITE WINS"
+                winTextView.visibility = View.VISIBLE
+            } else {
+                checkBlack = true
+                checkBlackTextView.visibility = View.VISIBLE
+            }
+        } else {
+            checkBlack = false
+            checkBlackTextView.visibility = View.GONE
+        }
+    }
+
+    private fun isBlackCheckMate(): Boolean {
+        return PiecesHelper().isCheckMate(piecesList, 1, board)
+    }
+
+    private fun isWhiteCheckMate(): Boolean {
+
+    }
+
+    private fun isBlackCheck(): Boolean {
+        return PiecesHelper().isCheck(piecesList, 1, board)
+    }
+
+    private fun isWhiteCheck(): Boolean {
+        return PiecesHelper().isCheck(piecesList, 0, board)
     }
 
     private fun showMoves(pieceFocused: Piece) {
@@ -260,105 +327,217 @@ class BoardListeners {
     private fun showKingMoves(pieceFocused: Piece, color: Int) {
         if (pieceFocused.positionY >= 1) {
             if (!isPiece(board[pieceFocused.positionY - 1][pieceFocused.positionX])) {
-                movesList[pieceFocused.positionY - 1][pieceFocused.positionX] = true
+                if (!isOtherKingTooClose(
+                        pieceFocused.positionY - 1,
+                        pieceFocused.positionX,
+                        color
+                    )
+                ) {
+                    movesList[pieceFocused.positionY - 1][pieceFocused.positionX] = true
+                }
             } else {
                 if (findPiece(
                         (pieceFocused.positionY - 1),
                         (pieceFocused.positionX)
                     ).color == color
                 ) {
-                    movesList[pieceFocused.positionY - 1][pieceFocused.positionX] = true
+                    if (!isOtherKingTooClose(
+                            pieceFocused.positionY - 1,
+                            pieceFocused.positionX,
+                            color
+                        )
+                    ) {
+                        movesList[pieceFocused.positionY - 1][pieceFocused.positionX] = true
+                    }
                 }
             }
         }
         if (pieceFocused.positionY >= 1 && pieceFocused.positionX <= 6) {
             if (!isPiece(board[pieceFocused.positionY - 1][pieceFocused.positionX + 1])) {
-                movesList[pieceFocused.positionY - 1][pieceFocused.positionX + 1] = true
+                if (!isOtherKingTooClose(
+                        pieceFocused.positionY - 1,
+                        pieceFocused.positionX + 1,
+                        color
+                    )
+                ) {
+                    movesList[pieceFocused.positionY - 1][pieceFocused.positionX + 1] = true
+                }
             } else {
                 if (findPiece(
                         (pieceFocused.positionY - 1),
                         (pieceFocused.positionX + 1)
                     ).color == color
                 ) {
-                    movesList[pieceFocused.positionY - 1][pieceFocused.positionX + 1] = true
+                    if (!isOtherKingTooClose(
+                            pieceFocused.positionY - 1,
+                            pieceFocused.positionX + 1,
+                            color
+                        )
+                    ) {
+                        movesList[pieceFocused.positionY - 1][pieceFocused.positionX + 1] = true
+                    }
                 }
             }
         }
         if (pieceFocused.positionX <= 6) {
             if (!isPiece(board[pieceFocused.positionY][pieceFocused.positionX + 1])) {
-                movesList[pieceFocused.positionY][pieceFocused.positionX + 1] = true
+                if (!isOtherKingTooClose(
+                        pieceFocused.positionY,
+                        pieceFocused.positionX + 1,
+                        color
+                    )
+                ) {
+                    movesList[pieceFocused.positionY][pieceFocused.positionX + 1] = true
+                }
             } else {
                 if (findPiece(
                         (pieceFocused.positionY),
                         (pieceFocused.positionX + 1)
                     ).color == color
                 ) {
-                    movesList[pieceFocused.positionY][pieceFocused.positionX + 1] = true
+                    if (!isOtherKingTooClose(
+                            pieceFocused.positionY,
+                            pieceFocused.positionX + 1,
+                            color
+                        )
+                    ) {
+                        movesList[pieceFocused.positionY][pieceFocused.positionX + 1] = true
+                    }
                 }
             }
         }
         if (pieceFocused.positionY <= 6 && pieceFocused.positionX <= 6) {
             if (!isPiece(board[pieceFocused.positionY + 1][pieceFocused.positionX + 1])) {
-                movesList[pieceFocused.positionY + 1][pieceFocused.positionX + 1] = true
+                if (!isOtherKingTooClose(
+                        pieceFocused.positionY + 1,
+                        pieceFocused.positionX + 1,
+                        color
+                    )
+                ) {
+                    movesList[pieceFocused.positionY + 1][pieceFocused.positionX + 1] = true
+                }
             } else {
                 if (findPiece(
                         (pieceFocused.positionY + 1),
                         (pieceFocused.positionX + 1)
                     ).color == color
                 ) {
-                    movesList[pieceFocused.positionY + 1][pieceFocused.positionX + 1] = true
+                    if (!isOtherKingTooClose(
+                            pieceFocused.positionY,
+                            pieceFocused.positionX + 1,
+                            color
+                        )
+                    ) {
+                        movesList[pieceFocused.positionY + 1][pieceFocused.positionX + 1] = true
+                    }
                 }
             }
         }
         if (pieceFocused.positionY <= 6) {
             if (!isPiece(board[pieceFocused.positionY + 1][pieceFocused.positionX])) {
-                movesList[pieceFocused.positionY + 1][pieceFocused.positionX] = true
+                if (!isOtherKingTooClose(
+                        pieceFocused.positionY + 1,
+                        pieceFocused.positionX,
+                        color
+                    )
+                ) {
+                    movesList[pieceFocused.positionY + 1][pieceFocused.positionX] = true
+                }
             } else {
                 if (findPiece(
                         (pieceFocused.positionY + 1),
                         (pieceFocused.positionX)
                     ).color == color
                 ) {
-                    movesList[pieceFocused.positionY + 1][pieceFocused.positionX] = true
+                    if (!isOtherKingTooClose(
+                            pieceFocused.positionY + 1,
+                            pieceFocused.positionX,
+                            color
+                        )
+                    ) {
+                        movesList[pieceFocused.positionY + 1][pieceFocused.positionX] = true
+                    }
                 }
             }
         }
         if (pieceFocused.positionY <= 6 && pieceFocused.positionX >= 1) {
             if (!isPiece(board[pieceFocused.positionY + 1][pieceFocused.positionX - 1])) {
-                movesList[pieceFocused.positionY + 1][pieceFocused.positionX - 1] = true
+                if (!isOtherKingTooClose(
+                        pieceFocused.positionY + 1,
+                        pieceFocused.positionX - 1,
+                        color
+                    )
+                ) {
+                    movesList[pieceFocused.positionY + 1][pieceFocused.positionX - 1] = true
+                }
             } else {
                 if (findPiece(
                         (pieceFocused.positionY + 1),
                         (pieceFocused.positionX - 1)
                     ).color == color
                 ) {
-                    movesList[pieceFocused.positionY + 1][pieceFocused.positionX - 1] = true
+                    if (!isOtherKingTooClose(
+                            pieceFocused.positionY + 1,
+                            pieceFocused.positionX - 1,
+                            color
+                        )
+                    ) {
+                        movesList[pieceFocused.positionY + 1][pieceFocused.positionX - 1] = true
+                    }
                 }
             }
         }
         if (pieceFocused.positionX >= 1) {
             if (!isPiece(board[pieceFocused.positionY][pieceFocused.positionX - 1])) {
-                movesList[pieceFocused.positionY][pieceFocused.positionX - 1] = true
+                if (!isOtherKingTooClose(
+                        pieceFocused.positionY,
+                        pieceFocused.positionX - 1,
+                        color
+                    )
+                ) {
+                    movesList[pieceFocused.positionY][pieceFocused.positionX - 1] = true
+                }
             } else {
                 if (findPiece(
                         (pieceFocused.positionY),
                         (pieceFocused.positionX - 1)
                     ).color == color
                 ) {
-                    movesList[pieceFocused.positionY][pieceFocused.positionX - 1] = true
+                    if (!isOtherKingTooClose(
+                            pieceFocused.positionY,
+                            pieceFocused.positionX - 1,
+                            color
+                        )
+                    ) {
+                        movesList[pieceFocused.positionY][pieceFocused.positionX - 1] = true
+                    }
                 }
             }
         }
         if (pieceFocused.positionY >= 1 && pieceFocused.positionX >= 1) {
             if (!isPiece(board[pieceFocused.positionY - 1][pieceFocused.positionX - 1])) {
-                movesList[pieceFocused.positionY - 1][pieceFocused.positionX - 1] = true
+                if (!isOtherKingTooClose(
+                        pieceFocused.positionY - 1,
+                        pieceFocused.positionX - 1,
+                        color
+                    )
+                ) {
+                    movesList[pieceFocused.positionY - 1][pieceFocused.positionX - 1] = true
+                }
             } else {
                 if (findPiece(
                         (pieceFocused.positionY - 1),
                         (pieceFocused.positionX - 1)
                     ).color == color
                 ) {
-                    movesList[pieceFocused.positionY - 1][pieceFocused.positionX - 1] = true
+                    if (!isOtherKingTooClose(
+                            pieceFocused.positionY - 1,
+                            pieceFocused.positionX - 1,
+                            color
+                        )
+                    ) {
+                        movesList[pieceFocused.positionY - 1][pieceFocused.positionX - 1] = true
+                    }
                 }
             }
         }
@@ -474,6 +653,17 @@ class BoardListeners {
                 }
             }
         }
+    }
+
+    private fun isOtherKingTooClose(positionY: Int, positionX: Int, color: Int): Boolean {
+        val otherKing = findKing(color)
+        if (abs(otherKing.positionX - positionX) <= 1) {
+            if (abs(otherKing.positionY - positionY) <= 1) {
+                return true
+            }
+        }
+
+        return false
     }
 
     private fun showRookMoves(pieceFocused: Piece, color: Int) {
@@ -892,6 +1082,14 @@ class BoardListeners {
         }
     }
 
+    private fun resetMovesList() {
+        for (i in 0..7) {
+            for (j in 0..7) {
+                movesList[i][j] = false
+            }
+        }
+    }
+
     private fun isMove(i: Int, j: Int): Boolean {
         if (movesList[i][j]) {
             return true
@@ -914,11 +1112,6 @@ class BoardListeners {
         for (piece in piecesList) {
             if (piece.isActive) {
                 BoardHelper().drawPiece(piece, board, context)
-            }
-        }
-        for (i in 0..7) {
-            for (j in 0..7) {
-                movesList[i][j] = false
             }
         }
     }
@@ -949,8 +1142,9 @@ class BoardListeners {
                     true
                 )
             )
-            pieceFocused = Piece(0, 0, 0, 0, false)
             resetBoard()
+            checkChecks()
+            pieceFocused = Piece(0, 0, 0, 0, false)
             isChoose = false
             pawnSpecialWhite = false
             pawnSpecialBlack = false
@@ -974,8 +1168,9 @@ class BoardListeners {
                     true
                 )
             )
-            pieceFocused = Piece(0, 0, 0, 0, false)
             resetBoard()
+            checkChecks()
+            pieceFocused = Piece(0, 0, 0, 0, false)
             isChoose = false
             pawnSpecialWhite = false
             pawnSpecialBlack = false
@@ -999,8 +1194,9 @@ class BoardListeners {
                     true
                 )
             )
-            pieceFocused = Piece(0, 0, 0, 0, false)
             resetBoard()
+            checkChecks()
+            pieceFocused = Piece(0, 0, 0, 0, false)
             isChoose = false
             pawnSpecialWhite = false
             pawnSpecialBlack = false
@@ -1024,8 +1220,9 @@ class BoardListeners {
                     true
                 )
             )
-            pieceFocused = Piece(0, 0, 0, 0, false)
             resetBoard()
+            checkChecks()
+            pieceFocused = Piece(0, 0, 0, 0, false)
             isChoose = false
             pawnSpecialWhite = false
             pawnSpecialBlack = false
@@ -1048,6 +1245,17 @@ class BoardListeners {
         return Piece(0, 0, 0, 0, false)
     }
 
+    private fun findKing(color: Int): Piece {
+        for (piece in piecesList) {
+            if (piece.isActive) {
+                if (piece.type == 5 && piece.color == color) {
+                    return piece
+                }
+            }
+        }
+        return Piece(0, 0, 0, 0, false)
+    }
+
     private fun attachViews(rootView: View) {
         backButton = rootView.findViewById(R.id.board_image_back)
         chooseLayout = rootView.findViewById(R.id.board_choose_layout)
@@ -1055,5 +1263,8 @@ class BoardListeners {
         chooseKnight = rootView.findViewById(R.id.board_choose_knight)
         chooseRook = rootView.findViewById(R.id.board_choose_rook)
         chooseQueen = rootView.findViewById(R.id.board_choose_queen)
+        checkBlackTextView = rootView.findViewById(R.id.blackCheckTextView)
+        checkWhiteTextView = rootView.findViewById(R.id.whiteCheckTextView)
+        winTextView = rootView.findViewById(R.id.winTextView)
     }
 }
