@@ -13,10 +13,11 @@ class PiecesHelper {
     private lateinit var board: Array<Array<ImageView>>
     private lateinit var piecesList: ArrayList<Piece>
     private var checkMate = false
+    private var hasMoves = false
 
     fun initPieces(): ArrayList<Piece> {
         val piecesList = ArrayList<Piece>()
-        // white pawns
+        //white pawns
         piecesList.add(Piece(0, 0, 0, 6, true))
         piecesList.add(Piece(0, 0, 1, 6, true))
         piecesList.add(Piece(0, 0, 2, 6, true))
@@ -55,6 +56,17 @@ class PiecesHelper {
         piecesList.add(Piece(1, 1, 5, 0, true))
         piecesList.add(Piece(4, 1, 3, 0, true))
         piecesList.add(Piece(5, 1, 4, 0, true))
+
+        // STALEMATE
+//        piecesList.add(Piece(5, 1, 2, 1, true))
+//        piecesList.add(Piece(0, 0, 3, 1, true))
+//        piecesList.add(Piece(5, 0, 4, 2, true))
+
+
+//        piecesList.add(Piece(0, 1, 0, 1, true))
+
+        // STALEMATE
+
 
         return piecesList
     }
@@ -762,9 +774,9 @@ class PiecesHelper {
             for (piece in pieces) {
                 if (piece.color == 0 && piece.isActive) {
                     checkMoves(piece, context)
-//                    board = boardTaken.copyOf()
-//                    movesList = createMovesList()
-//                    piecesList = pieces
+                    board = boardTaken.copyOf()
+                    movesList = createMovesList()
+                    piecesList = pieces
                 }
                 if (!checkMate) {
                     return false
@@ -1489,6 +1501,567 @@ class PiecesHelper {
                 resetBoard(piecesListCopy, boardCopy, context)
                 if (!PiecesHelper().isCheck(piecesListCopy,  colorOpposite, boardCopy)) {
                     checkMate = false
+                }
+                resetBoard(piecesList, board, context)
+                return false
+            }
+            return false
+        }
+    }
+
+    fun isAnyMovePossible(
+        pieces: ArrayList<Piece>,
+        color: Int,
+        boardTaken: Array<Array<ImageView>>,
+        context: Context
+    ): Boolean {
+        board = boardTaken.copyOf()
+        movesList = createMovesList()
+        piecesList = pieces
+        if (color == 0) {
+            hasMoves = false
+            for (piece in pieces) {
+                if (piece.color == 0 && piece.isActive && piece.type != 5) {
+                    checkIfPieceHasMoves(piece, context)
+                    board = boardTaken.copyOf()
+                    movesList = createMovesList()
+                    piecesList = pieces
+                }
+                if (hasMoves) {
+                    return true
+                }
+            }
+            return false
+        } else {
+            hasMoves = false
+            for (piece in pieces) {
+                if (piece.color == 1 && piece.isActive && piece.type != 5) {
+                    checkIfPieceHasMoves(piece, context)
+                    board = boardTaken.copyOf()
+                    movesList = createMovesList()
+                    piecesList = pieces
+                }
+                if (hasMoves) {
+                    return true
+                }
+            }
+            return false
+        }
+    }
+
+    private fun checkIfPieceHasMoves(pieceFocused: Piece, context: Context) {
+        when (pieceFocused.type) {
+            0 -> {
+                if (pieceFocused.color == 0) {
+                    checkIfWhitePawnHasMoves(pieceFocused, context)
+                } else {
+                    checkIfBlackPawnHasMoves(pieceFocused, context)
+                }
+            }
+            1 -> {
+                if (pieceFocused.color == 0) {
+                    checkIfBishopHasMoves(pieceFocused, 1, context)
+                } else {
+                    checkIfBishopHasMoves(pieceFocused, 0, context)
+                }
+            }
+            2 -> {
+                if (pieceFocused.color == 0) {
+                    checkIfKnightHasMoves(pieceFocused, 1, context)
+                } else {
+                    checkIfKnightHasMoves(pieceFocused, 0, context)
+                }
+            }
+            3 -> {
+                if (pieceFocused.color == 0) {
+                    checkIfRookHasMoves(pieceFocused, 1, context)
+                } else {
+                    checkIfRookHasMoves(pieceFocused, 0, context)
+                }
+            }
+            4 -> {
+                if (pieceFocused.color == 0) {
+                    checkIfQueenHasMoves(pieceFocused, 1, context)
+                } else {
+                    checkIfQueenHasMoves(pieceFocused, 0, context)
+                }
+            }
+        }
+    }
+
+    private fun checkIfQueenHasMoves(pieceFocused: Piece, color: Int, context: Context) {
+        checkIfBishopHasMoves(pieceFocused, color, context)
+        checkIfRookHasMoves(pieceFocused, color, context)
+    }
+
+    private fun checkIfKnightHasMoves(pieceFocused: Piece, color: Int, context: Context) {
+        if (pieceFocused.positionX + 1 <= 7 && pieceFocused.positionY - 2 >= 0) {
+            if (color == 0) {
+                hasPieceMove(pieceFocused.positionY - 2, pieceFocused.positionX + 1, 0, pieceFocused, context)
+            } else {
+                hasPieceMove(pieceFocused.positionY - 2, pieceFocused.positionX + 1, 1, pieceFocused, context)
+            }
+        }
+        if (pieceFocused.positionX + 2 <= 7 && pieceFocused.positionY - 1 >= 0) {
+            if (color == 0) {
+                hasPieceMove(pieceFocused.positionY - 1, pieceFocused.positionX + 2, 0, pieceFocused, context)
+            } else {
+                hasPieceMove(pieceFocused.positionY - 1, pieceFocused.positionX + 2, 1, pieceFocused, context)
+            }
+        }
+        if (pieceFocused.positionX + 2 <= 7 && pieceFocused.positionY + 1 <= 7) {
+            if (color == 0) {
+                hasPieceMove(pieceFocused.positionY + 1, pieceFocused.positionX + 2, 0, pieceFocused, context)
+            } else {
+                hasPieceMove(pieceFocused.positionY + 1, pieceFocused.positionX + 2, 1, pieceFocused, context)
+            }
+        }
+        if (pieceFocused.positionX + 1 <= 7 && pieceFocused.positionY + 2 <= 7) {
+            if (color == 0) {
+                hasPieceMove(pieceFocused.positionY + 2, pieceFocused.positionX + 1, 0, pieceFocused, context)
+            } else {
+                hasPieceMove(pieceFocused.positionY + 2, pieceFocused.positionX + 1, 1, pieceFocused, context)
+            }
+        }
+        if (pieceFocused.positionX - 1 >= 0 && pieceFocused.positionY + 2 <= 7) {
+            if (color == 0) {
+                hasPieceMove(pieceFocused.positionY + 2, pieceFocused.positionX - 1, 0, pieceFocused, context)
+            } else {
+                hasPieceMove(pieceFocused.positionY + 2, pieceFocused.positionX - 1, 1, pieceFocused, context)
+            }
+        }
+        if (pieceFocused.positionX - 2 >= 0 && pieceFocused.positionY + 1 <= 7) {
+            if (color == 0) {
+                hasPieceMove(pieceFocused.positionY + 1, pieceFocused.positionX - 2, 0, pieceFocused, context)
+            } else {
+                hasPieceMove(pieceFocused.positionY + 1, pieceFocused.positionX - 2, 1, pieceFocused, context)
+            }
+        }
+        if (pieceFocused.positionX - 2 >= 0 && pieceFocused.positionY - 1 >= 0) {
+            if (color == 0) {
+                hasPieceMove(pieceFocused.positionY - 1, pieceFocused.positionX - 2, 0, pieceFocused, context)
+            } else {
+                hasPieceMove(pieceFocused.positionY - 1, pieceFocused.positionX - 2, 1, pieceFocused, context)
+            }
+        }
+        if (pieceFocused.positionX - 1 >= 0 && pieceFocused.positionY - 2 >= 0) {
+            if (color == 0) {
+                hasPieceMove(pieceFocused.positionY - 2, pieceFocused.positionX - 1, 0, pieceFocused, context)
+            } else {
+                hasPieceMove(pieceFocused.positionY - 2, pieceFocused.positionX - 1, 1, pieceFocused, context)
+            }
+        }
+    }
+
+    private fun checkIfRookHasMoves(pieceFocused: Piece, color: Int, context: Context) {
+        for (i in 1..8) {
+            if ((pieceFocused.positionX + i) <= 7) {
+                if (color == 0) {
+                    if (!hasPieceMove(pieceFocused.positionY, pieceFocused.positionX + i, 0, pieceFocused, context)) {
+                        break
+                    }
+                } else {
+                    if (!hasPieceMove(pieceFocused.positionY, pieceFocused.positionX + i, 1, pieceFocused, context)) {
+                        break
+                    }
+                }
+            } else {
+                break
+            }
+        }
+
+        for (i in 1..8) {
+            if ((pieceFocused.positionX - i) >= 0) {
+                if (color == 0) {
+                    if (!hasPieceMove(pieceFocused.positionY, pieceFocused.positionX - i, 0, pieceFocused, context)) {
+                        break
+                    }
+                } else {
+                    if (!hasPieceMove(pieceFocused.positionY, pieceFocused.positionX - i, 1, pieceFocused, context)) {
+                        break
+                    }
+                }
+            } else {
+                break
+            }
+        }
+
+        for (i in 1..8) {
+            if ((pieceFocused.positionY - i) >= 0) {
+                if (color == 0) {
+                    if (!hasPieceMove(pieceFocused.positionY - i, pieceFocused.positionX, 0, pieceFocused, context)) {
+                        break
+                    }
+                } else {
+                    if (!hasPieceMove(pieceFocused.positionY - i, pieceFocused.positionX, 1, pieceFocused, context)) {
+                        break
+                    }
+                }
+            } else {
+                break
+            }
+        }
+
+        for (i in 1..8) {
+            if ((pieceFocused.positionY + i) <= 7) {
+                if (color == 0) {
+                    if (!hasPieceMove(pieceFocused.positionY + i, pieceFocused.positionX, 0, pieceFocused, context)) {
+                        break
+                    }
+                } else {
+                    if (!hasPieceMove(pieceFocused.positionY + i, pieceFocused.positionX, 1, pieceFocused, context)) {
+                        break
+                    }
+                }
+            } else {
+                break
+            }
+        }
+    }
+
+    private fun checkIfBishopHasMoves(pieceFocused: Piece, color: Int, context: Context) {
+        for (i in 1..8) {
+            if (pieceFocused.positionX - i >= 0 && pieceFocused.positionY - i >= 0) {
+                if (color == 0) {
+                    if (!hasPieceMove(
+                            pieceFocused.positionY - i,
+                            pieceFocused.positionX - i,
+                            0,
+                            pieceFocused,
+                            context
+                        )
+                    ) {
+                        break
+                    }
+                } else {
+                    if (!hasPieceMove(
+                            pieceFocused.positionY - i,
+                            pieceFocused.positionX - i,
+                            1,
+                            pieceFocused,
+                            context
+                        )
+                    ) {
+                        break
+                    }
+                }
+            } else {
+                break
+            }
+        }
+
+        // Show top-right moves
+        for (i in 1..8) {
+            if (pieceFocused.positionX + i <= 7 && pieceFocused.positionY - i >= 0) {
+                if (color == 0) {
+                    if (!hasPieceMove(
+                            pieceFocused.positionY - i,
+                            pieceFocused.positionX + i,
+                            0,
+                            pieceFocused,
+                            context
+                        )
+                    ) {
+                        break
+                    }
+                } else {
+                    if (!hasPieceMove(
+                            pieceFocused.positionY - i,
+                            pieceFocused.positionX + i,
+                            1,
+                            pieceFocused,
+                            context
+                        )
+                    ) {
+                        break
+                    }
+                }
+            } else {
+                break
+            }
+        }
+
+        // Show bottom-right moves
+        for (i in 1..8) {
+            if (pieceFocused.positionX + i <= 7 && pieceFocused.positionY + i <= 7) {
+                if (color == 0) {
+                    if (!hasPieceMove(
+                            pieceFocused.positionY + i,
+                            pieceFocused.positionX + i,
+                            0,
+                            pieceFocused,
+                            context
+                        )
+                    ) {
+                        break
+                    }
+                } else {
+                    if (!hasPieceMove(
+                            pieceFocused.positionY + i,
+                            pieceFocused.positionX + i,
+                            1,
+                            pieceFocused,
+                            context
+                        )
+                    ) {
+                        break
+                    }
+                }
+            } else {
+                break
+            }
+        }
+
+        // Show bottom-left moves
+        for (i in 1..8) {
+            if (pieceFocused.positionX - i >= 0 && pieceFocused.positionY + i <= 7) {
+                if (color == 0) {
+                    if (!hasPieceMove(
+                            pieceFocused.positionY + i,
+                            pieceFocused.positionX - i,
+                            0,
+                            pieceFocused,
+                            context
+                        )
+                    ) {
+                        break
+                    }
+                } else {
+                    if (!hasPieceMove(
+                            pieceFocused.positionY + i,
+                            pieceFocused.positionX - i,
+                            1,
+                            pieceFocused,
+                            context
+                        )
+                    ) {
+                        break
+                    }
+                }
+            } else {
+                break
+            }
+        }
+    }
+
+    private fun checkIfBlackPawnHasMoves(pieceFocused: Piece, context: Context) {
+        if (pieceFocused.positionY == 1) {
+            if (pieceFocused.positionX > 0) {
+                if (isPiece(board[pieceFocused.positionY + 1][pieceFocused.positionX - 1])) {
+                    hasPieceMove(
+                        pieceFocused.positionY + 1,
+                        pieceFocused.positionX - 1,
+                        0,
+                        pieceFocused,
+                        context
+                    )
+                }
+            }
+            if (pieceFocused.positionX < 7) {
+                if (isPiece(board[pieceFocused.positionY + 1][pieceFocused.positionX + 1])) {
+                    hasPieceMove(
+                        pieceFocused.positionY + 1,
+                        pieceFocused.positionX + 1,
+                        0,
+                        pieceFocused,
+                        context
+                    )
+                }
+            }
+            if (!isPiece(board[pieceFocused.positionY + 1][pieceFocused.positionX])) {
+                hasPieceMove(
+                    pieceFocused.positionY + 1,
+                    pieceFocused.positionX,
+                    0,
+                    pieceFocused,
+                    context
+                )
+            }
+            if (!isPiece(board[pieceFocused.positionY + 2][pieceFocused.positionX]) && !isPiece(
+                    board[pieceFocused.positionY + 1][pieceFocused.positionX]
+                )
+            ) {
+                hasPieceMove(
+                    pieceFocused.positionY + 2,
+                    pieceFocused.positionX,
+                    0,
+                    pieceFocused,
+                    context
+                )
+            }
+        } else if (pieceFocused.positionY < 7) {
+            if (pieceFocused.positionX > 0) {
+                if (isPiece(board[pieceFocused.positionY + 1][pieceFocused.positionX - 1])) {
+                    hasPieceMove(
+                        pieceFocused.positionY + 1,
+                        pieceFocused.positionX - 1,
+                        0,
+                        pieceFocused,
+                        context
+                    )
+                }
+            }
+            if (pieceFocused.positionX < 7) {
+                if (isPiece(board[pieceFocused.positionY + 1][pieceFocused.positionX + 1])) {
+                    hasPieceMove(
+                        pieceFocused.positionY + 1,
+                        pieceFocused.positionX + 1,
+                        0,
+                        pieceFocused,
+                        context
+                    )
+                }
+            }
+            if (!isPiece(board[pieceFocused.positionY + 1][pieceFocused.positionX])) {
+                hasPieceMove(
+                    pieceFocused.positionY + 1,
+                    pieceFocused.positionX,
+                    0,
+                    pieceFocused,
+                    context
+                )
+            }
+        }
+    }
+
+    private fun checkIfWhitePawnHasMoves(pieceFocused: Piece, context: Context) {
+        if (pieceFocused.positionY == 6) {
+            if (pieceFocused.positionX > 0) {
+                if (isPiece(board[pieceFocused.positionY - 1][pieceFocused.positionX - 1])) {
+                    hasPieceMove(
+                        pieceFocused.positionY - 1,
+                        pieceFocused.positionX - 1,
+                        1,
+                        pieceFocused,
+                        context
+                    )
+                }
+            }
+            if (pieceFocused.positionX < 7) {
+                if (isPiece(board[pieceFocused.positionY - 1][pieceFocused.positionX + 1])) {
+                    hasPieceMove(
+                        pieceFocused.positionY - 1,
+                        pieceFocused.positionX + 1,
+                        1,
+                        pieceFocused,
+                        context
+                    )
+                }
+            }
+            if (!isPiece(board[pieceFocused.positionY - 1][pieceFocused.positionX])) {
+                hasPieceMove(
+                    pieceFocused.positionY - 1,
+                    pieceFocused.positionX,
+                    1,
+                    pieceFocused,
+                    context
+                )
+            }
+            if (!isPiece(board[pieceFocused.positionY - 2][pieceFocused.positionX]) && !isPiece(
+                    board[pieceFocused.positionY - 1][pieceFocused.positionX]
+                )
+            ) {
+                hasPieceMove(
+                    pieceFocused.positionY - 2,
+                    pieceFocused.positionX,
+                    1,
+                    pieceFocused,
+                    context
+                )
+            }
+        } else if (pieceFocused.positionY > 0) {
+            if (pieceFocused.positionX > 0) {
+                if (isPiece(board[pieceFocused.positionY - 1][pieceFocused.positionX - 1])) {
+                    hasPieceMove(
+                        pieceFocused.positionY - 1,
+                        pieceFocused.positionX - 1,
+                        1,
+                        pieceFocused,
+                        context
+                    )
+                }
+            }
+            if (pieceFocused.positionX < 7) {
+                if (isPiece(board[pieceFocused.positionY - 1][pieceFocused.positionX + 1])) {
+                    hasPieceMove(
+                        pieceFocused.positionY - 1,
+                        pieceFocused.positionX + 1,
+                        1,
+                        pieceFocused,
+                        context
+                    )
+                }
+            }
+            if (!isPiece(board[pieceFocused.positionY - 1][pieceFocused.positionX])) {
+                hasPieceMove(
+                    pieceFocused.positionY - 1,
+                    pieceFocused.positionX,
+                    1,
+                    pieceFocused,
+                    context
+                )
+            }
+        }
+    }
+
+    private fun hasPieceMove(
+        positionY: Int,
+        positionX: Int,
+        color: Int,
+        pieceFocused: Piece,
+        context: Context
+    ): Boolean {
+        val colorOpposite = if (color == 0) {
+            1
+        } else {
+            0
+        }
+        if (!isPiece(board[positionY][positionX])) {
+            val piece = pieceFocused.copy()
+            piece.positionY = positionY
+            piece.positionX = positionX
+            val piecesListCopy = piecesList.toMutableList() as ArrayList<Piece>
+            piecesListCopy.set(
+                piecesListCopy.indexOf(pieceFocused),
+                Piece(
+                    pieceFocused.type,
+                    pieceFocused.color,
+                    piece.positionX,
+                    piece.positionY,
+                    pieceFocused.isActive
+                )
+            )
+            val boardCopy = board.clone()
+            resetBoard(piecesListCopy, boardCopy, context)
+            if (!PiecesHelper().isCheck(piecesListCopy, colorOpposite, boardCopy)) {
+                hasMoves = true
+            }
+            resetBoard(piecesList, board, context)
+            return true
+        } else {
+            if (findPiece((positionY), (positionX)).color == color) {
+                val piece = pieceFocused.copy()
+                piece.positionY = positionY
+                piece.positionX = positionX
+                val piecesListCopy = piecesList.toMutableList() as ArrayList<Piece>
+                piecesListCopy.set(
+                    piecesListCopy.indexOf(pieceFocused),
+                    Piece(
+                        pieceFocused.type,
+                        pieceFocused.color,
+                        piece.positionX,
+                        piece.positionY,
+                        pieceFocused.isActive
+                    )
+                )
+                piecesListCopy.set(
+                    piecesListCopy.indexOf(findPiece(positionY, positionX)),
+                    Piece(0, 0, 0, 0, false)
+                )
+                val boardCopy = board.clone()
+                resetBoard(piecesListCopy, boardCopy, context)
+                if (!PiecesHelper().isCheck(piecesListCopy,  colorOpposite, boardCopy)) {
+                    hasMoves = true
                 }
                 resetBoard(piecesList, board, context)
                 return false

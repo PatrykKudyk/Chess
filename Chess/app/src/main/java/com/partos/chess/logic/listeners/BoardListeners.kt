@@ -32,17 +32,17 @@ class BoardListeners {
     private var isChoose = false
     private var moveX = 0
     private var moveY = 0
-    private var turn = 0
+    private var turn = 1
     private var pawnSpecialX = 0
     private var pawnSpecialY = 0
     private var pawnSpecialWhite = false
     private var pawnSpecialBlack = false
     private var checkBlack = false
     private var checkWhite = false
-    private var canCastleLongBlack = true
-    private var canCastleLongWhite = true
-    private var canCastleShortBlack = true
-    private var canCastleShortWhite = true
+    private var canCastleLongBlack = false
+    private var canCastleLongWhite = false
+    private var canCastleShortBlack = false
+    private var canCastleShortWhite = false
     private var longWhiteCastleAvailable = false
     private var longBlackCastleAvailable = false
     private var shortWhiteCastleAvailable = false
@@ -129,6 +129,7 @@ class BoardListeners {
                             } else {
                                 turn = 0
                             }
+                            checkIfEndOfGame()
                         } else if (pieceFocused.color == 1 && pawnSpecialWhite && i == pawnSpecialY + 1 && j == pawnSpecialX && pieceFocused.type == 0) {
                             findPiece(pawnSpecialY, pawnSpecialX).isActive = false
                             piecesList.set(
@@ -150,6 +151,7 @@ class BoardListeners {
                             } else {
                                 turn = 0
                             }
+                            checkIfEndOfGame()
                         } else if (i == pieceFocused.positionY + 2 && pieceFocused.color == 1 && pieceFocused.type == 0) {
                             pawnSpecialX = pieceFocused.positionX
                             pawnSpecialY = pieceFocused.positionY + 2
@@ -172,6 +174,7 @@ class BoardListeners {
                             } else {
                                 turn = 0
                             }
+                            checkIfEndOfGame()
                         } else if (i == pieceFocused.positionY - 2 && pieceFocused.color == 0 && pieceFocused.type == 0) {
                             pawnSpecialX = pieceFocused.positionX
                             pawnSpecialY = pieceFocused.positionY - 2
@@ -194,6 +197,7 @@ class BoardListeners {
                             } else {
                                 turn = 0
                             }
+                            checkIfEndOfGame()
                         } else if (pieceFocused.type == 5 && pieceFocused.color == 0 &&
                                 pieceFocused.positionY == 7 && pieceFocused.positionX == 4 &&
                                 i == 7 && j == 2) {
@@ -229,6 +233,7 @@ class BoardListeners {
                             } else {
                                 turn = 0
                             }
+                            checkIfEndOfGame()
                         } else if (pieceFocused.type == 5 && pieceFocused.color == 0 &&
                             pieceFocused.positionY == 7 && pieceFocused.positionX == 4 &&
                             i == 7 && j == 6) {
@@ -264,6 +269,7 @@ class BoardListeners {
                             } else {
                                 turn = 0
                             }
+                            checkIfEndOfGame()
                         } else if (pieceFocused.type == 5 && pieceFocused.color == 1 &&
                             pieceFocused.positionY == 0 && pieceFocused.positionX == 4 &&
                             i == 0 && j == 2) {
@@ -299,6 +305,7 @@ class BoardListeners {
                             } else {
                                 turn = 0
                             }
+                            checkIfEndOfGame()
                         } else if (pieceFocused.type == 5 && pieceFocused.color == 1 &&
                             pieceFocused.positionY == 0 && pieceFocused.positionX == 4 &&
                             i == 0 && j == 6) {
@@ -334,28 +341,36 @@ class BoardListeners {
                             } else {
                                 turn = 0
                             }
+                            checkIfEndOfGame()
                         } else if (pieceFocused.type == 5 && pieceFocused.color == 0) {
                             canCastleLongWhite = false
                             canCastleShortWhite = false
                             makeMove(i, j)
+                            checkIfEndOfGame()
                         } else if (pieceFocused.type == 3 && pieceFocused.color == 0 && pieceFocused.positionY == 7 && pieceFocused.positionX == 0) {
                             canCastleLongWhite = false
                             makeMove(i, j)
+                            checkIfEndOfGame()
                         } else if (pieceFocused.type == 3 && pieceFocused.color == 0 && pieceFocused.positionY == 7 && pieceFocused.positionX == 7) {
                             canCastleShortWhite = false
                             makeMove(i, j)
+                            checkIfEndOfGame()
                         }  else if (pieceFocused.type == 5 && pieceFocused.color == 1) {
                             canCastleLongBlack = false
                             canCastleShortBlack = false
                             makeMove(i, j)
+                            checkIfEndOfGame()
                         } else if (pieceFocused.type == 3 && pieceFocused.color == 1 && pieceFocused.positionY == 0 && pieceFocused.positionX == 0) {
                             canCastleLongBlack = false
                             makeMove(i, j)
+                            checkIfEndOfGame()
                         } else if (pieceFocused.type == 3 && pieceFocused.color == 1 && pieceFocused.positionY == 0 && pieceFocused.positionX == 7) {
                             canCastleShortBlack = false
                             makeMove(i, j)
+                            checkIfEndOfGame()
                         } else {
-                           makeMove(i, j)
+                            makeMove(i, j)
+                            checkIfEndOfGame()
                         }
                     } else if (isPiece(board[i][j])) {
                         isChoose = false
@@ -373,6 +388,179 @@ class BoardListeners {
                 }
             }
         }
+    }
+
+    private fun checkIfEndOfGame() {
+        isStaleMate()
+    }
+
+    private fun isStaleMate() {
+        if (turn == 0) {
+            isWhiteStaleMate()
+        } else {
+            isBlackStaleMate()
+        }
+    }
+
+    private fun isBlackStaleMate() {
+        if (!PiecesHelper().isAnyMovePossible(piecesList, 1, board, context)) {
+            if (!isBlackCheck()) {
+                if (!hasKingMoves(1)) {
+                    checkWhiteTextView.visibility = View.GONE
+                    checkBlackTextView.visibility = View.GONE
+                    winTextView.text = "STALEMATE!\nIT IS A DRAW"
+                    winTextView.visibility = View.VISIBLE
+                }
+            }
+        }
+    }
+
+    private fun isWhiteStaleMate() {
+        if (!PiecesHelper().isAnyMovePossible(piecesList, 0, board, context)) {
+            if (!isWhiteCheck()) {
+                if (!hasKingMoves(0)) {
+                    checkWhiteTextView.visibility = View.GONE
+                    checkBlackTextView.visibility = View.GONE
+                    winTextView.text = "STALEMATE!\nIT IS A DRAW"
+                    winTextView.visibility = View.VISIBLE
+                }
+            }
+        }
+    }
+
+    private fun hasKingMoves(color: Int): Boolean {
+        if (color == 0) {
+            val king = findKing(0)
+            return checkIfKingHasMoves(king, 1)
+        } else {
+            val king = findKing(1)
+            return checkIfKingHasMoves(king, 0)
+        }
+    }
+
+    private fun checkIfKingHasMoves(kingFocused: Piece, color: Int): Boolean {
+        if (kingFocused.positionY >= 1) {
+            if (canKingMove(
+                    color,
+                    kingFocused.positionY - 1,
+                    kingFocused.positionX,
+                    kingFocused
+                )
+            ) {
+                return true
+            }
+        }
+        if (kingFocused.positionY >= 1 && kingFocused.positionX <= 6) {
+            if (canKingMove(
+                    color,
+                    kingFocused.positionY - 1,
+                    kingFocused.positionX + 1,
+                    kingFocused
+                )
+            ) {
+                return true
+            }
+        }
+        if (kingFocused.positionX <= 6) {
+            if (canKingMove(
+                    color,
+                    kingFocused.positionY,
+                    kingFocused.positionX + 1,
+                    kingFocused
+                )
+            ) {
+                return true
+            }
+        }
+        if (kingFocused.positionY <= 6 && kingFocused.positionX <= 6) {
+            if (canKingMove(
+                    color,
+                    kingFocused.positionY + 1,
+                    kingFocused.positionX + 1,
+                    kingFocused
+                )
+            ) {
+                return true
+            }
+        }
+        if (kingFocused.positionY <= 6) {
+            if (canKingMove(
+                    color,
+                    kingFocused.positionY + 1,
+                    kingFocused.positionX,
+                    kingFocused
+                )
+            ) {
+                return true
+            }
+        }
+        if (kingFocused.positionY <= 6 && kingFocused.positionX >= 1) {
+            if (canKingMove(
+                    color,
+                    kingFocused.positionY + 1,
+                    kingFocused.positionX - 1,
+                    kingFocused
+                )
+            ) {
+                return true
+            }
+        }
+        if (kingFocused.positionX >= 1) {
+            if (canKingMove(
+                    color,
+                    kingFocused.positionY,
+                    kingFocused.positionX - 1,
+                    kingFocused
+                )
+            ) {
+                return true
+            }
+        }
+        if (kingFocused.positionY >= 1 && kingFocused.positionX >= 1) {
+            if (canKingMove(
+                    color,
+                    kingFocused.positionY - 1,
+                    kingFocused.positionX - 1,
+                    kingFocused
+                )
+            ) {
+                return true
+            }
+        }
+        if (kingFocused.color == 0) {
+            if (canCastleLongWhite &&
+                !isPiece(board[7][3]) &&
+                !isPiece(board[7][2]) &&
+                !isPiece(board[7][1]) &&
+                !isWhiteCheck()
+            ) {
+                return true
+            }
+            if (canCastleShortWhite &&
+                !isPiece(board[7][5]) &&
+                !isPiece(board[7][6]) &&
+                !isWhiteCheck()
+            ) {
+                return true
+            }
+        } else {
+            if (canCastleLongBlack &&
+                !isPiece(board[0][3]) &&
+                !isPiece(board[0][2]) &&
+                !isPiece(board[0][1]) &&
+                !isBlackCheck()
+            ) {
+                return true
+            }
+            if (canCastleShortBlack &&
+                !isPiece(board[0][5]) &&
+                !isPiece(board[0][6]) &&
+                !isBlackCheck()
+            ) {
+                return true
+            }
+        }
+        return false
     }
 
     private fun makeMove(i: Int, j: Int) {
