@@ -14,10 +14,10 @@ class BoardLogic {
     private lateinit var moves: Array<Array<ImageView>>
     private lateinit var piecesList: ArrayList<Piece>
 
-    fun initFragment(rootView: View, fragmentManager: FragmentManager) {
+    fun initFragment(rootView: View, fragmentManager: FragmentManager, gameType: Int, computerType: Int) {
         initBoard(rootView)
         initPiecesList()
-        BoardListeners().initListeners(rootView, fragmentManager, board, moves, piecesList)
+        BoardListeners().initListeners(rootView, fragmentManager, board, moves, piecesList, gameType, computerType)
     }
 
     private fun initPiecesList() {

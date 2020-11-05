@@ -5,11 +5,13 @@ import android.widget.Button
 import androidx.fragment.app.FragmentManager
 import com.partos.chess.R
 import com.partos.chess.fragments.BoardFragment
-import com.partos.chess.fragments.GameChoiceFragment
 
-class MainMenuListeners {
+class GameChoiceListeners {
 
-    private lateinit var playButton: Button
+    lateinit var pvspButton: Button
+    lateinit var pvscButton: Button
+    lateinit var cvscButton: Button
+
 
     fun initListeners(rootView: View, fragmentManager: FragmentManager) {
         attachViews(rootView)
@@ -17,8 +19,8 @@ class MainMenuListeners {
     }
 
     private fun attachListeners(fragmentManager: FragmentManager) {
-        playButton.setOnClickListener {
-            val fragment = GameChoiceFragment.newInstance()
+        pvspButton.setOnClickListener {
+            val fragment = BoardFragment.newInstance(0,0)
             fragmentManager
                 .beginTransaction()
                 .setCustomAnimations(
@@ -26,12 +28,14 @@ class MainMenuListeners {
                     R.anim.enter_left_to_right, R.anim.exit_right_to_left
                 )
                 .replace(R.id.main_frame_layout, fragment)
-                .addToBackStack(GameChoiceFragment.toString())
+                .addToBackStack(BoardFragment.toString())
                 .commit()
         }
     }
 
     private fun attachViews(rootView: View) {
-        playButton = rootView.findViewById(R.id.main_menu_button_play)
+        pvspButton = rootView.findViewById(R.id.game_choice_pvsp_button)
+        pvscButton = rootView.findViewById(R.id.game_choice_pvsc_button)
+        cvscButton = rootView.findViewById(R.id.game_choice_cvsc_button)
     }
 }

@@ -2,6 +2,8 @@
     <string name="app_name">Mobile Chess</string>
     <string name="app_title">Chess</string>
     <string name="play_button">Play</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="how_do_you_want_to_play">How do you want to play?</string>
+    <string name="playerVsPlayer">Player vs Player</string>
+    <string name="playerVsComputer">Player vs Computer</string>
+    <string name="computerVsComputer">Computer vs Computer</string>
 </resources>

@@ -56,7 +56,9 @@ class BoardListeners {
         fragmentManager: FragmentManager,
         board: Array<Array<ImageView>>,
         moves: Array<Array<ImageView>>,
-        piecesList: ArrayList<Piece>
+        piecesList: ArrayList<Piece>,
+        gameType: Int,
+        computerType: Int
     ) {
         attachParameters(board, moves, piecesList, rootView.context)
         attachViews(rootView)

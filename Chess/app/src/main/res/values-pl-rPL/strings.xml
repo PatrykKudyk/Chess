@@ -3,5 +3,8 @@
     <string name="app_name">Mobilne Szachy</string>
     <string name="app_title">Szachy</string>
     <string name="play_button">Play</string>
-
+    <string name="how_do_you_want_to_play">Jak chcesz zagrać?</string>
+    <string name="playerVsPlayer">Gracz vs Gracz</string>
+    <string name="playerVsComputer">Gracz vs Komputer</string>
+    <string name="computerVsComputer">Komputer vs Komputer</string>
 </resources>
