@@ -7,4 +7,6 @@
     <string name="playerVsPlayer">Gracz vs Gracz</string>
     <string name="playerVsComputer">Gracz vs Komputer</string>
     <string name="computerVsComputer">Komputer vs Komputer</string>
+    <string name="chooseComputerType">Wybierz typ komputera</string>
+    <string name="random">Losowy</string>
 </resources>
