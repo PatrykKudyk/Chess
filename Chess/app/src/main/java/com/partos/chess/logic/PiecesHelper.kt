@@ -68,6 +68,27 @@ class PiecesHelper {
         // STALEMATE
 
 
+        //DEAD POSITION
+
+//        piecesList.add(Piece(5, 1, 2, 1, true))
+//        piecesList.add(Piece(1, 0, 3, 1, true))
+//        piecesList.add(Piece(1, 1, 6, 1, true))
+//        piecesList.add(Piece(5, 0, 4, 2, true))
+
+
+        //DEAD POSITION
+
+        //50 WITH NO CAPTURE
+
+//        piecesList.add(Piece(5, 1, 2, 1, true))
+//        piecesList.add(Piece(0, 0, 3, 1, true))
+//        piecesList.add(Piece(0, 1, 6, 1, true))
+//        piecesList.add(Piece(5, 0, 4, 2, true))
+
+
+        //50 WITH NO CAPTURE
+
+
         return piecesList
     }
 

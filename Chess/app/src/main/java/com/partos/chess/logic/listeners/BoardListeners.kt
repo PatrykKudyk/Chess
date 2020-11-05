@@ -32,21 +32,23 @@ class BoardListeners {
     private var isChoose = false
     private var moveX = 0
     private var moveY = 0
-    private var turn = 1
+    private var turn = 0
     private var pawnSpecialX = 0
     private var pawnSpecialY = 0
     private var pawnSpecialWhite = false
     private var pawnSpecialBlack = false
     private var checkBlack = false
     private var checkWhite = false
-    private var canCastleLongBlack = false
-    private var canCastleLongWhite = false
-    private var canCastleShortBlack = false
-    private var canCastleShortWhite = false
+    private var canCastleLongBlack = true
+    private var canCastleLongWhite = true
+    private var canCastleShortBlack = true
+    private var canCastleShortWhite = true
     private var longWhiteCastleAvailable = false
     private var longBlackCastleAvailable = false
     private var shortWhiteCastleAvailable = false
     private var shortBlackCastleAvailable = false
+    private var movesWithNoCaptureWhite = 0
+    private var movesWithNoCaptureBlack = 0
 
 
     fun initListeners(
@@ -110,6 +112,7 @@ class BoardListeners {
                             }
                         } else if (pieceFocused.color == 0 && pawnSpecialBlack && i == pawnSpecialY - 1 && j == pawnSpecialX && pieceFocused.type == 0) {
                             findPiece(pawnSpecialY, pawnSpecialX).isActive = false
+                            resetMovesWithNoCapture(pieceFocused.color)
                             piecesList.set(
                                 piecesList.indexOf(pieceFocused), Piece(
                                     pieceFocused.type,
@@ -132,6 +135,7 @@ class BoardListeners {
                             checkIfEndOfGame()
                         } else if (pieceFocused.color == 1 && pawnSpecialWhite && i == pawnSpecialY + 1 && j == pawnSpecialX && pieceFocused.type == 0) {
                             findPiece(pawnSpecialY, pawnSpecialX).isActive = false
+                            resetMovesWithNoCapture(pieceFocused.color)
                             piecesList.set(
                                 piecesList.indexOf(pieceFocused), Piece(
                                     pieceFocused.type,
@@ -153,6 +157,7 @@ class BoardListeners {
                             }
                             checkIfEndOfGame()
                         } else if (i == pieceFocused.positionY + 2 && pieceFocused.color == 1 && pieceFocused.type == 0) {
+                            incrementMovesWithNoCapture(pieceFocused.color)
                             pawnSpecialX = pieceFocused.positionX
                             pawnSpecialY = pieceFocused.positionY + 2
                             pawnSpecialBlack = true
@@ -176,6 +181,7 @@ class BoardListeners {
                             }
                             checkIfEndOfGame()
                         } else if (i == pieceFocused.positionY - 2 && pieceFocused.color == 0 && pieceFocused.type == 0) {
+                            incrementMovesWithNoCapture(pieceFocused.color)
                             pawnSpecialX = pieceFocused.positionX
                             pawnSpecialY = pieceFocused.positionY - 2
                             pawnSpecialWhite = true
@@ -199,8 +205,10 @@ class BoardListeners {
                             }
                             checkIfEndOfGame()
                         } else if (pieceFocused.type == 5 && pieceFocused.color == 0 &&
-                                pieceFocused.positionY == 7 && pieceFocused.positionX == 4 &&
-                                i == 7 && j == 2) {
+                            pieceFocused.positionY == 7 && pieceFocused.positionX == 4 &&
+                            i == 7 && j == 2
+                        ) {
+                            incrementMovesWithNoCapture(pieceFocused.color)
                             canCastleLongWhite = false
                             canCastleShortWhite = false
                             piecesList.set(
@@ -236,7 +244,9 @@ class BoardListeners {
                             checkIfEndOfGame()
                         } else if (pieceFocused.type == 5 && pieceFocused.color == 0 &&
                             pieceFocused.positionY == 7 && pieceFocused.positionX == 4 &&
-                            i == 7 && j == 6) {
+                            i == 7 && j == 6
+                        ) {
+                            incrementMovesWithNoCapture(pieceFocused.color)
                             canCastleLongWhite = false
                             canCastleShortWhite = false
                             piecesList.set(
@@ -272,7 +282,9 @@ class BoardListeners {
                             checkIfEndOfGame()
                         } else if (pieceFocused.type == 5 && pieceFocused.color == 1 &&
                             pieceFocused.positionY == 0 && pieceFocused.positionX == 4 &&
-                            i == 0 && j == 2) {
+                            i == 0 && j == 2
+                        ) {
+                            incrementMovesWithNoCapture(pieceFocused.color)
                             canCastleLongBlack = false
                             canCastleShortBlack = false
                             piecesList.set(
@@ -308,7 +320,9 @@ class BoardListeners {
                             checkIfEndOfGame()
                         } else if (pieceFocused.type == 5 && pieceFocused.color == 1 &&
                             pieceFocused.positionY == 0 && pieceFocused.positionX == 4 &&
-                            i == 0 && j == 6) {
+                            i == 0 && j == 6
+                        ) {
+                            incrementMovesWithNoCapture(pieceFocused.color)
                             canCastleLongBlack = false
                             canCastleShortBlack = false
                             piecesList.set(
@@ -355,7 +369,7 @@ class BoardListeners {
                             canCastleShortWhite = false
                             makeMove(i, j)
                             checkIfEndOfGame()
-                        }  else if (pieceFocused.type == 5 && pieceFocused.color == 1) {
+                        } else if (pieceFocused.type == 5 && pieceFocused.color == 1) {
                             canCastleLongBlack = false
                             canCastleShortBlack = false
                             makeMove(i, j)
@@ -391,41 +405,183 @@ class BoardListeners {
     }
 
     private fun checkIfEndOfGame() {
-        isStaleMate()
-    }
-
-    private fun isStaleMate() {
-        if (turn == 0) {
-            isWhiteStaleMate()
-        } else {
-            isBlackStaleMate()
+        if (isStaleMate())  {
+            showStaleMate()
+        } else if (isFiftyMovesWithNoCapture()) {
+            showFiftyMovesWithNoCapture()
+        } else if (isDeadPosition()) {
+            showDeadPosition()
         }
     }
 
-    private fun isBlackStaleMate() {
+    private fun showStaleMate() {
+        checkWhiteTextView.visibility = View.GONE
+        checkBlackTextView.visibility = View.GONE
+        winTextView.text = "STALEMATE!\nIT IS A DRAW"
+        winTextView.visibility = View.VISIBLE
+    }
+
+    private fun showFiftyMovesWithNoCapture() {
+        checkWhiteTextView.visibility = View.GONE
+        checkBlackTextView.visibility = View.GONE
+        winTextView.text = "50 MOVES WITH\nNO CAPTURE!\nIT IS A DRAW"
+        winTextView.visibility = View.VISIBLE    }
+
+    private fun isFiftyMovesWithNoCapture(): Boolean {
+        if (movesWithNoCaptureBlack >= 50 || movesWithNoCaptureWhite >= 50) {
+            return true
+        }
+        return false
+    }
+
+    private fun isDeadPosition(): Boolean {
+        if (isKingVsKing()) {
+            return true
+        } else if (isKingVsKingAndBishop()) {
+            return true
+        } else if (isKingVsKingAndKnight()) {
+            return true
+        } else if (areKingsPlusTheSameColorBishops()) {
+            return true
+        }
+        return false
+    }
+
+    private fun areKingsPlusTheSameColorBishops(): Boolean {
+        var pieces = 0
+        for (piece in piecesList) {
+            if (piece.isActive) {
+                pieces++
+            }
+        }
+        if (pieces == 4) {
+            if (isAnyBishopActive(0) && isAnyBishopActive(1)) {
+                if (colorOfBishop(0) == colorOfBishop(1)) {
+                    return true
+                }
+                return false
+            }
+            return false
+        }
+        return false
+    }
+
+    private fun colorOfBishop(color: Int): Int {
+        for (piece in piecesList) {
+            if (piece.isActive && piece.color == color && piece.type == 1) {
+                return getSquareColor(piece.positionY, piece.positionX)
+            }
+        }
+        return 3
+    }
+
+    private fun getSquareColor(positionY: Int, positionX: Int): Int {
+        if (positionY % 2 == 0) {
+            return if (positionX % 2 == 0) {
+                0
+            } else {
+                1
+            }
+        } else {
+            return if (positionX % 2 == 0) {
+                1
+            } else {
+                0
+            }
+        }
+    }
+
+    private fun isKingVsKingAndKnight(): Boolean {
+        var pieces = 0
+        for (piece in piecesList) {
+            if (piece.isActive) {
+                pieces++
+            }
+        }
+        if (pieces == 3) {
+            if (isAnyKnightActive(0) || isAnyKnightActive(1))
+                return true
+        }
+        return false
+    }
+
+    private fun isAnyKnightActive(color: Int): Boolean {
+        for (piece in piecesList) {
+            if (piece.isActive && piece.color == color && piece.type == 2) {
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun isKingVsKingAndBishop(): Boolean {
+        var pieces = 0
+        for (piece in piecesList) {
+            if (piece.isActive) {
+                pieces++
+            }
+        }
+        if (pieces == 3) {
+            if (isAnyBishopActive(0) || isAnyBishopActive(1))
+                return true
+        }
+        return false
+    }
+
+    private fun isAnyBishopActive(color: Int): Boolean {
+        for (piece in piecesList) {
+            if (piece.isActive && piece.color == color && piece.type == 1) {
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun showDeadPosition() {
+        checkWhiteTextView.visibility = View.GONE
+        checkBlackTextView.visibility = View.GONE
+        winTextView.text = "DEAD POSITION!\nIT IS A DRAW"
+        winTextView.visibility = View.VISIBLE
+    }
+
+    private fun isKingVsKing(): Boolean {
+        var pieces = 0
+        for (piece in piecesList) {
+            if (piece.isActive) {
+                pieces++
+            }
+        }
+        return pieces == 2
+    }
+
+    private fun isStaleMate(): Boolean {
+        if (turn == 0) {
+            return isWhiteStaleMate()
+        } else {
+            return isBlackStaleMate()
+        }
+    }
+
+    private fun isBlackStaleMate(): Boolean{
         if (!PiecesHelper().isAnyMovePossible(piecesList, 1, board, context)) {
             if (!isBlackCheck()) {
                 if (!hasKingMoves(1)) {
-                    checkWhiteTextView.visibility = View.GONE
-                    checkBlackTextView.visibility = View.GONE
-                    winTextView.text = "STALEMATE!\nIT IS A DRAW"
-                    winTextView.visibility = View.VISIBLE
+                    return true
                 }
             }
         }
+        return false
     }
 
-    private fun isWhiteStaleMate() {
+    private fun isWhiteStaleMate(): Boolean{
         if (!PiecesHelper().isAnyMovePossible(piecesList, 0, board, context)) {
             if (!isWhiteCheck()) {
                 if (!hasKingMoves(0)) {
-                    checkWhiteTextView.visibility = View.GONE
-                    checkBlackTextView.visibility = View.GONE
-                    winTextView.text = "STALEMATE!\nIT IS A DRAW"
-                    winTextView.visibility = View.VISIBLE
+                    return true
                 }
             }
         }
+        return false
     }
 
     private fun hasKingMoves(color: Int): Boolean {
@@ -565,7 +721,10 @@ class BoardListeners {
 
     private fun makeMove(i: Int, j: Int) {
         if (isPiece(board[i][j])) {
+            resetMovesWithNoCapture(pieceFocused.color)
             findPiece(i, j).isActive = false
+        } else {
+            incrementMovesWithNoCapture(pieceFocused.color)
         }
         piecesList.set(
             piecesList.indexOf(pieceFocused), Piece(
@@ -1395,7 +1554,10 @@ class BoardListeners {
         chooseBishop.setOnClickListener {
             pieceFocused.type = 1
             if (isPiece(board[moveY][moveX])) {
+                resetMovesWithNoCapture(pieceFocused.color)
                 findPiece(moveY, moveX).isActive = false
+            } else {
+                incrementMovesWithNoCapture(pieceFocused.color)
             }
             piecesList.set(
                 piecesList.indexOf(pieceFocused), Piece(
@@ -1421,7 +1583,10 @@ class BoardListeners {
         chooseKnight.setOnClickListener {
             pieceFocused.type = 2
             if (isPiece(board[moveY][moveX])) {
+                resetMovesWithNoCapture(pieceFocused.color)
                 findPiece(moveY, moveX).isActive = false
+            } else {
+                incrementMovesWithNoCapture(pieceFocused.color)
             }
             piecesList.set(
                 piecesList.indexOf(pieceFocused), Piece(
@@ -1447,7 +1612,10 @@ class BoardListeners {
         chooseRook.setOnClickListener {
             pieceFocused.type = 3
             if (isPiece(board[moveY][moveX])) {
+                resetMovesWithNoCapture(pieceFocused.color)
                 findPiece(moveY, moveX).isActive = false
+            } else {
+                incrementMovesWithNoCapture(pieceFocused.color)
             }
             piecesList.set(
                 piecesList.indexOf(pieceFocused), Piece(
@@ -1473,7 +1641,10 @@ class BoardListeners {
         chooseQueen.setOnClickListener {
             pieceFocused.type = 4
             if (isPiece(board[moveY][moveX])) {
+                resetMovesWithNoCapture(pieceFocused.color)
                 findPiece(moveY, moveX).isActive = false
+            } else {
+                incrementMovesWithNoCapture(pieceFocused.color)
             }
             piecesList.set(
                 piecesList.indexOf(pieceFocused), Piece(
@@ -1495,6 +1666,22 @@ class BoardListeners {
             } else {
                 turn = 0
             }
+        }
+    }
+
+    private fun incrementMovesWithNoCapture(color: Int) {
+        if (color == 0) {
+            movesWithNoCaptureWhite++
+        } else {
+            movesWithNoCaptureBlack++
+        }
+    }
+
+    private fun resetMovesWithNoCapture(color: Int) {
+        if (color == 0) {
+            movesWithNoCaptureWhite = 0
+        } else {
+            movesWithNoCaptureBlack = 0
         }
     }
 
