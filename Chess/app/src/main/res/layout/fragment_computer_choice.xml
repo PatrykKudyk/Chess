@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragments.MainMenuFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -13,48 +13,50 @@
 
         <View
             android:id="@+id/view"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintHeight_percent="0.1"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/view"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:text="@string/app_name"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:fontFamily="@font/dustismo_bold"
             android:gravity="center"
-            android:textSize="50dip"/>
+            android:text="@string/chooseComputerType"
+            android:textSize="40dip"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/view" />
 
         <View
             android:id="@+id/view2"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintHeight_percent="0.2"/>
-
-        <Button
-            android:id="@+id/main_menu_button_play"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:text="@string/play_button"
-            app:layout_constraintTop_toBottomOf="@id/view2"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight_percent="0.1"
-            app:layout_constraintWidth_percent="0.78"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textView" />
+
+        <Button
+            android:id="@+id/computer_choice_random"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:background="@drawable/button_secondary"
+            android:text="@string/random"
+            android:textAllCaps="false"
             android:textColor="@color/colorBackground"
             android:textSize="@dimen/button_text_size"
-            android:textAllCaps="false"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/view2"
+            app:layout_constraintWidth_percent="0.78" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

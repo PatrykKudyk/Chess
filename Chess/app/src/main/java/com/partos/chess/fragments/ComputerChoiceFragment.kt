@@ -1,13 +1,13 @@
 package com.partos.chess.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.partos.chess.R
-import com.partos.chess.logic.logic.BoardLogic
+import com.partos.chess.logic.logic.ComputerChoiceLogic
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -16,19 +16,17 @@ private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
- * Use the [BoardFragment.newInstance] factory method to
+ * Use the [ComputerChoiceFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class BoardFragment : Fragment() {
+class ComputerChoiceFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var gameType: Int? = null
-    private var computerType: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             gameType = it.getInt(ARG_PARAM1)
-            computerType = it.getInt(ARG_PARAM2)
         }
     }
 
@@ -37,8 +35,8 @@ class BoardFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_board, container, false)
-        BoardLogic().initFragment(view, fragmentManager as FragmentManager, gameType as Int, computerType as Int)
+        val view = inflater.inflate(R.layout.fragment_computer_choice, container, false)
+        ComputerChoiceLogic().initFragment(view, fragmentManager as FragmentManager, gameType as Int)
         return view
     }
 
@@ -49,15 +47,14 @@ class BoardFragment : Fragment() {
          *
          * @param param1 Parameter 1.
          * @param param2 Parameter 2.
-         * @return A new instance of fragment BoardFragment.
+         * @return A new instance of fragment ComputerChoiceFragment.
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(gameType: Int, computerType: Int) =
-            BoardFragment().apply {
+        fun newInstance(gameType: Int) =
+            ComputerChoiceFragment().apply {
                 arguments = Bundle().apply {
                     putInt(ARG_PARAM1, gameType)
-                    putInt(ARG_PARAM2, computerType)
                 }
             }
     }

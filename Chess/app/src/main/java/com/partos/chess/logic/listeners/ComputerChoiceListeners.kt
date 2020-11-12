@@ -5,20 +5,25 @@ import android.widget.Button
 import androidx.fragment.app.FragmentManager
 import com.partos.chess.R
 import com.partos.chess.fragments.BoardFragment
-import com.partos.chess.fragments.GameChoiceFragment
 
-class MainMenuListeners {
+class ComputerChoiceListeners {
 
-    private lateinit var playButton: Button
+    lateinit var randomButton: Button
 
-    fun initListeners(rootView: View, fragmentManager: FragmentManager) {
+    fun initListeners(rootView: View, fragmentManager: FragmentManager, gameType: Int) {
         attachViews(rootView)
-        attachListeners(fragmentManager)
+        attachListeners(fragmentManager, gameType)
     }
 
-    private fun attachListeners(fragmentManager: FragmentManager) {
-        playButton.setOnClickListener {
-            val fragment = GameChoiceFragment.newInstance()
+    private fun attachListeners(fragmentManager: FragmentManager, gameType: Int) {
+        randomButton.setOnClickListener {
+            val fragment = BoardFragment.newInstance(gameType, 0)
+
+            fragmentManager
+                .popBackStack()
+            fragmentManager
+                .popBackStack()
+
             fragmentManager
                 .beginTransaction()
                 .setCustomAnimations(
@@ -26,12 +31,12 @@ class MainMenuListeners {
                     R.anim.enter_left_to_right, R.anim.exit_right_to_left
                 )
                 .replace(R.id.main_frame_layout, fragment)
-                .addToBackStack(GameChoiceFragment.toString())
+                .addToBackStack(BoardFragment.toString())
                 .commit()
         }
     }
 
     private fun attachViews(rootView: View) {
-        playButton = rootView.findViewById(R.id.main_menu_button_play)
+        randomButton = rootView.findViewById(R.id.computer_choice_random)
     }
 }
