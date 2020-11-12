@@ -1,10 +1,17 @@
-package com.partos.chess.logic
+package com.partos.chess.logic.helpers.piecesHelpers
 
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import com.partos.chess.R
+import com.partos.chess.logic.helpers.BoardHelper
+import com.partos.chess.models.GameFlags
+import com.partos.chess.logic.helpers.MovesHelper
+import com.partos.chess.models.Move
 import com.partos.chess.models.Piece
+import com.partos.chess.models.parameters.PawnBeforeMoveParameters
+import com.partos.chess.models.parameters.PieceAfterMoveParameters
+import com.partos.chess.models.parameters.PieceParameters
 import kotlin.math.abs
 
 class PiecesHelper {
@@ -143,14 +150,14 @@ class PiecesHelper {
     }
 
     private fun createMovesList(): Array<Array<Boolean>> {
-        var array1 = arrayOf(false, false, false, false, false, false, false, false)
-        var array2 = arrayOf(false, false, false, false, false, false, false, false)
-        var array3 = arrayOf(false, false, false, false, false, false, false, false)
-        var array4 = arrayOf(false, false, false, false, false, false, false, false)
-        var array5 = arrayOf(false, false, false, false, false, false, false, false)
-        var array6 = arrayOf(false, false, false, false, false, false, false, false)
-        var array7 = arrayOf(false, false, false, false, false, false, false, false)
-        var array8 = arrayOf(false, false, false, false, false, false, false, false)
+        val array1 = arrayOf(false, false, false, false, false, false, false, false)
+        val array2 = arrayOf(false, false, false, false, false, false, false, false)
+        val array3 = arrayOf(false, false, false, false, false, false, false, false)
+        val array4 = arrayOf(false, false, false, false, false, false, false, false)
+        val array5 = arrayOf(false, false, false, false, false, false, false, false)
+        val array6 = arrayOf(false, false, false, false, false, false, false, false)
+        val array7 = arrayOf(false, false, false, false, false, false, false, false)
+        val array8 = arrayOf(false, false, false, false, false, false, false, false)
         return arrayOf(array1, array2, array3, array4, array5, array6, array7, array8)
     }
 
@@ -179,6 +186,52 @@ class PiecesHelper {
             var king = findKing(1)
             return movesList[king.positionY][king.positionX]
         }
+    }
+
+    fun showPieceMoves(
+        pieceParams: PieceParameters,
+        pawnBeforeMoveParameters: PawnBeforeMoveParameters,
+        gameFlags: GameFlags
+    ): PieceAfterMoveParameters {
+        var returnParams = PieceAfterMoveParameters(
+            MovesHelper().createMovesList(),
+            isChoose = false,
+            longWhiteCastleAvailable = false,
+            longBlackCastleAvailable = false,
+            shortWhiteCastleAvailable = false,
+            shortBlackCastleAvailable = false
+        )
+        when (pieceParams.piece.type) {
+            0 -> {
+                if (pieceParams.piece.color == 0) {
+                    returnParams =
+                        PawnHelper().showWhitePawnMoves(pieceParams, pawnBeforeMoveParameters)
+                } else {
+                    returnParams =
+                        PawnHelper().showBlackPawnMoves(pieceParams, pawnBeforeMoveParameters)
+                }
+            }
+            1 -> {
+                returnParams.moves = BishopHelper().showBishopMoves(pieceParams)
+                returnParams.isChoose = false
+            }
+            2 -> {
+                returnParams.moves = KnightHelper().showKnightMoves(pieceParams)
+                returnParams.isChoose = false
+            }
+            3 -> {
+                returnParams.moves = RookHelper().showRookMoves(pieceParams)
+                returnParams.isChoose = false
+            }
+            4 -> {
+                returnParams.moves = QueenHelper().showQueenMoves(pieceParams)
+                returnParams.isChoose = false
+            }
+            5 -> {
+                returnParams = KingHelper().showKingMoves(pieceParams, gameFlags)
+            }
+        }
+        return returnParams
     }
 
     private fun showMoves(pieceFocused: Piece) {
@@ -726,10 +779,22 @@ class PiecesHelper {
         }
     }
 
-    private fun findPiece(i: Int, j: Int): Piece {
+    fun findPiece(positionY: Int, positionX: Int): Piece {
         for (piece in piecesList) {
             if (piece.isActive) {
-                if (piece.positionX == j && piece.positionY == i) {
+                if (piece.positionX == positionX && piece.positionY == positionY) {
+                    return piece
+                }
+            }
+        }
+        return Piece(0, 0, 0, 0, false)
+    }
+
+
+    fun findPiece(positionY: Int, positionX: Int, piecesList: ArrayList<Piece>): Piece {
+        for (piece in piecesList) {
+            if (piece.isActive) {
+                if (piece.positionX == positionX && piece.positionY == positionY) {
                     return piece
                 }
             }
@@ -876,58 +941,154 @@ class PiecesHelper {
     private fun checkKnightMoves(pieceFocused: Piece, color: Int, context: Context) {
         if (pieceFocused.positionX + 1 <= 7 && pieceFocused.positionY - 2 >= 0) {
             if (color == 0) {
-                canPieceMove(pieceFocused.positionY - 2, pieceFocused.positionX + 1, 0, pieceFocused, context)
+                canPieceMove(
+                    pieceFocused.positionY - 2,
+                    pieceFocused.positionX + 1,
+                    0,
+                    pieceFocused,
+                    context
+                )
             } else {
-                canPieceMove(pieceFocused.positionY - 2, pieceFocused.positionX + 1, 1, pieceFocused, context)
+                canPieceMove(
+                    pieceFocused.positionY - 2,
+                    pieceFocused.positionX + 1,
+                    1,
+                    pieceFocused,
+                    context
+                )
             }
         }
         if (pieceFocused.positionX + 2 <= 7 && pieceFocused.positionY - 1 >= 0) {
             if (color == 0) {
-                canPieceMove(pieceFocused.positionY - 1, pieceFocused.positionX + 2, 0, pieceFocused, context)
+                canPieceMove(
+                    pieceFocused.positionY - 1,
+                    pieceFocused.positionX + 2,
+                    0,
+                    pieceFocused,
+                    context
+                )
             } else {
-                canPieceMove(pieceFocused.positionY - 1, pieceFocused.positionX + 2, 1, pieceFocused, context)
+                canPieceMove(
+                    pieceFocused.positionY - 1,
+                    pieceFocused.positionX + 2,
+                    1,
+                    pieceFocused,
+                    context
+                )
             }
         }
         if (pieceFocused.positionX + 2 <= 7 && pieceFocused.positionY + 1 <= 7) {
             if (color == 0) {
-                canPieceMove(pieceFocused.positionY + 1, pieceFocused.positionX + 2, 0, pieceFocused, context)
+                canPieceMove(
+                    pieceFocused.positionY + 1,
+                    pieceFocused.positionX + 2,
+                    0,
+                    pieceFocused,
+                    context
+                )
             } else {
-                canPieceMove(pieceFocused.positionY + 1, pieceFocused.positionX + 2, 1, pieceFocused, context)
+                canPieceMove(
+                    pieceFocused.positionY + 1,
+                    pieceFocused.positionX + 2,
+                    1,
+                    pieceFocused,
+                    context
+                )
             }
         }
         if (pieceFocused.positionX + 1 <= 7 && pieceFocused.positionY + 2 <= 7) {
             if (color == 0) {
-                canPieceMove(pieceFocused.positionY + 2, pieceFocused.positionX + 1, 0, pieceFocused, context)
+                canPieceMove(
+                    pieceFocused.positionY + 2,
+                    pieceFocused.positionX + 1,
+                    0,
+                    pieceFocused,
+                    context
+                )
             } else {
-                canPieceMove(pieceFocused.positionY + 2, pieceFocused.positionX + 1, 1, pieceFocused, context)
+                canPieceMove(
+                    pieceFocused.positionY + 2,
+                    pieceFocused.positionX + 1,
+                    1,
+                    pieceFocused,
+                    context
+                )
             }
         }
         if (pieceFocused.positionX - 1 >= 0 && pieceFocused.positionY + 2 <= 7) {
             if (color == 0) {
-                canPieceMove(pieceFocused.positionY + 2, pieceFocused.positionX - 1, 0, pieceFocused, context)
+                canPieceMove(
+                    pieceFocused.positionY + 2,
+                    pieceFocused.positionX - 1,
+                    0,
+                    pieceFocused,
+                    context
+                )
             } else {
-                canPieceMove(pieceFocused.positionY + 2, pieceFocused.positionX - 1, 1, pieceFocused, context)
+                canPieceMove(
+                    pieceFocused.positionY + 2,
+                    pieceFocused.positionX - 1,
+                    1,
+                    pieceFocused,
+                    context
+                )
             }
         }
         if (pieceFocused.positionX - 2 >= 0 && pieceFocused.positionY + 1 <= 7) {
             if (color == 0) {
-                canPieceMove(pieceFocused.positionY + 1, pieceFocused.positionX - 2, 0, pieceFocused, context)
+                canPieceMove(
+                    pieceFocused.positionY + 1,
+                    pieceFocused.positionX - 2,
+                    0,
+                    pieceFocused,
+                    context
+                )
             } else {
-                canPieceMove(pieceFocused.positionY + 1, pieceFocused.positionX - 2, 1, pieceFocused, context)
+                canPieceMove(
+                    pieceFocused.positionY + 1,
+                    pieceFocused.positionX - 2,
+                    1,
+                    pieceFocused,
+                    context
+                )
             }
         }
         if (pieceFocused.positionX - 2 >= 0 && pieceFocused.positionY - 1 >= 0) {
             if (color == 0) {
-                canPieceMove(pieceFocused.positionY - 1, pieceFocused.positionX - 2, 0, pieceFocused, context)
+                canPieceMove(
+                    pieceFocused.positionY - 1,
+                    pieceFocused.positionX - 2,
+                    0,
+                    pieceFocused,
+                    context
+                )
             } else {
-                canPieceMove(pieceFocused.positionY - 1, pieceFocused.positionX - 2, 1, pieceFocused, context)
+                canPieceMove(
+                    pieceFocused.positionY - 1,
+                    pieceFocused.positionX - 2,
+                    1,
+                    pieceFocused,
+                    context
+                )
             }
         }
         if (pieceFocused.positionX - 1 >= 0 && pieceFocused.positionY - 2 >= 0) {
             if (color == 0) {
-                canPieceMove(pieceFocused.positionY - 2, pieceFocused.positionX - 1, 0, pieceFocused, context)
+                canPieceMove(
+                    pieceFocused.positionY - 2,
+                    pieceFocused.positionX - 1,
+                    0,
+                    pieceFocused,
+                    context
+                )
             } else {
-                canPieceMove(pieceFocused.positionY - 2, pieceFocused.positionX - 1, 1, pieceFocused, context)
+                canPieceMove(
+                    pieceFocused.positionY - 2,
+                    pieceFocused.positionX - 1,
+                    1,
+                    pieceFocused,
+                    context
+                )
             }
         }
     }
@@ -936,11 +1097,25 @@ class PiecesHelper {
         for (i in 1..8) {
             if ((pieceFocused.positionX + i) <= 7) {
                 if (color == 0) {
-                    if (!canPieceMove(pieceFocused.positionY, pieceFocused.positionX + i, 0, pieceFocused, context)) {
+                    if (!canPieceMove(
+                            pieceFocused.positionY,
+                            pieceFocused.positionX + i,
+                            0,
+                            pieceFocused,
+                            context
+                        )
+                    ) {
                         break
                     }
                 } else {
-                    if (!canPieceMove(pieceFocused.positionY, pieceFocused.positionX + i, 1, pieceFocused, context)) {
+                    if (!canPieceMove(
+                            pieceFocused.positionY,
+                            pieceFocused.positionX + i,
+                            1,
+                            pieceFocused,
+                            context
+                        )
+                    ) {
                         break
                     }
                 }
@@ -952,11 +1127,25 @@ class PiecesHelper {
         for (i in 1..8) {
             if ((pieceFocused.positionX - i) >= 0) {
                 if (color == 0) {
-                    if (!canPieceMove(pieceFocused.positionY, pieceFocused.positionX - i, 0, pieceFocused, context)) {
+                    if (!canPieceMove(
+                            pieceFocused.positionY,
+                            pieceFocused.positionX - i,
+                            0,
+                            pieceFocused,
+                            context
+                        )
+                    ) {
                         break
                     }
                 } else {
-                    if (!canPieceMove(pieceFocused.positionY, pieceFocused.positionX - i, 1, pieceFocused, context)) {
+                    if (!canPieceMove(
+                            pieceFocused.positionY,
+                            pieceFocused.positionX - i,
+                            1,
+                            pieceFocused,
+                            context
+                        )
+                    ) {
                         break
                     }
                 }
@@ -968,11 +1157,25 @@ class PiecesHelper {
         for (i in 1..8) {
             if ((pieceFocused.positionY - i) >= 0) {
                 if (color == 0) {
-                    if (!canPieceMove(pieceFocused.positionY - i, pieceFocused.positionX, 0, pieceFocused, context)) {
+                    if (!canPieceMove(
+                            pieceFocused.positionY - i,
+                            pieceFocused.positionX,
+                            0,
+                            pieceFocused,
+                            context
+                        )
+                    ) {
                         break
                     }
                 } else {
-                    if (!canPieceMove(pieceFocused.positionY - i, pieceFocused.positionX, 1, pieceFocused, context)) {
+                    if (!canPieceMove(
+                            pieceFocused.positionY - i,
+                            pieceFocused.positionX,
+                            1,
+                            pieceFocused,
+                            context
+                        )
+                    ) {
                         break
                     }
                 }
@@ -984,11 +1187,25 @@ class PiecesHelper {
         for (i in 1..8) {
             if ((pieceFocused.positionY + i) <= 7) {
                 if (color == 0) {
-                    if (!canPieceMove(pieceFocused.positionY + i, pieceFocused.positionX, 0, pieceFocused, context)) {
+                    if (!canPieceMove(
+                            pieceFocused.positionY + i,
+                            pieceFocused.positionX,
+                            0,
+                            pieceFocused,
+                            context
+                        )
+                    ) {
                         break
                     }
                 } else {
-                    if (!canPieceMove(pieceFocused.positionY + i, pieceFocused.positionX, 1, pieceFocused, context)) {
+                    if (!canPieceMove(
+                            pieceFocused.positionY + i,
+                            pieceFocused.positionX,
+                            1,
+                            pieceFocused,
+                            context
+                        )
+                    ) {
                         break
                     }
                 }
@@ -1520,7 +1737,7 @@ class PiecesHelper {
                 )
                 val boardCopy = board.clone()
                 resetBoard(piecesListCopy, boardCopy, context)
-                if (!PiecesHelper().isCheck(piecesListCopy,  colorOpposite, boardCopy)) {
+                if (!PiecesHelper().isCheck(piecesListCopy, colorOpposite, boardCopy)) {
                     checkMate = false
                 }
                 resetBoard(piecesList, board, context)
@@ -1528,6 +1745,89 @@ class PiecesHelper {
             }
             return false
         }
+    }
+
+    fun canPieceMove(
+        positionY: Int,
+        positionX: Int,
+        pieceParameters: PieceParameters
+    ): Boolean {
+        val colorOpposite = if (pieceParameters.piece.color == 0) {
+            1
+        } else {
+            0
+        }
+        if (!BoardHelper().isPiece(pieceParameters.board[positionY][positionX])) {
+            val piece = pieceParameters.piece.copy()
+            piece.positionY = positionY
+            piece.positionX = positionX
+            val piecesListCopy = pieceParameters.piecesList.toMutableList() as ArrayList<Piece>
+            piecesListCopy.set(
+                piecesListCopy.indexOf(pieceParameters.piece),
+                Piece(
+                    pieceParameters.piece.type,
+                    pieceParameters.piece.color,
+                    piece.positionX,
+                    piece.positionY,
+                    pieceParameters.piece.isActive
+                )
+            )
+            val boardCopy = pieceParameters.board.clone()
+            BoardHelper().resetBoard(piecesListCopy, boardCopy, pieceParameters.context)
+            if (PiecesHelper().isCheck(piecesListCopy, piece.color, boardCopy)) {
+                return false
+            }
+            BoardHelper().resetBoard(
+                pieceParameters.piecesList,
+                pieceParameters.board,
+                pieceParameters.context
+            )
+            return true
+        } else {
+            if (findPiece(
+                    (positionY),
+                    (positionX),
+                    pieceParameters.piecesList
+                ).color == colorOpposite
+            ) {
+                val piece = pieceParameters.piece.copy()
+                piece.positionY = positionY
+                piece.positionX = positionX
+                val piecesListCopy = pieceParameters.piecesList.toMutableList() as ArrayList<Piece>
+                piecesListCopy.set(
+                    piecesListCopy.indexOf(pieceParameters.piece),
+                    Piece(
+                        pieceParameters.piece.type,
+                        pieceParameters.piece.color,
+                        piece.positionX,
+                        piece.positionY,
+                        pieceParameters.piece.isActive
+                    )
+                )
+                piecesListCopy.set(
+                    piecesListCopy.indexOf(
+                        findPiece(
+                            positionY,
+                            positionX,
+                            pieceParameters.piecesList
+                        )
+                    ),
+                    Piece(0, 0, 0, 0, false)
+                )
+                val boardCopy = pieceParameters.board.clone()
+                BoardHelper().resetBoard(piecesListCopy, boardCopy, pieceParameters.context)
+                if (PiecesHelper().isCheck(piecesListCopy, piece.color, boardCopy)) {
+                    return false
+                }
+                BoardHelper().resetBoard(
+                    pieceParameters.piecesList,
+                    pieceParameters.board,
+                    pieceParameters.context
+                )
+                return true
+            }
+        }
+        return false
     }
 
     fun isAnyMovePossible(
@@ -1610,6 +1910,48 @@ class PiecesHelper {
         }
     }
 
+    private fun canPieceMove(pieceFocused: Piece, context: Context): Boolean {
+        hasMoves = false
+        when (pieceFocused.type) {
+            0 -> {
+                if (pieceFocused.color == 0) {
+                    checkIfWhitePawnHasMoves(pieceFocused, context)
+                } else {
+                    checkIfBlackPawnHasMoves(pieceFocused, context)
+                }
+            }
+            1 -> {
+                if (pieceFocused.color == 0) {
+                    checkIfBishopHasMoves(pieceFocused, 1, context)
+                } else {
+                    checkIfBishopHasMoves(pieceFocused, 0, context)
+                }
+            }
+            2 -> {
+                if (pieceFocused.color == 0) {
+                    checkIfKnightHasMoves(pieceFocused, 1, context)
+                } else {
+                    checkIfKnightHasMoves(pieceFocused, 0, context)
+                }
+            }
+            3 -> {
+                if (pieceFocused.color == 0) {
+                    checkIfRookHasMoves(pieceFocused, 1, context)
+                } else {
+                    checkIfRookHasMoves(pieceFocused, 0, context)
+                }
+            }
+            4 -> {
+                if (pieceFocused.color == 0) {
+                    checkIfQueenHasMoves(pieceFocused, 1, context)
+                } else {
+                    checkIfQueenHasMoves(pieceFocused, 0, context)
+                }
+            }
+        }
+        return hasMoves
+    }
+
     private fun checkIfQueenHasMoves(pieceFocused: Piece, color: Int, context: Context) {
         checkIfBishopHasMoves(pieceFocused, color, context)
         checkIfRookHasMoves(pieceFocused, color, context)
@@ -1618,58 +1960,154 @@ class PiecesHelper {
     private fun checkIfKnightHasMoves(pieceFocused: Piece, color: Int, context: Context) {
         if (pieceFocused.positionX + 1 <= 7 && pieceFocused.positionY - 2 >= 0) {
             if (color == 0) {
-                hasPieceMove(pieceFocused.positionY - 2, pieceFocused.positionX + 1, 0, pieceFocused, context)
+                hasPieceMove(
+                    pieceFocused.positionY - 2,
+                    pieceFocused.positionX + 1,
+                    0,
+                    pieceFocused,
+                    context
+                )
             } else {
-                hasPieceMove(pieceFocused.positionY - 2, pieceFocused.positionX + 1, 1, pieceFocused, context)
+                hasPieceMove(
+                    pieceFocused.positionY - 2,
+                    pieceFocused.positionX + 1,
+                    1,
+                    pieceFocused,
+                    context
+                )
             }
         }
         if (pieceFocused.positionX + 2 <= 7 && pieceFocused.positionY - 1 >= 0) {
             if (color == 0) {
-                hasPieceMove(pieceFocused.positionY - 1, pieceFocused.positionX + 2, 0, pieceFocused, context)
+                hasPieceMove(
+                    pieceFocused.positionY - 1,
+                    pieceFocused.positionX + 2,
+                    0,
+                    pieceFocused,
+                    context
+                )
             } else {
-                hasPieceMove(pieceFocused.positionY - 1, pieceFocused.positionX + 2, 1, pieceFocused, context)
+                hasPieceMove(
+                    pieceFocused.positionY - 1,
+                    pieceFocused.positionX + 2,
+                    1,
+                    pieceFocused,
+                    context
+                )
             }
         }
         if (pieceFocused.positionX + 2 <= 7 && pieceFocused.positionY + 1 <= 7) {
             if (color == 0) {
-                hasPieceMove(pieceFocused.positionY + 1, pieceFocused.positionX + 2, 0, pieceFocused, context)
+                hasPieceMove(
+                    pieceFocused.positionY + 1,
+                    pieceFocused.positionX + 2,
+                    0,
+                    pieceFocused,
+                    context
+                )
             } else {
-                hasPieceMove(pieceFocused.positionY + 1, pieceFocused.positionX + 2, 1, pieceFocused, context)
+                hasPieceMove(
+                    pieceFocused.positionY + 1,
+                    pieceFocused.positionX + 2,
+                    1,
+                    pieceFocused,
+                    context
+                )
             }
         }
         if (pieceFocused.positionX + 1 <= 7 && pieceFocused.positionY + 2 <= 7) {
             if (color == 0) {
-                hasPieceMove(pieceFocused.positionY + 2, pieceFocused.positionX + 1, 0, pieceFocused, context)
+                hasPieceMove(
+                    pieceFocused.positionY + 2,
+                    pieceFocused.positionX + 1,
+                    0,
+                    pieceFocused,
+                    context
+                )
             } else {
-                hasPieceMove(pieceFocused.positionY + 2, pieceFocused.positionX + 1, 1, pieceFocused, context)
+                hasPieceMove(
+                    pieceFocused.positionY + 2,
+                    pieceFocused.positionX + 1,
+                    1,
+                    pieceFocused,
+                    context
+                )
             }
         }
         if (pieceFocused.positionX - 1 >= 0 && pieceFocused.positionY + 2 <= 7) {
             if (color == 0) {
-                hasPieceMove(pieceFocused.positionY + 2, pieceFocused.positionX - 1, 0, pieceFocused, context)
+                hasPieceMove(
+                    pieceFocused.positionY + 2,
+                    pieceFocused.positionX - 1,
+                    0,
+                    pieceFocused,
+                    context
+                )
             } else {
-                hasPieceMove(pieceFocused.positionY + 2, pieceFocused.positionX - 1, 1, pieceFocused, context)
+                hasPieceMove(
+                    pieceFocused.positionY + 2,
+                    pieceFocused.positionX - 1,
+                    1,
+                    pieceFocused,
+                    context
+                )
             }
         }
         if (pieceFocused.positionX - 2 >= 0 && pieceFocused.positionY + 1 <= 7) {
             if (color == 0) {
-                hasPieceMove(pieceFocused.positionY + 1, pieceFocused.positionX - 2, 0, pieceFocused, context)
+                hasPieceMove(
+                    pieceFocused.positionY + 1,
+                    pieceFocused.positionX - 2,
+                    0,
+                    pieceFocused,
+                    context
+                )
             } else {
-                hasPieceMove(pieceFocused.positionY + 1, pieceFocused.positionX - 2, 1, pieceFocused, context)
+                hasPieceMove(
+                    pieceFocused.positionY + 1,
+                    pieceFocused.positionX - 2,
+                    1,
+                    pieceFocused,
+                    context
+                )
             }
         }
         if (pieceFocused.positionX - 2 >= 0 && pieceFocused.positionY - 1 >= 0) {
             if (color == 0) {
-                hasPieceMove(pieceFocused.positionY - 1, pieceFocused.positionX - 2, 0, pieceFocused, context)
+                hasPieceMove(
+                    pieceFocused.positionY - 1,
+                    pieceFocused.positionX - 2,
+                    0,
+                    pieceFocused,
+                    context
+                )
             } else {
-                hasPieceMove(pieceFocused.positionY - 1, pieceFocused.positionX - 2, 1, pieceFocused, context)
+                hasPieceMove(
+                    pieceFocused.positionY - 1,
+                    pieceFocused.positionX - 2,
+                    1,
+                    pieceFocused,
+                    context
+                )
             }
         }
         if (pieceFocused.positionX - 1 >= 0 && pieceFocused.positionY - 2 >= 0) {
             if (color == 0) {
-                hasPieceMove(pieceFocused.positionY - 2, pieceFocused.positionX - 1, 0, pieceFocused, context)
+                hasPieceMove(
+                    pieceFocused.positionY - 2,
+                    pieceFocused.positionX - 1,
+                    0,
+                    pieceFocused,
+                    context
+                )
             } else {
-                hasPieceMove(pieceFocused.positionY - 2, pieceFocused.positionX - 1, 1, pieceFocused, context)
+                hasPieceMove(
+                    pieceFocused.positionY - 2,
+                    pieceFocused.positionX - 1,
+                    1,
+                    pieceFocused,
+                    context
+                )
             }
         }
     }
@@ -1678,11 +2116,25 @@ class PiecesHelper {
         for (i in 1..8) {
             if ((pieceFocused.positionX + i) <= 7) {
                 if (color == 0) {
-                    if (!hasPieceMove(pieceFocused.positionY, pieceFocused.positionX + i, 0, pieceFocused, context)) {
+                    if (!hasPieceMove(
+                            pieceFocused.positionY,
+                            pieceFocused.positionX + i,
+                            0,
+                            pieceFocused,
+                            context
+                        )
+                    ) {
                         break
                     }
                 } else {
-                    if (!hasPieceMove(pieceFocused.positionY, pieceFocused.positionX + i, 1, pieceFocused, context)) {
+                    if (!hasPieceMove(
+                            pieceFocused.positionY,
+                            pieceFocused.positionX + i,
+                            1,
+                            pieceFocused,
+                            context
+                        )
+                    ) {
                         break
                     }
                 }
@@ -1694,11 +2146,25 @@ class PiecesHelper {
         for (i in 1..8) {
             if ((pieceFocused.positionX - i) >= 0) {
                 if (color == 0) {
-                    if (!hasPieceMove(pieceFocused.positionY, pieceFocused.positionX - i, 0, pieceFocused, context)) {
+                    if (!hasPieceMove(
+                            pieceFocused.positionY,
+                            pieceFocused.positionX - i,
+                            0,
+                            pieceFocused,
+                            context
+                        )
+                    ) {
                         break
                     }
                 } else {
-                    if (!hasPieceMove(pieceFocused.positionY, pieceFocused.positionX - i, 1, pieceFocused, context)) {
+                    if (!hasPieceMove(
+                            pieceFocused.positionY,
+                            pieceFocused.positionX - i,
+                            1,
+                            pieceFocused,
+                            context
+                        )
+                    ) {
                         break
                     }
                 }
@@ -1710,11 +2176,25 @@ class PiecesHelper {
         for (i in 1..8) {
             if ((pieceFocused.positionY - i) >= 0) {
                 if (color == 0) {
-                    if (!hasPieceMove(pieceFocused.positionY - i, pieceFocused.positionX, 0, pieceFocused, context)) {
+                    if (!hasPieceMove(
+                            pieceFocused.positionY - i,
+                            pieceFocused.positionX,
+                            0,
+                            pieceFocused,
+                            context
+                        )
+                    ) {
                         break
                     }
                 } else {
-                    if (!hasPieceMove(pieceFocused.positionY - i, pieceFocused.positionX, 1, pieceFocused, context)) {
+                    if (!hasPieceMove(
+                            pieceFocused.positionY - i,
+                            pieceFocused.positionX,
+                            1,
+                            pieceFocused,
+                            context
+                        )
+                    ) {
                         break
                     }
                 }
@@ -1726,11 +2206,25 @@ class PiecesHelper {
         for (i in 1..8) {
             if ((pieceFocused.positionY + i) <= 7) {
                 if (color == 0) {
-                    if (!hasPieceMove(pieceFocused.positionY + i, pieceFocused.positionX, 0, pieceFocused, context)) {
+                    if (!hasPieceMove(
+                            pieceFocused.positionY + i,
+                            pieceFocused.positionX,
+                            0,
+                            pieceFocused,
+                            context
+                        )
+                    ) {
                         break
                     }
                 } else {
-                    if (!hasPieceMove(pieceFocused.positionY + i, pieceFocused.positionX, 1, pieceFocused, context)) {
+                    if (!hasPieceMove(
+                            pieceFocused.positionY + i,
+                            pieceFocused.positionX,
+                            1,
+                            pieceFocused,
+                            context
+                        )
+                    ) {
                         break
                     }
                 }
@@ -2081,7 +2575,7 @@ class PiecesHelper {
                 )
                 val boardCopy = board.clone()
                 resetBoard(piecesListCopy, boardCopy, context)
-                if (!PiecesHelper().isCheck(piecesListCopy,  colorOpposite, boardCopy)) {
+                if (!PiecesHelper().isCheck(piecesListCopy, colorOpposite, boardCopy)) {
                     hasMoves = true
                 }
                 resetBoard(piecesList, board, context)
@@ -2090,4 +2584,63 @@ class PiecesHelper {
             return false
         }
     }
+
+    fun canPieceMakeMove(
+        pieces: ArrayList<Piece>,
+        piece: Piece,
+        boardTaken: Array<Array<ImageView>>,
+        context: Context
+    ): Boolean {
+        board = boardTaken.copyOf()
+        movesList = createMovesList()
+        piecesList = pieces
+        return canPieceMove(piece, context)
+    }
+
+    fun getPossibleMoves(
+        pieces: ArrayList<Piece>,
+        piece: Piece,
+        boardTaken: Array<Array<ImageView>>
+    ): ArrayList<Move> {
+        board = boardTaken.copyOf()
+        movesList = createMovesList()
+        piecesList = pieces
+        showMoves(piece)
+        return createMoves(movesList)
+    }
+
+    private fun createMoves(movesList: Array<Array<Boolean>>): ArrayList<Move> {
+        val moves = ArrayList<Move>()
+        for (i in 0..7) {
+            for (j in 0..7) {
+                if (movesList[i][j]) {
+                    moves.add(Move(i, j))
+                }
+            }
+        }
+        return moves
+    }
+
+    fun isOppositeColorPiece(
+        pieceParams: PieceParameters,
+        positionY: Int,
+        positionX: Int
+    ): Boolean {
+        val colorOpposite = if (pieceParams.piece.color == 0) {
+            1
+        } else {
+            0
+        }
+        return findPiece(
+            (positionY),
+            (positionX),
+            pieceParams.piecesList
+        ).color == colorOpposite
+    }
+
+    fun hasKingMoves(pieceParams: PieceParameters, gameFlags: GameFlags): Boolean {
+        return KingHelper().checkIfKingHasMoves(pieceParams, gameFlags)
+    }
+
+
 }

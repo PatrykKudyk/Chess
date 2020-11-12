@@ -1,4 +1,4 @@
-package com.partos.chess.logic
+package com.partos.chess.logic.helpers
 
 import android.content.Context
 import android.view.View
@@ -268,6 +268,46 @@ class BoardHelper {
                 } else {
                     board[piece.positionY][piece.positionX].setImageDrawable(context.getDrawable(R.drawable.king_black))
                 }
+            }
+        }
+    }
+
+    fun isPiece(image: ImageView): Boolean {
+        if (image.drawable != null) {
+            return true
+        }
+        return false
+    }
+
+    fun resetBoard(
+        piecesList: ArrayList<Piece>,
+        boardTaken: Array<Array<ImageView>>,
+        context: Context
+    ) {
+        for (array in boardTaken) {
+            for (image in array) {
+                image.setImageDrawable(null)
+            }
+        }
+        for (piece in piecesList) {
+            if (piece.isActive) {
+                drawPiece(piece, boardTaken, context)
+            }
+        }
+    }
+
+    fun getSquareColor(positionY: Int, positionX: Int): Int {
+        if (positionY % 2 == 0) {
+            return if (positionX % 2 == 0) {
+                0
+            } else {
+                1
+            }
+        } else {
+            return if (positionX % 2 == 0) {
+                1
+            } else {
+                0
             }
         }
     }

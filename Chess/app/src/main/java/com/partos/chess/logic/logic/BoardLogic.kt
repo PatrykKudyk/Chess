@@ -3,8 +3,8 @@ package com.partos.chess.logic.logic
 import android.view.View
 import android.widget.ImageView
 import androidx.fragment.app.FragmentManager
-import com.partos.chess.logic.BoardHelper
-import com.partos.chess.logic.PiecesHelper
+import com.partos.chess.logic.helpers.BoardHelper
+import com.partos.chess.logic.helpers.piecesHelpers.PiecesHelper
 import com.partos.chess.logic.listeners.BoardListeners
 import com.partos.chess.models.Piece
 
