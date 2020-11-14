@@ -114,7 +114,7 @@ class PiecesHelper {
                     baseParametersGroup.pieceParameters.piece = piece
                     movesList = MovesHelper().mergeMovesLists(
                         movesList,
-                        showPieceMoves(baseParametersGroup).moves
+                        checkPieceMoves(baseParametersGroup).moves
                     )
                 }
             }
@@ -126,13 +126,50 @@ class PiecesHelper {
                     baseParametersGroup.pieceParameters.piece = piece
                     movesList = MovesHelper().mergeMovesLists(
                         movesList,
-                        showPieceMoves(baseParametersGroup).moves
+                        checkPieceMoves(baseParametersGroup).moves
                     )
                 }
             }
             val king = KingHelper().findKing(1, baseParametersGroup.pieceParameters.piecesList)
             return movesList[king.positionY][king.positionX]
         }
+    }
+
+    private fun checkPieceMoves(baseParametersGroup: BaseParametersGroup): PieceAfterMoveParameters {
+        var returnParams = PieceAfterMoveParameters(
+            MovesHelper().createMovesList(),
+            isChoose = false,
+            longWhiteCastleAvailable = false,
+            longBlackCastleAvailable = false,
+            shortWhiteCastleAvailable = false,
+            shortBlackCastleAvailable = false
+        )
+        when (baseParametersGroup.pieceParameters.piece.type) {
+            0 -> {
+                if (baseParametersGroup.pieceParameters.piece.color == 0) {
+                    returnParams = PawnHelper().checkWhitePawnMoves(baseParametersGroup)
+                } else {
+                    returnParams = PawnHelper().checkBlackPawnMoves(baseParametersGroup)
+                }
+            }
+            1 -> {
+                returnParams.moves = BishopHelper().checkBishopMoves(baseParametersGroup)
+                returnParams.isChoose = false
+            }
+            2 -> {
+                returnParams.moves = KnightHelper().checkKnightMoves(baseParametersGroup)
+                returnParams.isChoose = false
+            }
+            3 -> {
+                returnParams.moves = RookHelper().checkRookMoves(baseParametersGroup)
+                returnParams.isChoose = false
+            }
+            4 -> {
+                returnParams.moves = QueenHelper().checkQueenMoves(baseParametersGroup)
+                returnParams.isChoose = false
+            }
+        }
+        return returnParams
     }
 
     fun showPieceMoves(baseParametersGroup: BaseParametersGroup): PieceAfterMoveParameters {
@@ -296,7 +333,7 @@ class PiecesHelper {
                         findPiece(
                             positionY,
                             positionX,
-                            baseParametersGroup.pieceParameters.piecesList
+                            piecesListCopy
                         )
                     ),
                     Piece(0, 0, 0, 0, false)
@@ -342,6 +379,7 @@ class PiecesHelper {
         for (piece in baseParametersGroup.pieceParameters.piecesList) {
             if (piece.color == color && piece.isActive && piece.type != 5) {
                 var movesList = MovesHelper().createMovesList()
+                baseParametersGroup.pieceParameters.piece = piece
                 movesList = MovesHelper().mergeMovesLists(
                     movesList,
                     showPieceMoves(baseParametersGroup).moves

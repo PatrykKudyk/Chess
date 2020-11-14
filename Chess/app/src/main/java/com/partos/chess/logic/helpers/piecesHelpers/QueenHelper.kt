@@ -17,4 +17,16 @@ class QueenHelper {
         )
         return moves
     }
+
+    fun checkQueenMoves(baseParametersGroup: BaseParametersGroup): Array<Array<Boolean>> {
+        var moves = MovesHelper().mergeMovesLists(
+            MovesHelper().createMovesList(),
+            BishopHelper().checkBishopMoves(baseParametersGroup)
+        )
+        moves = MovesHelper().mergeMovesLists(
+            moves,
+            RookHelper().checkRookMoves(baseParametersGroup)
+        )
+        return moves
+    }
 }

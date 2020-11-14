@@ -147,12 +147,7 @@ class GameHelper {
                         1,
                         gameParameters.baseParametersGroup.pieceParameters.piecesList
                     )
-                if (!PiecesHelper().hasKingMoves(
-                        gameParameters.baseParametersGroup
-                    )
-                ) {
-                    return true
-                }
+                return PiecesHelper().hasKingMoves(gameParameters.baseParametersGroup)
             }
         }
         return false
@@ -165,12 +160,7 @@ class GameHelper {
             ) {
                 gameParameters.baseParametersGroup.pieceParameters.piece =
                     KingHelper().findKing(0, gameParameters.baseParametersGroup.pieceParameters.piecesList)
-                if (!PiecesHelper().hasKingMoves(
-                        gameParameters.baseParametersGroup
-                    )
-                ) {
-                    return true
-                }
+                return PiecesHelper().hasKingMoves(gameParameters.baseParametersGroup)
             }
         }
         return false

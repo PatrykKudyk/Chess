@@ -3,7 +3,6 @@ package com.partos.chess.logic.helpers.piecesHelpers
 import com.partos.chess.logic.helpers.BoardHelper
 import com.partos.chess.logic.helpers.MovesHelper
 import com.partos.chess.models.parameters.BaseParametersGroup
-import com.partos.chess.models.parameters.PieceParameters
 
 class RookHelper {
 
@@ -18,7 +17,21 @@ class RookHelper {
         return moves
     }
 
-    private fun showLeftMoves(baseParametersGroup: BaseParametersGroup, moves: Array<Array<Boolean>>) {
+    fun checkRookMoves(baseParametersGroup: BaseParametersGroup): Array<Array<Boolean>> {
+        val moves = MovesHelper().createMovesList()
+
+        checkTopMoves(baseParametersGroup, moves)
+        checkRightMoves(baseParametersGroup, moves)
+        checkBottomMoves(baseParametersGroup, moves)
+        checkLeftMoves(baseParametersGroup, moves)
+
+        return moves
+    }
+
+    private fun showLeftMoves(
+        baseParametersGroup: BaseParametersGroup,
+        moves: Array<Array<Boolean>>
+    ) {
         for (i in 1..8) {
             if ((baseParametersGroup.pieceParameters.piece.positionX - i) >= 0) {
                 if (PiecesHelper().canPieceMove(
@@ -27,7 +40,8 @@ class RookHelper {
                         baseParametersGroup
                     )
                 ) {
-                    moves[baseParametersGroup.pieceParameters.piece.positionY][baseParametersGroup.pieceParameters.piece.positionX - i] = true
+                    moves[baseParametersGroup.pieceParameters.piece.positionY][baseParametersGroup.pieceParameters.piece.positionX - i] =
+                        true
                     if (isTake(
                             baseParametersGroup,
                             baseParametersGroup.pieceParameters.piece.positionY,
@@ -45,7 +59,10 @@ class RookHelper {
         }
     }
 
-    private fun showTopMoves(baseParametersGroup: BaseParametersGroup, moves: Array<Array<Boolean>>) {
+    private fun showTopMoves(
+        baseParametersGroup: BaseParametersGroup,
+        moves: Array<Array<Boolean>>
+    ) {
         for (i in 1..8) {
             if ((baseParametersGroup.pieceParameters.piece.positionY - i) >= 0) {
                 if (PiecesHelper().canPieceMove(
@@ -54,7 +71,8 @@ class RookHelper {
                         baseParametersGroup
                     )
                 ) {
-                    moves[baseParametersGroup.pieceParameters.piece.positionY - i][baseParametersGroup.pieceParameters.piece.positionX] = true
+                    moves[baseParametersGroup.pieceParameters.piece.positionY - i][baseParametersGroup.pieceParameters.piece.positionX] =
+                        true
                     if (isTake(
                             baseParametersGroup,
                             baseParametersGroup.pieceParameters.piece.positionY - i,
@@ -72,7 +90,10 @@ class RookHelper {
         }
     }
 
-    private fun showRightMoves(baseParametersGroup: BaseParametersGroup, moves: Array<Array<Boolean>>) {
+    private fun showRightMoves(
+        baseParametersGroup: BaseParametersGroup,
+        moves: Array<Array<Boolean>>
+    ) {
         for (i in 1..8) {
             if ((baseParametersGroup.pieceParameters.piece.positionX + i) <= 7) {
                 if (PiecesHelper().canPieceMove(
@@ -81,7 +102,8 @@ class RookHelper {
                         baseParametersGroup
                     )
                 ) {
-                    moves[baseParametersGroup.pieceParameters.piece.positionY][baseParametersGroup.pieceParameters.piece.positionX + i] = true
+                    moves[baseParametersGroup.pieceParameters.piece.positionY][baseParametersGroup.pieceParameters.piece.positionX + i] =
+                        true
                     if (isTake(
                             baseParametersGroup,
                             baseParametersGroup.pieceParameters.piece.positionY,
@@ -99,7 +121,10 @@ class RookHelper {
         }
     }
 
-    private fun showBottomMoves(baseParametersGroup: BaseParametersGroup, moves: Array<Array<Boolean>>) {
+    private fun showBottomMoves(
+        baseParametersGroup: BaseParametersGroup,
+        moves: Array<Array<Boolean>>
+    ) {
         for (i in 1..8) {
             if ((baseParametersGroup.pieceParameters.piece.positionY + i) <= 7) {
                 if (PiecesHelper().canPieceMove(
@@ -108,7 +133,8 @@ class RookHelper {
                         baseParametersGroup
                     )
                 ) {
-                    moves[baseParametersGroup.pieceParameters.piece.positionY + i][baseParametersGroup.pieceParameters.piece.positionX] = true
+                    moves[baseParametersGroup.pieceParameters.piece.positionY + i][baseParametersGroup.pieceParameters.piece.positionX] =
+                        true
                     if (isTake(
                             baseParametersGroup,
                             baseParametersGroup.pieceParameters.piece.positionY + i,
@@ -126,7 +152,108 @@ class RookHelper {
         }
     }
 
-    private fun isTake(baseParametersGroup: BaseParametersGroup, positionY: Int, positionX: Int): Boolean {
+    private fun checkLeftMoves(
+        baseParametersGroup: BaseParametersGroup,
+        moves: Array<Array<Boolean>>
+    ) {
+        for (i in 1..8) {
+            if ((baseParametersGroup.pieceParameters.piece.positionX - i) >= 0) {
+                moves[baseParametersGroup.pieceParameters.piece.positionY][baseParametersGroup.pieceParameters.piece.positionX - i] =
+                    true
+                if (isTake(
+                        baseParametersGroup,
+                        baseParametersGroup.pieceParameters.piece.positionY,
+                        baseParametersGroup.pieceParameters.piece.positionX - i
+                    )
+                ) {
+                    return
+                } else {
+                    return
+                }
+            } else {
+                return
+            }
+        }
+    }
+
+    private fun checkTopMoves(
+        baseParametersGroup: BaseParametersGroup,
+        moves: Array<Array<Boolean>>
+    ) {
+        for (i in 1..8) {
+            if ((baseParametersGroup.pieceParameters.piece.positionY - i) >= 0) {
+                moves[baseParametersGroup.pieceParameters.piece.positionY - i][baseParametersGroup.pieceParameters.piece.positionX] =
+                    true
+                if (isTake(
+                        baseParametersGroup,
+                        baseParametersGroup.pieceParameters.piece.positionY - i,
+                        baseParametersGroup.pieceParameters.piece.positionX
+                    )
+                ) {
+                    return
+                } else {
+                    return
+                }
+            } else {
+                return
+            }
+        }
+    }
+
+    private fun checkRightMoves(
+        baseParametersGroup: BaseParametersGroup,
+        moves: Array<Array<Boolean>>
+    ) {
+        for (i in 1..8) {
+            if ((baseParametersGroup.pieceParameters.piece.positionX + i) <= 7) {
+                moves[baseParametersGroup.pieceParameters.piece.positionY][baseParametersGroup.pieceParameters.piece.positionX + i] =
+                    true
+                if (isTake(
+                        baseParametersGroup,
+                        baseParametersGroup.pieceParameters.piece.positionY,
+                        baseParametersGroup.pieceParameters.piece.positionX + i
+                    )
+                ) {
+                    return
+                } else {
+                    return
+                }
+            } else {
+                return
+            }
+        }
+    }
+
+    private fun checkBottomMoves(
+        baseParametersGroup: BaseParametersGroup,
+        moves: Array<Array<Boolean>>
+    ) {
+        for (i in 1..8) {
+            if ((baseParametersGroup.pieceParameters.piece.positionY + i) <= 7) {
+                moves[baseParametersGroup.pieceParameters.piece.positionY + i][baseParametersGroup.pieceParameters.piece.positionX] =
+                    true
+                if (isTake(
+                        baseParametersGroup,
+                        baseParametersGroup.pieceParameters.piece.positionY + i,
+                        baseParametersGroup.pieceParameters.piece.positionX
+                    )
+                ) {
+                    return
+                } else {
+                    return
+                }
+            } else {
+                return
+            }
+        }
+    }
+
+
+    private fun isTake(
+        baseParametersGroup: BaseParametersGroup,
+        positionY: Int,
+        positionX: Int
+    ): Boolean {
         if (BoardHelper().isPiece(baseParametersGroup.pieceParameters.board[positionY][positionX])) {
             if (PiecesHelper().isOppositeColorPiece(
                     baseParametersGroup.pieceParameters,
