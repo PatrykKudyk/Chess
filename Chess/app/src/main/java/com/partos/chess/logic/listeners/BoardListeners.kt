@@ -5,15 +5,15 @@ import android.os.Handler
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import com.partos.chess.R
 import com.partos.chess.logic.helpers.BoardHelper
 import com.partos.chess.logic.helpers.GameHelper
-import com.partos.chess.models.GameFlags
+import com.partos.chess.logic.helpers.MovesHelper
 import com.partos.chess.logic.helpers.piecesHelpers.PiecesHelper
-import com.partos.chess.logic.logic.GameLogic
+import com.partos.chess.models.GameFlags
 import com.partos.chess.models.Piece
+import com.partos.chess.models.parameters.BaseParametersGroup
 import com.partos.chess.models.parameters.PawnBeforeMoveParameters
 import com.partos.chess.models.parameters.PieceParameters
 import com.partos.chess.models.parameters.TakenEndGameParameters
@@ -102,7 +102,7 @@ class BoardListeners {
             gameFlags.playerTurn = rand == 0
             if (!gameFlags.playerTurn) {
                 Handler().postDelayed({
-                    handleComputerMove(computerType)
+//                    handleComputerMove(computerType)
                 }, 2000)
             }
         }
@@ -122,15 +122,7 @@ class BoardListeners {
     }
 
     private fun createMovesList() {
-        val array1 = arrayOf(false, false, false, false, false, false, false, false)
-        val array2 = arrayOf(false, false, false, false, false, false, false, false)
-        val array3 = arrayOf(false, false, false, false, false, false, false, false)
-        val array4 = arrayOf(false, false, false, false, false, false, false, false)
-        val array5 = arrayOf(false, false, false, false, false, false, false, false)
-        val array6 = arrayOf(false, false, false, false, false, false, false, false)
-        val array7 = arrayOf(false, false, false, false, false, false, false, false)
-        val array8 = arrayOf(false, false, false, false, false, false, false, false)
-        movesList = arrayOf(array1, array2, array3, array4, array5, array6, array7, array8)
+        movesList = MovesHelper().createMovesList()
     }
 
     private fun attachPiecesListeners(gameType: Int, computerType: Int, rootView: View) {
@@ -146,7 +138,7 @@ class BoardListeners {
                                 handlePlayerMove(i, j, rootView)
                                 if (gameFlags.didPlayerMoved) {
                                     gameFlags.playerTurn = false
-                                    handleComputerMove(computerType)
+//                                    handleComputerMove(computerType)
                                 }
                             }
                         }
@@ -156,42 +148,42 @@ class BoardListeners {
         }
     }
 
-    private fun handleComputerMove(computerType: Int) {
-        when (computerType) {
-            0 -> {
-                makeRandomComputerMove()
-            }
-        }
-        gameFlags.playerTurn = true
-    }
-
-    private fun makeRandomComputerMove() {
-        val availablePieces = getAvailablePieces()
-        var piece: Piece
-        do {
-            piece = availablePieces.get(Random.nextInt(0, availablePieces.size))
-        } while (!PiecesHelper().canPieceMakeMove(piecesList, piece, board, context))
-        Handler().postDelayed({
-            makeRandomMove(piece)
-        }, 700)
-    }
-
-    private fun makeRandomMove(piece: Piece) {
-        val movesAvailable = PiecesHelper().getPossibleMoves(piecesList, piece, board)
-        val rand = Random.nextInt(0, movesAvailable.size)
-        pieceFocused = piece
-        makeMove(movesAvailable[rand].positionY, movesAvailable[rand].positionX)
-    }
-
-    private fun getAvailablePieces(): ArrayList<Piece> {
-        val availablePieces = ArrayList<Piece>()
-        for (piece in piecesList) {
-            if (piece.isActive && piece.color == turn) {
-                availablePieces.add(piece.copy())
-            }
-        }
-        return availablePieces
-    }
+//    private fun handleComputerMove(computerType: Int) {
+//        when (computerType) {
+//            0 -> {
+//                makeRandomComputerMove()
+//            }
+//        }
+//        gameFlags.playerTurn = true
+//    }
+//
+//    private fun makeRandomComputerMove() {
+//        val availablePieces = getAvailablePieces()
+//        var piece: Piece
+//        do {
+//            piece = availablePieces.get(Random.nextInt(0, availablePieces.size))
+//        } while (!PiecesHelper().canPieceMakeMove(piecesList, piece, board, context))
+//        Handler().postDelayed({
+//            makeRandomMove(piece)
+//        }, 700)
+//    }
+//
+//    private fun makeRandomMove(piece: Piece) {
+//        val movesAvailable = PiecesHelper().getPossibleMoves(piecesList, piece, board)
+//        val rand = Random.nextInt(0, movesAvailable.size)
+//        pieceFocused = piece
+//        makeMove(movesAvailable[rand].positionY, movesAvailable[rand].positionX)
+//    }
+//
+//    private fun getAvailablePieces(): ArrayList<Piece> {
+//        val availablePieces = ArrayList<Piece>()
+//        for (piece in piecesList) {
+//            if (piece.isActive && piece.color == turn) {
+//                availablePieces.add(piece.copy())
+//            }
+//        }
+//        return availablePieces
+//    }
 
     private fun handlePlayerMove(positionY: Int, positionX: Int, rootView: View) {
         if (isMove(positionY, positionX)) {
@@ -223,127 +215,36 @@ class BoardListeners {
             } else if (pieceFocused.type == 5 && pieceFocused.color == 0) {
                 resetWhiteKingCastlePossibilities()
                 makeMove(positionY, positionX)
-                GameHelper().checkEndOfGame(TakenEndGameParameters(
-                    PieceParameters(
-                        pieceFocused,
-                        board,
-                        movesList,
-                        piecesList,
-                        context
-                    ),
-                    gameFlags,
-                    rootView,
-                    movesWithNoCaptureBlack,
-                    movesWithNoCaptureWhite,
-                    turn
-                ))
+                checkEndOfGame(rootView)
                 gameFlags.didPlayerMoved = true
             } else if (pieceFocused.type == 3 && pieceFocused.color == 0 && pieceFocused.positionY == 7 && pieceFocused.positionX == 0) {
                 gameFlags.canCastleLongWhite = false
                 makeMove(positionY, positionX)
-                GameHelper().checkEndOfGame(TakenEndGameParameters(
-                    PieceParameters(
-                        pieceFocused,
-                        board,
-                        movesList,
-                        piecesList,
-                        context
-                    ),
-                    gameFlags,
-                    rootView,
-                    movesWithNoCaptureBlack,
-                    movesWithNoCaptureWhite,
-                    turn
-                ))
+                checkEndOfGame(rootView)
                 gameFlags.didPlayerMoved = true
             } else if (pieceFocused.type == 3 && pieceFocused.color == 0 && pieceFocused.positionY == 7 && pieceFocused.positionX == 7) {
                 gameFlags.canCastleShortWhite = false
                 makeMove(positionY, positionX)
-                GameHelper().checkEndOfGame(TakenEndGameParameters(
-                    PieceParameters(
-                        pieceFocused,
-                        board,
-                        movesList,
-                        piecesList,
-                        context
-                    ),
-                    gameFlags,
-                    rootView,
-                    movesWithNoCaptureBlack,
-                    movesWithNoCaptureWhite,
-                    turn
-                ))
+                checkEndOfGame(rootView)
                 gameFlags.didPlayerMoved = true
             } else if (pieceFocused.type == 5 && pieceFocused.color == 1) {
                 resetBlackKingCastlePossibilities()
                 makeMove(positionY, positionX)
-                GameHelper().checkEndOfGame(TakenEndGameParameters(
-                    PieceParameters(
-                        pieceFocused,
-                        board,
-                        movesList,
-                        piecesList,
-                        context
-                    ),
-                    gameFlags,
-                    rootView,
-                    movesWithNoCaptureBlack,
-                    movesWithNoCaptureWhite,
-                    turn
-                ))
+                checkEndOfGame(rootView)
                 gameFlags.didPlayerMoved = true
             } else if (pieceFocused.type == 3 && pieceFocused.color == 1 && pieceFocused.positionY == 0 && pieceFocused.positionX == 0) {
                 gameFlags.canCastleLongBlack = false
                 makeMove(positionY, positionX)
-                GameHelper().checkEndOfGame(TakenEndGameParameters(
-                    PieceParameters(
-                        pieceFocused,
-                        board,
-                        movesList,
-                        piecesList,
-                        context
-                    ),
-                    gameFlags,
-                    rootView,
-                    movesWithNoCaptureBlack,
-                    movesWithNoCaptureWhite,
-                    turn
-                ))
+                checkEndOfGame(rootView)
                 gameFlags.didPlayerMoved = true
             } else if (pieceFocused.type == 3 && pieceFocused.color == 1 && pieceFocused.positionY == 0 && pieceFocused.positionX == 7) {
                 gameFlags.canCastleShortBlack = false
                 makeMove(positionY, positionX)
-                GameHelper().checkEndOfGame(TakenEndGameParameters(
-                    PieceParameters(
-                        pieceFocused,
-                        board,
-                        movesList,
-                        piecesList,
-                        context
-                    ),
-                    gameFlags,
-                    rootView,
-                    movesWithNoCaptureBlack,
-                    movesWithNoCaptureWhite,
-                    turn
-                ))
+                checkEndOfGame(rootView)
                 gameFlags.didPlayerMoved = true
             } else {
                 makeMove(positionY, positionX)
-                GameHelper().checkEndOfGame(TakenEndGameParameters(
-                    PieceParameters(
-                        pieceFocused,
-                        board,
-                        movesList,
-                        piecesList,
-                        context
-                    ),
-                    gameFlags,
-                    rootView,
-                    movesWithNoCaptureBlack,
-                    movesWithNoCaptureWhite,
-                    turn
-                ))
+                checkEndOfGame(rootView)
                 gameFlags.didPlayerMoved = true
             }
         } else if (isPiece(board[positionY][positionX])) {
@@ -368,27 +269,7 @@ class BoardListeners {
         changePiecePosition(positionY, positionX, pieceFocused)
         val rook = findPiece(0, 7)
         changePiecePosition(0, 5, rook)
-        resetMovesList()
-        resetBoard()
-        checkChecks()
-        resetPieceFocused()
-        resetSpecialPawnMovesFlags()
-        changeTurn()
-        GameHelper().checkEndOfGame(TakenEndGameParameters(
-            PieceParameters(
-                pieceFocused,
-                board,
-                movesList,
-                piecesList,
-                context
-            ),
-            gameFlags,
-            rootView,
-            movesWithNoCaptureBlack,
-            movesWithNoCaptureWhite,
-            turn
-        ))
-        gameFlags.didPlayerMoved = true
+        handleLogic()
     }
 
     private fun isBlackKingShortCastle(positionY: Int, positionX: Int): Boolean {
@@ -401,27 +282,7 @@ class BoardListeners {
         changePiecePosition(positionY, positionX, pieceFocused)
         val rook = findPiece(0, 0)
         changePiecePosition(0, 3, rook)
-        resetMovesList()
-        resetBoard()
-        checkChecks()
-        resetPieceFocused()
-        resetSpecialPawnMovesFlags()
-        changeTurn()
-        GameHelper().checkEndOfGame(TakenEndGameParameters(
-            PieceParameters(
-                pieceFocused,
-                board,
-                movesList,
-                piecesList,
-                context
-            ),
-            gameFlags,
-            rootView,
-            movesWithNoCaptureBlack,
-            movesWithNoCaptureWhite,
-            turn
-        ))
-        gameFlags.didPlayerMoved = true
+        handleLogic()
     }
 
     private fun resetBlackKingCastlePossibilities() {
@@ -439,27 +300,7 @@ class BoardListeners {
         changePiecePosition(positionY, positionX, pieceFocused)
         val rook = findPiece(7, 7)
         changePiecePosition(7, 5, rook)
-        resetMovesList()
-        resetBoard()
-        checkChecks()
-        resetPieceFocused()
-        resetSpecialPawnMovesFlags()
-        changeTurn()
-        GameHelper().checkEndOfGame(TakenEndGameParameters(
-            PieceParameters(
-                pieceFocused,
-                board,
-                movesList,
-                piecesList,
-                context
-            ),
-            gameFlags,
-            rootView,
-            movesWithNoCaptureBlack,
-            movesWithNoCaptureWhite,
-            turn
-        ))
-        gameFlags.didPlayerMoved = true
+        handleLogic()
     }
 
     private fun isWhiteKingShortCastle(positionY: Int, positionX: Int): Boolean {
@@ -472,26 +313,17 @@ class BoardListeners {
         changePiecePosition(positionY, positionX, pieceFocused)
         val rook = findPiece(7, 0)
         changePiecePosition(7, 3, rook)
+        handleLogic()
+    }
+
+    private fun handleLogic() {
         resetMovesList()
         resetBoard()
-        checkChecks()
+        GameHelper().checkChecks(createBaseParametersGroup(), rootView)
         resetPieceFocused()
         resetSpecialPawnMovesFlags()
         changeTurn()
-        GameHelper().checkEndOfGame(TakenEndGameParameters(
-            PieceParameters(
-                pieceFocused,
-                board,
-                movesList,
-                piecesList,
-                context
-            ),
-            gameFlags,
-            rootView,
-            movesWithNoCaptureBlack,
-            movesWithNoCaptureWhite,
-            turn
-        ))
+        checkEndOfGame(rootView)
         gameFlags.didPlayerMoved = true
     }
 
@@ -529,23 +361,10 @@ class BoardListeners {
         changePiecePosition(positionY, positionX, pieceFocused)
         resetMovesList()
         resetBoard()
-        checkChecks()
+        GameHelper().checkChecks(createBaseParametersGroup(), rootView)
         resetPieceFocused()
         changeTurn()
-        GameHelper().checkEndOfGame(TakenEndGameParameters(
-            PieceParameters(
-                pieceFocused,
-                board,
-                movesList,
-                piecesList,
-                context
-            ),
-            gameFlags,
-            rootView,
-            movesWithNoCaptureBlack,
-            movesWithNoCaptureWhite,
-            turn
-        ))
+        checkEndOfGame(rootView)
         gameFlags.didPlayerMoved = true
     }
 
@@ -561,23 +380,10 @@ class BoardListeners {
         changePiecePosition(positionY, positionX, pieceFocused)
         resetMovesList()
         resetBoard()
-        checkChecks()
+        GameHelper().checkChecks(createBaseParametersGroup(), rootView)
         resetPieceFocused()
         changeTurn()
-        GameHelper().checkEndOfGame(TakenEndGameParameters(
-            PieceParameters(
-                pieceFocused,
-                board,
-                movesList,
-                piecesList,
-                context
-            ),
-            gameFlags,
-            rootView,
-            movesWithNoCaptureBlack,
-            movesWithNoCaptureWhite,
-            turn
-        ))
+        checkEndOfGame(rootView)
         gameFlags.didPlayerMoved = true
     }
 
@@ -591,24 +397,11 @@ class BoardListeners {
         changePiecePosition(pawnSpecialY + 1, pawnSpecialX, pieceFocused)
         resetMovesList()
         resetBoard()
-        checkChecks()
+        GameHelper().checkChecks(createBaseParametersGroup(), rootView)
         resetPieceFocused()
         gameFlags.pawnSpecialWhite = false
         changeTurn()
-        GameHelper().checkEndOfGame(TakenEndGameParameters(
-            PieceParameters(
-                pieceFocused,
-                board,
-                movesList,
-                piecesList,
-                context
-            ),
-            gameFlags,
-            rootView,
-            movesWithNoCaptureBlack,
-            movesWithNoCaptureWhite,
-            turn
-        ))
+        checkEndOfGame(rootView)
         gameFlags.didPlayerMoved = true
     }
 
@@ -626,25 +419,24 @@ class BoardListeners {
         changePiecePosition(pawnSpecialY - 1, pawnSpecialX, pieceFocused)
         resetMovesList()
         resetBoard()
-        checkChecks()
+        GameHelper().checkChecks(createBaseParametersGroup(), rootView)
         resetPieceFocused()
         gameFlags.pawnSpecialBlack = false
         changeTurn()
-        GameHelper().checkEndOfGame(TakenEndGameParameters(
-            PieceParameters(
-                pieceFocused,
-                board,
-                movesList,
-                piecesList,
-                context
-            ),
-            gameFlags,
-            rootView,
-            movesWithNoCaptureBlack,
-            movesWithNoCaptureWhite,
-            turn
-        ))
+        checkEndOfGame(rootView)
         gameFlags.didPlayerMoved = true
+    }
+
+    private fun checkEndOfGame(rootView: View) {
+        GameHelper().checkEndOfGame(
+            TakenEndGameParameters(
+                createBaseParametersGroup(),
+                rootView,
+                movesWithNoCaptureBlack,
+                movesWithNoCaptureWhite,
+                turn
+            )
+        )
     }
 
     private fun changeTurn() {
@@ -683,92 +475,31 @@ class BoardListeners {
         changePiecePosition(positionY, positionX, pieceFocused)
         resetMovesList()
         resetBoard()
-        checkChecks()
+        GameHelper().checkChecks(createBaseParametersGroup(), rootView)
         resetPieceFocused()
         resetSpecialPawnMovesFlags()
         changeTurn()
     }
 
-    private fun checkChecks() {
-        if (isWhiteCheck()) {
-            if (isWhiteCheckMate()) {
-                GameLogic().showEndGameMessage("BLACK WINS", rootView)
-            } else {
-                gameFlags.checkWhite = true
-//                checkWhiteTextView.visibility = View.VISIBLE
-            }
-        } else {
-            gameFlags.checkWhite = false
-//            checkWhiteTextView.visibility = View.GONE
-        }
-        if (isBlackCheck()) {
-            if (isBlackCheckMate()) {
-                GameLogic().showEndGameMessage("WHITE WINS", rootView)
-            } else {
-                gameFlags.checkBlack = true
-//                checkBlackTextView.visibility = View.VISIBLE
-            }
-        } else {
-            gameFlags.checkBlack = false
-//            checkBlackTextView.visibility = View.GONE
-        }
-    }
-
-    private fun isBlackCheckMate(): Boolean {
-        return PiecesHelper().isCheckMate(piecesList, 1, board, context)
-    }
-
-    private fun isWhiteCheckMate(): Boolean {
-        return PiecesHelper().isCheckMate(piecesList, 0, board, context)
-    }
-
-    private fun isBlackCheck(): Boolean {
-        return PiecesHelper().isCheck(piecesList, 1, board)
-    }
-
-    private fun isBlackCheck(piecesGiven: ArrayList<Piece>): Boolean {
-        return PiecesHelper().isCheck(piecesGiven, 1, board)
-    }
-
-    private fun isWhiteCheck(): Boolean {
-        return PiecesHelper().isCheck(piecesList, 0, board)
-    }
-
-    private fun isWhiteCheck(piecesGiven: ArrayList<Piece>): Boolean {
-        return PiecesHelper().isCheck(piecesGiven, 0, board)
-    }
 
     private fun showMoves(pieceFocused: Piece) {
-        val pieceParams = PieceParameters(
-            pieceFocused,
-            board,
-            movesList,
-            piecesList,
-            context
-        )
-        val pawnBeforeMoveParams = PawnBeforeMoveParameters(
-            pawnSpecialX,
-            pawnSpecialY,
-            gameFlags.pawnSpecialBlack,
-            gameFlags.pawnSpecialWhite
-        )
         when (pieceFocused.type) {
             0 -> {
                 if (pieceFocused.color == 0) {
                     val afterMovePawnHelper =
-                        PiecesHelper().showPieceMoves(pieceParams, pawnBeforeMoveParams, gameFlags)
+                        PiecesHelper().showPieceMoves(createBaseParametersGroup())
                     gameFlags.isChoose = afterMovePawnHelper.isChoose
                     movesList = afterMovePawnHelper.moves
                 } else {
                     val afterMovePawnHelper =
-                        PiecesHelper().showPieceMoves(pieceParams, pawnBeforeMoveParams, gameFlags)
+                        PiecesHelper().showPieceMoves(createBaseParametersGroup())
                     gameFlags.isChoose = afterMovePawnHelper.isChoose
                     movesList = afterMovePawnHelper.moves
                 }
             }
             else -> {
                 val afterMovePawnHelper =
-                    PiecesHelper().showPieceMoves(pieceParams, pawnBeforeMoveParams, gameFlags)
+                    PiecesHelper().showPieceMoves(createBaseParametersGroup())
                 movesList = afterMovePawnHelper.moves
                 gameFlags.longBlackCastleAvailable = afterMovePawnHelper.longBlackCastleAvailable
                 gameFlags.shortBlackCastleAvailable = afterMovePawnHelper.shortBlackCastleAvailable
@@ -777,117 +508,6 @@ class BoardListeners {
             }
         }
         resetMoves()
-    }
-
-
-
-
-    private fun resetBoard(
-        piecesList: ArrayList<Piece>,
-        boardTaken: Array<Array<ImageView>>,
-        context: Context
-    ) {
-        for (array in boardTaken) {
-            for (image in array) {
-                image.setImageDrawable(null)
-            }
-        }
-        for (piece in piecesList) {
-            if (piece.isActive) {
-                BoardHelper().drawPiece(piece, boardTaken, context)
-            }
-        }
-    }
-
-    private fun showQueenMoves(pieceFocused: Piece, i: Int) {
-//        showBishopMoves(pieceFocused, i)
-//        showRookMoves(pieceFocused, i)
-    }
-
-    private fun isOtherKingTooClose(positionY: Int, positionX: Int, color: Int): Boolean {
-        val otherKing = findKing(color)
-        if (abs(otherKing.positionX - positionX) <= 1) {
-            if (abs(otherKing.positionY - positionY) <= 1) {
-                return true
-            }
-        }
-        return false
-    }
-
-    private fun canPieceMove(positionY: Int, positionX: Int, color: Int): Boolean {
-        val colorOpposite = if (color == 0) {
-            1
-        } else {
-            0
-        }
-        if (!isPiece(board[positionY][positionX])) {
-            val piece = pieceFocused.copy()
-            piece.positionY = positionY
-            piece.positionX = positionX
-            val piecesListCopy = piecesList.toMutableList() as ArrayList<Piece>
-            piecesListCopy.set(
-                piecesListCopy.indexOf(pieceFocused),
-                Piece(
-                    pieceFocused.type,
-                    pieceFocused.color,
-                    piece.positionX,
-                    piece.positionY,
-                    pieceFocused.isActive
-                )
-            )
-            val boardCopy = board.clone()
-            resetBoard(piecesListCopy, boardCopy, context)
-            if (!PiecesHelper().isCheck(piecesListCopy, colorOpposite, boardCopy)) {
-                movesList[positionY][positionX] = true
-            }
-            resetBoard(piecesList, board, context)
-            return true
-        } else {
-            if (findPiece(
-                    (positionY),
-                    (positionX)
-                ).color == color
-            ) {
-                val piece = pieceFocused.copy()
-                piece.positionY = positionY
-                piece.positionX = positionX
-                val piecesListCopy = piecesList.toMutableList() as ArrayList<Piece>
-                piecesListCopy.set(
-                    piecesListCopy.indexOf(pieceFocused),
-                    Piece(
-                        pieceFocused.type,
-                        pieceFocused.color,
-                        piece.positionX,
-                        piece.positionY,
-                        pieceFocused.isActive
-                    )
-                )
-                piecesListCopy.set(
-                    piecesListCopy.indexOf(
-                        findPiece(
-                            positionY,
-                            positionX
-                        )
-                    ),
-                    Piece(
-                        0,
-                        0,
-                        0,
-                        0,
-                        false
-                    )
-                )
-                val boardCopy = board.clone()
-                resetBoard(piecesListCopy, boardCopy, context)
-                if (!PiecesHelper().isCheck(piecesListCopy, colorOpposite, boardCopy)) {
-                    movesList[positionY][positionX] = true
-                }
-                resetBoard(piecesList, board, context)
-                return false
-            } else {
-                return false
-            }
-        }
     }
 
     private fun resetMoves() {
@@ -972,7 +592,7 @@ class BoardListeners {
         }
         changePiecePosition(moveY, moveX, pieceFocused)
         resetBoard()
-        checkChecks()
+        GameHelper().checkChecks(createBaseParametersGroup(), rootView)
         resetPieceFocused()
         gameFlags.isChoose = false
         resetSpecialPawnMovesFlags()
@@ -1026,5 +646,24 @@ class BoardListeners {
         chooseKnight = rootView.findViewById(R.id.board_choose_knight)
         chooseRook = rootView.findViewById(R.id.board_choose_rook)
         chooseQueen = rootView.findViewById(R.id.board_choose_queen)
+    }
+
+    private fun createBaseParametersGroup(): BaseParametersGroup {
+        return BaseParametersGroup(
+            PieceParameters(
+                pieceFocused,
+                board,
+                movesList,
+                piecesList,
+                context
+            ),
+            gameFlags,
+            PawnBeforeMoveParameters(
+                pawnSpecialX,
+                pawnSpecialY,
+                gameFlags.pawnSpecialBlack,
+                gameFlags.pawnSpecialWhite
+            )
+        )
     }
 }

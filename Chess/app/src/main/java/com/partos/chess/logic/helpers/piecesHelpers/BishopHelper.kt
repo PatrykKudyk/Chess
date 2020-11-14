@@ -3,17 +3,18 @@ package com.partos.chess.logic.helpers.piecesHelpers
 import com.partos.chess.logic.helpers.BoardHelper
 import com.partos.chess.logic.helpers.MovesHelper
 import com.partos.chess.models.Piece
+import com.partos.chess.models.parameters.BaseParametersGroup
 import com.partos.chess.models.parameters.PieceParameters
 
 class BishopHelper {
 
-    fun showBishopMoves(pieceParams: PieceParameters): Array<Array<Boolean>> {
+    fun showBishopMoves(baseParametersGroup: BaseParametersGroup): Array<Array<Boolean>> {
         val moves = MovesHelper().createMovesList()
 
-        showTopLeftMoves(pieceParams, moves)
-        showTopRightMoves(pieceParams, moves)
-        showBottomRightMoves(pieceParams, moves)
-        showBottomLeftMoves(pieceParams, moves)
+        showTopLeftMoves(baseParametersGroup, moves)
+        showTopRightMoves(baseParametersGroup, moves)
+        showBottomRightMoves(baseParametersGroup, moves)
+        showBottomLeftMoves(baseParametersGroup, moves)
 
         return moves
     }
@@ -36,20 +37,20 @@ class BishopHelper {
         return 3
     }
 
-    private fun showBottomLeftMoves(pieceParams: PieceParameters, moves: Array<Array<Boolean>>) {
+    private fun showBottomLeftMoves(baseParametersGroup: BaseParametersGroup, moves: Array<Array<Boolean>>) {
         for (i in 1..8) {
-            if (pieceParams.piece.positionX - i >= 0 && pieceParams.piece.positionY + i <= 7) {
+            if (baseParametersGroup.pieceParameters.piece.positionX - i >= 0 && baseParametersGroup.pieceParameters.piece.positionY + i <= 7) {
                 if (PiecesHelper().canPieceMove(
-                        pieceParams.piece.positionY + i,
-                        pieceParams.piece.positionX - i,
-                        pieceParams
+                        baseParametersGroup.pieceParameters.piece.positionY + i,
+                        baseParametersGroup.pieceParameters.piece.positionX - i,
+                        baseParametersGroup
                     )
                 ) {
-                    moves[pieceParams.piece.positionY + i][pieceParams.piece.positionX - i] = true
+                    moves[baseParametersGroup.pieceParameters.piece.positionY + i][baseParametersGroup.pieceParameters.piece.positionX - i] = true
                     if (isTake(
-                            pieceParams,
-                            pieceParams.piece.positionY + i,
-                            pieceParams.piece.positionX - i
+                            baseParametersGroup,
+                            baseParametersGroup.pieceParameters.piece.positionY + i,
+                            baseParametersGroup.pieceParameters.piece.positionX - i
                         )
                     ) {
                         return
@@ -63,20 +64,20 @@ class BishopHelper {
         }
     }
 
-    private fun showBottomRightMoves(pieceParams: PieceParameters, moves: Array<Array<Boolean>>) {
+    private fun showBottomRightMoves(baseParametersGroup: BaseParametersGroup, moves: Array<Array<Boolean>>) {
         for (i in 1..8) {
-            if (pieceParams.piece.positionX + i <= 7 && pieceParams.piece.positionY + i <= 7) {
+            if (baseParametersGroup.pieceParameters.piece.positionX + i <= 7 && baseParametersGroup.pieceParameters.piece.positionY + i <= 7) {
                 if (PiecesHelper().canPieceMove(
-                        pieceParams.piece.positionY + i,
-                        pieceParams.piece.positionX + i,
-                        pieceParams
+                        baseParametersGroup.pieceParameters.piece.positionY + i,
+                        baseParametersGroup.pieceParameters.piece.positionX + i,
+                        baseParametersGroup
                     )
                 ) {
-                    moves[pieceParams.piece.positionY + i][pieceParams.piece.positionX + i] = true
+                    moves[baseParametersGroup.pieceParameters.piece.positionY + i][baseParametersGroup.pieceParameters.piece.positionX + i] = true
                     if (isTake(
-                            pieceParams,
-                            pieceParams.piece.positionY + i,
-                            pieceParams.piece.positionX + i
+                            baseParametersGroup,
+                            baseParametersGroup.pieceParameters.piece.positionY + i,
+                            baseParametersGroup.pieceParameters.piece.positionX + i
                         )
                     ) {
                         return
@@ -90,20 +91,20 @@ class BishopHelper {
         }
     }
 
-    private fun showTopRightMoves(pieceParams: PieceParameters, moves: Array<Array<Boolean>>) {
+    private fun showTopRightMoves(baseParametersGroup: BaseParametersGroup, moves: Array<Array<Boolean>>) {
         for (i in 1..8) {
-            if (pieceParams.piece.positionX + i <= 7 && pieceParams.piece.positionY - i >= 0) {
+            if (baseParametersGroup.pieceParameters.piece.positionX + i <= 7 && baseParametersGroup.pieceParameters.piece.positionY - i >= 0) {
                 if (PiecesHelper().canPieceMove(
-                        pieceParams.piece.positionY - i,
-                        pieceParams.piece.positionX + i,
-                        pieceParams
+                        baseParametersGroup.pieceParameters.piece.positionY - i,
+                        baseParametersGroup.pieceParameters.piece.positionX + i,
+                        baseParametersGroup
                     )
                 ) {
-                    moves[pieceParams.piece.positionY - i][pieceParams.piece.positionX + i] = true
+                    moves[baseParametersGroup.pieceParameters.piece.positionY - i][baseParametersGroup.pieceParameters.piece.positionX + i] = true
                     if (isTake(
-                            pieceParams,
-                            pieceParams.piece.positionY - i,
-                            pieceParams.piece.positionX + i
+                            baseParametersGroup,
+                            baseParametersGroup.pieceParameters.piece.positionY - i,
+                            baseParametersGroup.pieceParameters.piece.positionX + i
                         )
                     ) {
                         return
@@ -117,20 +118,20 @@ class BishopHelper {
         }
     }
 
-    private fun showTopLeftMoves(pieceParams: PieceParameters, moves: Array<Array<Boolean>>) {
+    private fun showTopLeftMoves(baseParametersGroup: BaseParametersGroup, moves: Array<Array<Boolean>>) {
         for (i in 1..8) {
-            if (pieceParams.piece.positionX - i >= 0 && pieceParams.piece.positionY - i >= 0) {
+            if (baseParametersGroup.pieceParameters.piece.positionX - i >= 0 && baseParametersGroup.pieceParameters.piece.positionY - i >= 0) {
                 if (PiecesHelper().canPieceMove(
-                        pieceParams.piece.positionY - i,
-                        pieceParams.piece.positionX - i,
-                        pieceParams
+                        baseParametersGroup.pieceParameters.piece.positionY - i,
+                        baseParametersGroup.pieceParameters.piece.positionX - i,
+                        baseParametersGroup
                     )
                 ) {
-                    moves[pieceParams.piece.positionY - i][pieceParams.piece.positionX - i] = true
+                    moves[baseParametersGroup.pieceParameters.piece.positionY - i][baseParametersGroup.pieceParameters.piece.positionX - i] = true
                     if (isTake(
-                            pieceParams,
-                            pieceParams.piece.positionY - i,
-                            pieceParams.piece.positionX - i
+                            baseParametersGroup,
+                            baseParametersGroup.pieceParameters.piece.positionY - i,
+                            baseParametersGroup.pieceParameters.piece.positionX - i
                         )
                     ) {
                         return
@@ -144,10 +145,10 @@ class BishopHelper {
         }
     }
 
-    private fun isTake(pieceParams: PieceParameters, positionY: Int, positionX: Int): Boolean {
-        if (BoardHelper().isPiece(pieceParams.board[positionY][positionX])) {
+    private fun isTake(baseParametersGroup: BaseParametersGroup, positionY: Int, positionX: Int): Boolean {
+        if (BoardHelper().isPiece(baseParametersGroup.pieceParameters.board[positionY][positionX])) {
             if (PiecesHelper().isOppositeColorPiece(
-                    pieceParams,
+                    baseParametersGroup.pieceParameters,
                     positionY,
                     positionX
                 )

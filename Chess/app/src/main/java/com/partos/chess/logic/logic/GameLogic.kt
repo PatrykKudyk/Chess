@@ -18,6 +18,26 @@ class GameLogic {
         winTextView.visibility = View.VISIBLE
     }
 
+    fun showWhiteCheck(rootView: View) {
+        attachViews(rootView)
+        checkWhiteTextView.visibility = View.VISIBLE
+    }
+
+    fun hideWhiteCheck(rootView: View) {
+        attachViews(rootView)
+        checkWhiteTextView.visibility = View.GONE
+    }
+
+    fun showBlackCheck(rootView: View) {
+        attachViews(rootView)
+        checkBlackTextView.visibility = View.VISIBLE
+    }
+
+    fun hideBlackCheck(rootView: View) {
+        attachViews(rootView)
+        checkBlackTextView.visibility = View.GONE
+    }
+
     private fun attachViews(rootView: View) {
         checkBlackTextView = rootView.findViewById(R.id.blackCheckTextView)
         checkWhiteTextView = rootView.findViewById(R.id.whiteCheckTextView)
