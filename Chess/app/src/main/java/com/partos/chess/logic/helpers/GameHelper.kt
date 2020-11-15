@@ -13,18 +13,22 @@ import com.partos.chess.models.parameters.TakenEndGameParameters
 
 class GameHelper {
 
-    fun checkEndOfGame(givenParams: TakenEndGameParameters) {
+    fun checkEndOfGame(givenParams: TakenEndGameParameters): Boolean {
         if (isStaleMate(givenParams)) {
             showStaleMate(givenParams.rootView)
+            return true
         } else if (isFiftyMovesWithNoCapture(
                 givenParams.movesWithNoCaptureWhite,
                 givenParams.movesWithNoCaptureBlack
             )
         ) {
             showFiftyMovesWithNoCapture(givenParams.rootView)
+            return true
         } else if (isDeadPosition(givenParams)) {
             showDeadPosition(givenParams.rootView)
+            return true
         }
+        return false
     }
 
     private fun showStaleMate(rootView: View) {
@@ -168,30 +172,31 @@ class GameHelper {
         return false
     }
 
-    fun checkChecks(baseParametersGroup: BaseParametersGroup, rootView: View): GameFlags {
-        val gameFlags = FlagsHelper().createFlags()
+    fun checkChecks(baseParametersGroup: BaseParametersGroup, rootView: View): Boolean {
         if (PiecesHelper().isCheck(baseParametersGroup, 0)) {
             if (PiecesHelper().isCheckMate(baseParametersGroup, 0)) {
                 GameLogic().showEndGameMessage("BLACK WINS", rootView)
+                return true
             } else {
-                gameFlags.checkWhite = true
                 GameLogic().showWhiteCheck(rootView)
+                return false
             }
         } else {
-            gameFlags.checkWhite = false
             GameLogic().hideWhiteCheck(rootView)
         }
         if (PiecesHelper().isCheck(baseParametersGroup, 1)) {
             if (PiecesHelper().isCheckMate(baseParametersGroup, 1)) {
                 GameLogic().showEndGameMessage("WHITE WINS", rootView)
+                return true
             } else {
-                gameFlags.checkBlack = true
                 GameLogic().showBlackCheck(rootView)
+                return false
             }
         } else {
-            gameFlags.checkBlack = false
             GameLogic().hideBlackCheck(rootView)
         }
-        return gameFlags
+        return false
     }
+
+
 }

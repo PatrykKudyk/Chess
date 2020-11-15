@@ -158,6 +158,11 @@ class KingHelper {
         pieceFocused: Piece,
         baseParametersGroup: BaseParametersGroup
     ): Boolean {
+        val colorOpposite = if (color == 0) {
+            1
+        } else {
+            0
+        }
         if (!isOtherKingTooClose(positionY, positionX, color, baseParametersGroup)) {
             val king: Piece = pieceFocused.copy()
             king.positionY = positionY
@@ -207,15 +212,15 @@ class KingHelper {
                             BaseParametersGroup(
                                 PieceParameters(
                                     baseParametersGroup.pieceParameters.piece,
-                                    boardCopy,
-                                    MovesHelper().createMovesList(),
+                                    baseParametersGroup.pieceParameters.board,
+                                    baseParametersGroup.pieceParameters.moves,
                                     piecesListCopy,
                                     baseParametersGroup.pieceParameters.context
                                 ),
                                 baseParametersGroup.gameFlags,
                                 baseParametersGroup.pawnBeforeMoveParameters
                             ),
-                            color
+                            colorOpposite
                         )
                     ) {
                         BoardHelper().resetBoard(
@@ -243,8 +248,8 @@ class KingHelper {
                     Piece(
                         pieceFocused.type,
                         pieceFocused.color,
-                        king.positionX,
-                        king.positionY,
+                        positionX,
+                        positionY,
                         pieceFocused.isActive
                     )
                 )
@@ -258,15 +263,15 @@ class KingHelper {
                         BaseParametersGroup(
                             PieceParameters(
                                 baseParametersGroup.pieceParameters.piece,
-                                boardCopy,
-                                MovesHelper().createMovesList(),
+                                baseParametersGroup.pieceParameters.board,
+                                baseParametersGroup.pieceParameters.moves,
                                 piecesListCopy,
                                 baseParametersGroup.pieceParameters.context
                             ),
                             baseParametersGroup.gameFlags,
                             baseParametersGroup.pawnBeforeMoveParameters
                         ),
-                        color
+                        colorOpposite
                     )
                 ) {
                     BoardHelper().resetBoard(

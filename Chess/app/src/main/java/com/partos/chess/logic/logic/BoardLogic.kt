@@ -5,7 +5,7 @@ import android.widget.ImageView
 import androidx.fragment.app.FragmentManager
 import com.partos.chess.logic.helpers.BoardHelper
 import com.partos.chess.logic.helpers.piecesHelpers.PiecesHelper
-import com.partos.chess.logic.listeners.BoardListeners
+import com.partos.chess.logic.UserInteractionLogic
 import com.partos.chess.models.Piece
 
 class BoardLogic {
@@ -17,7 +17,7 @@ class BoardLogic {
     fun initFragment(rootView: View, fragmentManager: FragmentManager, gameType: Int, computerType: Int) {
         initBoard(rootView)
         initPiecesList()
-        BoardListeners().initListeners(rootView, fragmentManager, board, moves, piecesList, gameType, computerType)
+        UserInteractionLogic().initListeners(rootView, fragmentManager, board, moves, piecesList, gameType, computerType)
     }
 
     private fun initPiecesList() {

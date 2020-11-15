@@ -1,11 +1,7 @@
 package com.partos.chess.logic.helpers.piecesHelpers
 
-import android.content.Context
-import android.graphics.drawable.Drawable
-import com.partos.chess.R
 import com.partos.chess.logic.helpers.BoardHelper
 import com.partos.chess.logic.helpers.MovesHelper
-import com.partos.chess.models.GameFlags
 import com.partos.chess.models.Piece
 import com.partos.chess.models.parameters.BaseParametersGroup
 import com.partos.chess.models.parameters.PieceAfterMoveParameters
@@ -226,29 +222,19 @@ class PiecesHelper {
 
     fun isCheckMate(baseParametersGroup: BaseParametersGroup, color: Int): Boolean {
         var movesList = MovesHelper().createMovesList()
-        if (color == 0) {
-            for (piece in baseParametersGroup.pieceParameters.piecesList) {
-                if (piece.color == 0 && piece.isActive) {
-                    baseParametersGroup.pieceParameters.piece = piece
-                    movesList = MovesHelper().mergeMovesLists(
-                        movesList,
-                        showPieceMoves(baseParametersGroup).moves
-                    )
-                }
+        for (piece in baseParametersGroup.pieceParameters.piecesList) {
+            if (piece.color == color && piece.isActive) {
+                baseParametersGroup.pieceParameters.piece = piece
+                movesList = MovesHelper().mergeMovesLists(
+                    movesList,
+                    showPieceMoves(baseParametersGroup).moves
+                )
             }
-            return !MovesHelper().checkIsAnyMovePossible(movesList)
-        } else {
-            for (piece in baseParametersGroup.pieceParameters.piecesList) {
-                if (piece.color == 1 && piece.isActive) {
-                    baseParametersGroup.pieceParameters.piece = piece
-                    movesList = MovesHelper().mergeMovesLists(
-                        movesList,
-                        showPieceMoves(baseParametersGroup).moves
-                    )
-                }
-            }
-            return !MovesHelper().checkIsAnyMovePossible(movesList)
         }
+        if (movesList[0][0]) {
+            val i: Int
+        }
+        return !MovesHelper().checkIsAnyMovePossible(movesList)
     }
 
     fun canPieceMove(
