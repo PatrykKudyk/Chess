@@ -167,8 +167,6 @@ class RookHelper {
                     )
                 ) {
                     return
-                } else {
-                    return
                 }
             } else {
                 return
@@ -190,8 +188,6 @@ class RookHelper {
                         baseParametersGroup.pieceParameters.piece.positionX
                     )
                 ) {
-                    return
-                } else {
                     return
                 }
             } else {
@@ -215,8 +211,6 @@ class RookHelper {
                     )
                 ) {
                     return
-                } else {
-                    return
                 }
             } else {
                 return
@@ -238,8 +232,6 @@ class RookHelper {
                         baseParametersGroup.pieceParameters.piece.positionX
                     )
                 ) {
-                    return
-                } else {
                     return
                 }
             } else {

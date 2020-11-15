@@ -236,7 +236,7 @@ class PiecesHelper {
                     )
                 }
             }
-            return MovesHelper().checkIsAnyMovePossible(movesList)
+            return !MovesHelper().checkIsAnyMovePossible(movesList)
         } else {
             for (piece in baseParametersGroup.pieceParameters.piecesList) {
                 if (piece.color == 1 && piece.isActive) {
@@ -247,7 +247,7 @@ class PiecesHelper {
                     )
                 }
             }
-            return MovesHelper().checkIsAnyMovePossible(movesList)
+            return !MovesHelper().checkIsAnyMovePossible(movesList)
         }
     }
 
@@ -298,6 +298,11 @@ class PiecesHelper {
                     baseParametersGroup.pieceParameters.piece.color
                 )
             ) {
+                BoardHelper().resetBoard(
+                    baseParametersGroup.pieceParameters.piecesList,
+                    baseParametersGroup.pieceParameters.board,
+                    baseParametersGroup.pieceParameters.context
+                )
                 return false
             }
             BoardHelper().resetBoard(
@@ -359,6 +364,11 @@ class PiecesHelper {
                         baseParametersGroup.pieceParameters.piece.color
                     )
                 ) {
+                    BoardHelper().resetBoard(
+                        baseParametersGroup.pieceParameters.piecesList,
+                        baseParametersGroup.pieceParameters.board,
+                        baseParametersGroup.pieceParameters.context
+                    )
                     return false
                 }
                 BoardHelper().resetBoard(

@@ -187,8 +187,6 @@ class BishopHelper {
                 ) {
                     return
 
-                } else {
-                    return
                 }
             } else {
                 return
@@ -210,8 +208,6 @@ class BishopHelper {
                         baseParametersGroup.pieceParameters.piece.positionX + i
                     )
                 ) {
-                    return
-                } else {
                     return
                 }
             } else {
@@ -235,9 +231,6 @@ class BishopHelper {
                     )
                 ) {
                     return
-
-                } else {
-                    return
                 }
             } else {
                 return
@@ -259,8 +252,6 @@ class BishopHelper {
                         baseParametersGroup.pieceParameters.piece.positionX - i
                     )
                 ) {
-                    return
-                } else {
                     return
                 }
             } else {

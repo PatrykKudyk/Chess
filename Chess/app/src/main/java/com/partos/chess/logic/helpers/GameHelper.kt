@@ -9,7 +9,6 @@ import com.partos.chess.logic.logic.GameLogic
 import com.partos.chess.models.GameFlags
 import com.partos.chess.models.Piece
 import com.partos.chess.models.parameters.BaseParametersGroup
-import com.partos.chess.models.parameters.PieceParameters
 import com.partos.chess.models.parameters.TakenEndGameParameters
 
 class GameHelper {
@@ -159,7 +158,10 @@ class GameHelper {
             if (!PiecesHelper().isCheck(gameParameters.baseParametersGroup, 0)
             ) {
                 gameParameters.baseParametersGroup.pieceParameters.piece =
-                    KingHelper().findKing(0, gameParameters.baseParametersGroup.pieceParameters.piecesList)
+                    KingHelper().findKing(
+                        0,
+                        gameParameters.baseParametersGroup.pieceParameters.piecesList
+                    )
                 return PiecesHelper().hasKingMoves(gameParameters.baseParametersGroup)
             }
         }
@@ -168,8 +170,8 @@ class GameHelper {
 
     fun checkChecks(baseParametersGroup: BaseParametersGroup, rootView: View): GameFlags {
         val gameFlags = FlagsHelper().createFlags()
-        if (isWhiteCheck(baseParametersGroup)) {
-            if (isWhiteCheckMate(baseParametersGroup)) {
+        if (PiecesHelper().isCheck(baseParametersGroup, 0)) {
+            if (PiecesHelper().isCheckMate(baseParametersGroup, 0)) {
                 GameLogic().showEndGameMessage("BLACK WINS", rootView)
             } else {
                 gameFlags.checkWhite = true
@@ -179,8 +181,8 @@ class GameHelper {
             gameFlags.checkWhite = false
             GameLogic().hideWhiteCheck(rootView)
         }
-        if (isBlackCheck(baseParametersGroup)) {
-            if (isBlackCheckMate(baseParametersGroup)) {
+        if (PiecesHelper().isCheck(baseParametersGroup, 1)) {
+            if (PiecesHelper().isCheckMate(baseParametersGroup, 1)) {
                 GameLogic().showEndGameMessage("WHITE WINS", rootView)
             } else {
                 gameFlags.checkBlack = true
@@ -192,22 +194,4 @@ class GameHelper {
         }
         return gameFlags
     }
-
-    private fun isWhiteCheck(baseParametersGroup: BaseParametersGroup): Boolean {
-        return PiecesHelper().isCheck(baseParametersGroup, 0)
-    }
-
-    private fun isWhiteCheckMate(baseParametersGroup: BaseParametersGroup): Boolean {
-        return PiecesHelper().isCheckMate(baseParametersGroup, 0)
-    }
-
-    private fun isBlackCheck(baseParametersGroup: BaseParametersGroup): Boolean {
-        return PiecesHelper().isCheck(baseParametersGroup, 1)
-    }
-
-    private fun isBlackCheckMate(baseParametersGroup: BaseParametersGroup): Boolean {
-        return PiecesHelper().isCheckMate(baseParametersGroup, 1)
-    }
-
-
 }
