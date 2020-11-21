@@ -5,10 +5,9 @@ import android.view.View
 import com.partos.chess.models.GameFlags
 
 data class TakenEndGameParameters(
-    val pieceParameters: PieceParameters,
-    val gameFlags: GameFlags,
+    val baseParametersGroup: BaseParametersGroup,
     val rootView: View,
     val movesWithNoCaptureBlack: Int,
     val movesWithNoCaptureWhite: Int,
-    val turn: Int
+    val turn: Int,
 )

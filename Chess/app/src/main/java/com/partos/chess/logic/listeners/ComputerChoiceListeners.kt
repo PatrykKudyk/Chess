@@ -17,7 +17,7 @@ class ComputerChoiceListeners {
 
     private fun attachListeners(fragmentManager: FragmentManager, gameType: Int) {
         randomButton.setOnClickListener {
-            val fragment = BoardFragment.newInstance(gameType, 0)
+            val fragment = BoardFragment.newInstance(gameType, 0, 0)
 
             fragmentManager
                 .popBackStack()

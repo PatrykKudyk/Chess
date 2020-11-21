@@ -6,25 +6,29 @@ import com.partos.chess.logic.helpers.piecesHelpers.KingHelper
 import com.partos.chess.logic.helpers.piecesHelpers.KnightHelper
 import com.partos.chess.logic.helpers.piecesHelpers.PiecesHelper
 import com.partos.chess.logic.logic.GameLogic
+import com.partos.chess.models.GameFlags
 import com.partos.chess.models.Piece
-import com.partos.chess.models.parameters.PieceParameters
-import com.partos.chess.models.parameters.ReturnedEndGameParameters
+import com.partos.chess.models.parameters.BaseParametersGroup
 import com.partos.chess.models.parameters.TakenEndGameParameters
 
 class GameHelper {
 
-    fun checkEndOfGame(givenParams: TakenEndGameParameters) {
+    fun checkEndOfGame(givenParams: TakenEndGameParameters): Boolean {
         if (isStaleMate(givenParams)) {
             showStaleMate(givenParams.rootView)
+            return true
         } else if (isFiftyMovesWithNoCapture(
                 givenParams.movesWithNoCaptureWhite,
                 givenParams.movesWithNoCaptureBlack
             )
         ) {
             showFiftyMovesWithNoCapture(givenParams.rootView)
+            return true
         } else if (isDeadPosition(givenParams)) {
             showDeadPosition(givenParams.rootView)
+            return true
         }
+        return false
     }
 
     private fun showStaleMate(rootView: View) {
@@ -50,13 +54,13 @@ class GameHelper {
     }
 
     private fun isDeadPosition(givenParams: TakenEndGameParameters): Boolean {
-        if (isKingVsKing(givenParams.pieceParameters.piecesList)) {
+        if (isKingVsKing(givenParams.baseParametersGroup.pieceParameters.piecesList)) {
             return true
-        } else if (isKingVsKingAndBishop(givenParams.pieceParameters.piecesList)) {
+        } else if (isKingVsKingAndBishop(givenParams.baseParametersGroup.pieceParameters.piecesList)) {
             return true
-        } else if (isKingVsKingAndKnight(givenParams.pieceParameters.piecesList)) {
+        } else if (isKingVsKingAndKnight(givenParams.baseParametersGroup.pieceParameters.piecesList)) {
             return true
-        } else if (areKingsPlusTheSameColorBishops(givenParams.pieceParameters.piecesList)) {
+        } else if (areKingsPlusTheSameColorBishops(givenParams.baseParametersGroup.pieceParameters.piecesList)) {
             return true
         }
         return false
@@ -137,51 +141,62 @@ class GameHelper {
     }
 
     private fun isBlackStaleMate(gameParameters: TakenEndGameParameters): Boolean {
-        if (!PiecesHelper().isAnyMovePossible(
-                gameParameters.pieceParameters.piecesList,
-                1,
-                gameParameters.pieceParameters.board,
-                gameParameters.pieceParameters.context
-            )
+        if (!PiecesHelper().isAnyMovePossible(1, gameParameters.baseParametersGroup)
         ) {
-            if (!PiecesHelper().isCheck(
-                    gameParameters.pieceParameters.piecesList,
-                    1,
-                    gameParameters.pieceParameters.board
-                )
+            if (!PiecesHelper().isCheck(gameParameters.baseParametersGroup, 1)
             ) {
-                gameParameters.pieceParameters.piece =
-                    KingHelper().findKing(1, gameParameters.pieceParameters.piecesList)
-                if (!PiecesHelper().hasKingMoves(gameParameters.pieceParameters, gameParameters.gameFlags)) {
-                    return true
-                }
+                gameParameters.baseParametersGroup.pieceParameters.piece =
+                    KingHelper().findKing(
+                        1,
+                        gameParameters.baseParametersGroup.pieceParameters.piecesList
+                    )
+                return PiecesHelper().hasKingMoves(gameParameters.baseParametersGroup)
             }
         }
         return false
     }
 
     private fun isWhiteStaleMate(gameParameters: TakenEndGameParameters): Boolean {
-        if (!PiecesHelper().isAnyMovePossible(
-                gameParameters.pieceParameters.piecesList,
-                0,
-                gameParameters.pieceParameters.board,
-                gameParameters.pieceParameters.context
-            )
+        if (!PiecesHelper().isAnyMovePossible(0, gameParameters.baseParametersGroup)
         ) {
-            if (!PiecesHelper().isCheck(
-                    gameParameters.pieceParameters.piecesList,
-                    0,
-                    gameParameters.pieceParameters.board
-                )
+            if (!PiecesHelper().isCheck(gameParameters.baseParametersGroup, 0)
             ) {
-                gameParameters.pieceParameters.piece =
-                    KingHelper().findKing(0, gameParameters.pieceParameters.piecesList)
-                if (!PiecesHelper().hasKingMoves(gameParameters.pieceParameters, gameParameters.gameFlags)) {
-                    return true
-                }
+                gameParameters.baseParametersGroup.pieceParameters.piece =
+                    KingHelper().findKing(
+                        0,
+                        gameParameters.baseParametersGroup.pieceParameters.piecesList
+                    )
+                return PiecesHelper().hasKingMoves(gameParameters.baseParametersGroup)
             }
         }
         return false
     }
+
+    fun checkChecks(baseParametersGroup: BaseParametersGroup, rootView: View): Boolean {
+        if (PiecesHelper().isCheck(baseParametersGroup, 0)) {
+            if (PiecesHelper().isCheckMate(baseParametersGroup, 0)) {
+                GameLogic().showEndGameMessage("BLACK WINS", rootView)
+                return true
+            } else {
+                GameLogic().showWhiteCheck(rootView)
+                return false
+            }
+        } else {
+            GameLogic().hideWhiteCheck(rootView)
+        }
+        if (PiecesHelper().isCheck(baseParametersGroup, 1)) {
+            if (PiecesHelper().isCheckMate(baseParametersGroup, 1)) {
+                GameLogic().showEndGameMessage("WHITE WINS", rootView)
+                return true
+            } else {
+                GameLogic().showBlackCheck(rootView)
+                return false
+            }
+        } else {
+            GameLogic().hideBlackCheck(rootView)
+        }
+        return false
+    }
+
 
 }

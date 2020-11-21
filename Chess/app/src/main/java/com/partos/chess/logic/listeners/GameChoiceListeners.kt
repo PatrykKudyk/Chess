@@ -21,7 +21,7 @@ class GameChoiceListeners {
 
     private fun attachListeners(fragmentManager: FragmentManager) {
         pvspButton.setOnClickListener {
-            val fragment = BoardFragment.newInstance(0, 0)
+            val fragment = BoardFragment.newInstance(0, 0, 0)
 
             fragmentManager
                 .popBackStack()
@@ -46,6 +46,22 @@ class GameChoiceListeners {
                 )
                 .replace(R.id.main_frame_layout, fragment)
                 .addToBackStack(ComputerChoiceFragment.toString())
+                .commit()
+        }
+        cvscButton.setOnClickListener {
+            val fragment = BoardFragment.newInstance(2, 0, 0)
+
+            fragmentManager
+                .popBackStack()
+
+            fragmentManager
+                .beginTransaction()
+                .setCustomAnimations(
+                    R.anim.enter_right_to_left, R.anim.exit_left_to_right,
+                    R.anim.enter_left_to_right, R.anim.exit_right_to_left
+                )
+                .replace(R.id.main_frame_layout, fragment)
+                .addToBackStack(BoardFragment.toString())
                 .commit()
         }
     }

@@ -1,10 +1,10 @@
 package com.partos.chess.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.partos.chess.R
 import com.partos.chess.logic.logic.BoardLogic
@@ -13,6 +13,7 @@ import com.partos.chess.logic.logic.BoardLogic
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
+private const val ARG_PARAM3 = "param2"
 
 /**
  * A simple [Fragment] subclass.
@@ -22,13 +23,15 @@ private const val ARG_PARAM2 = "param2"
 class BoardFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var gameType: Int? = null
-    private var computerType: Int? = null
+    private var computerType1: Int? = null
+    private var computerType2: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             gameType = it.getInt(ARG_PARAM1)
-            computerType = it.getInt(ARG_PARAM2)
+            computerType1 = it.getInt(ARG_PARAM2)
+            computerType2 = it.getInt(ARG_PARAM3)
         }
     }
 
@@ -38,7 +41,13 @@ class BoardFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_board, container, false)
-        BoardLogic().initFragment(view, fragmentManager as FragmentManager, gameType as Int, computerType as Int)
+        BoardLogic().initFragment(
+            view,
+            fragmentManager as FragmentManager,
+            gameType as Int,
+            computerType1 as Int,
+            computerType2 as Int
+        )
         return view
     }
 
@@ -53,11 +62,12 @@ class BoardFragment : Fragment() {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(gameType: Int, computerType: Int) =
+        fun newInstance(gameType: Int, computerType1: Int, computerType2: Int) =
             BoardFragment().apply {
                 arguments = Bundle().apply {
                     putInt(ARG_PARAM1, gameType)
-                    putInt(ARG_PARAM2, computerType)
+                    putInt(ARG_PARAM2, computerType1)
+                    putInt(ARG_PARAM3, computerType2)
                 }
             }
     }
