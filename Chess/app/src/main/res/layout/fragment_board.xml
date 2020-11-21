@@ -67,7 +67,6 @@
             app:layout_constraintTop_toBottomOf="@id/cardView" />
 
 
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -2133,19 +2132,33 @@
         </LinearLayout>
 
 
+        <!--        <TextView-->
+        <!--            android:visibility="gone"-->
+        <!--            android:id="@+id/winTextView"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="0dp"-->
+        <!--            app:layout_constraintHeight_percent="0.55"-->
+        <!--            app:layout_constraintTop_toBottomOf="@id/view3"-->
+        <!--            android:background="@color/colorBackground"-->
+        <!--            android:gravity="center"-->
+        <!--            android:fontFamily="@font/dustismo_bold"-->
+        <!--            android:text="BLACK WINS"-->
+        <!--            android:textSize="60dip"-->
+        <!--            />-->
+
         <TextView
-            android:visibility="gone"
             android:id="@+id/winTextView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintHeight_percent="0.55"
-            app:layout_constraintTop_toBottomOf="@id/view3"
             android:background="@color/colorBackground"
-            android:gravity="center"
             android:fontFamily="@font/dustismo_bold"
-            android:text="BLACK WINS"
-            android:textSize="60dip"
-            />
+            android:gravity="center"
+            android:text="CHECK"
+            android:textSize="40sp"
+            android:visibility="gone"
+            app:layout_constraintHeight_percent="0.125"
+            app:layout_constraintTop_toBottomOf="@id/cardView" />
+
         <TextView
             android:id="@+id/whiteCheckTextView"
             android:layout_width="match_parent"
@@ -2153,7 +2166,7 @@
             android:fontFamily="@font/dustismo_bold"
             android:gravity="center"
             android:text="CHECK"
-            android:textSize="40sp"
+            android:textSize="20sp"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@id/linear"
             app:layout_constraintHeight_percent="0.125" />

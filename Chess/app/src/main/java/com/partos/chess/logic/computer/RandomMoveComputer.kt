@@ -5,6 +5,7 @@ import com.partos.chess.logic.helpers.piecesHelpers.PiecesHelper
 import com.partos.chess.models.Move
 import com.partos.chess.models.Piece
 import com.partos.chess.models.parameters.BaseParametersGroup
+import com.partos.chess.models.parameters.ComputerMoveParameters
 import kotlin.random.Random
 
 class RandomMoveComputer {
@@ -12,15 +13,18 @@ class RandomMoveComputer {
     fun makeRandomMove(
         baseParametersGroup: BaseParametersGroup,
         turn: Int
-    ): Move {
+    ): ComputerMoveParameters {
         val availablePieces = getAvailablePieces(baseParametersGroup, turn)
         val chosenPiece = chooseRandomPiece(availablePieces, baseParametersGroup)
 
         baseParametersGroup.pieceParameters.piece = chosenPiece
 
-        val moves = PiecesHelper().showPieceMoves(baseParametersGroup).moves
+        val params = PiecesHelper().showPieceMoves(baseParametersGroup)
 
-        return chooseRandomMove(moves, chosenPiece)
+        return ComputerMoveParameters(
+            params,
+            chooseRandomMove(params.moves, chosenPiece)
+        )
     }
 
     private fun chooseRandomMove(moves: Array<Array<Boolean>>, chosenPiece: Piece): Move {
