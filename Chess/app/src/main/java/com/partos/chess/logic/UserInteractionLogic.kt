@@ -181,14 +181,14 @@ class UserInteractionLogic {
     }
 
     private fun handleComputerMove(computerType: Int) {
-        lateinit var params: ComputerMoveParameters
+        lateinit var move: Move
         when (computerType) {
-            0 -> params = RandomMoveComputer().makeRandomMove(createBaseParametersGroup(), turn)
-            1 -> params = BestMoveComputer().makeBestMove(createBaseParametersGroup(), turn, 0)
+            0 -> move = RandomMoveComputer().makeRandomMove(createBaseParametersGroup(), turn)
+            1 -> move = BestMoveComputer().makeBestMove(createBaseParametersGroup(), turn, 0)
         }
         Handler().postDelayed({
-            pieceFocused = params.move.piece
-            checkFlagsFromComputerMove(params)
+            pieceFocused = move.piece
+            checkFlagsFromComputerMove(move)
             endOfGame = GameHelper().checkChecks(createBaseParametersGroup(), rootView)
             if (!endOfGame) {
                 endOfGame = checkEndOfGame(rootView)
@@ -198,14 +198,14 @@ class UserInteractionLogic {
     }
 
     private fun handleComputerVsComputerMove(computerType: Int) {
-        lateinit var params: ComputerMoveParameters
+        lateinit var move: Move
         when (computerType) {
-            0 -> params = RandomMoveComputer().makeRandomMove(createBaseParametersGroup(), turn)
-            1 -> params = BestMoveComputer().makeBestMove(createBaseParametersGroup(), turn, 0)
+            0 -> move = RandomMoveComputer().makeRandomMove(createBaseParametersGroup(), turn)
+            1 -> move = BestMoveComputer().makeBestMove(createBaseParametersGroup(), turn, 0)
         }
         Handler().postDelayed({
-            pieceFocused = params.move.piece
-            checkFlagsFromComputerMove(params)
+            pieceFocused = move.piece
+            checkFlagsFromComputerMove(move)
             endOfGame = GameHelper().checkChecks(createBaseParametersGroup(), rootView)
             if (!endOfGame) {
                 endOfGame = checkEndOfGame(rootView)
@@ -220,9 +220,9 @@ class UserInteractionLogic {
         }, 250)
     }
 
-    private fun checkFlagsFromComputerMove(params: ComputerMoveParameters) {
-        val positionX = params.move.positionX
-        val positionY = params.move.positionY
+    private fun checkFlagsFromComputerMove(move: Move) {
+        val positionX = move.positionX
+        val positionY = move.positionY
         if (isEnPassantWhite(positionY, positionX)) {
             makeWhiteEnPassantMove()
         } else if (isEnPassantBlack(positionY, positionX)) {
@@ -282,7 +282,7 @@ class UserInteractionLogic {
             }
             gameFlags.didPlayerMoved = true
         } else {
-            makeComputerMove(params.move)
+            makeComputerMove(move)
         }
     }
 

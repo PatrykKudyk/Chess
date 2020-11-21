@@ -6,6 +6,5 @@ data class AIMove(
     val piece: Piece,
     val positionY: Int,
     val positionX: Int,
-    val gain: Int,
-    val pieceAfterMoveParameters: PieceAfterMoveParameters
+    val gain: Int
 )

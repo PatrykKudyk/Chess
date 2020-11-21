@@ -7,8 +7,6 @@ import com.partos.chess.models.Move
 import com.partos.chess.models.Piece
 import com.partos.chess.models.parameters.BaseParametersGroup
 import com.partos.chess.models.parameters.ComputerMoveParameters
-import com.partos.chess.models.parameters.PieceAfterMoveParameters
-import com.partos.chess.models.parameters.PieceParameters
 import kotlin.random.Random
 
 class BestMoveComputer {
@@ -17,75 +15,90 @@ class BestMoveComputer {
         baseParametersGroup: BaseParametersGroup,
         turn: Int,
         deep: Int
-    ): ComputerMoveParameters {
+    ): Move {
         val availablePieces = getAvailablePieces(baseParametersGroup, turn)
-        val aIMoves = generateBestMoves(availablePieces, baseParametersGroup, deep)
+        val availableMoves = getAvailableMoves(availablePieces, baseParametersGroup)
+        val aIMoves = generateBestMoves(availableMoves, baseParametersGroup, deep)
         val bestMoveValue = getBestMoveValue(aIMoves)
         val bestMoves = getBestMoves(bestMoveValue, aIMoves)
-        val move = getRandomBestMove(bestMoves)
-        return move
+        return getRandomBestMove(bestMoves)
     }
 
-    private fun getRandomBestMove(bestMoves: ArrayList<AIMove>): ComputerMoveParameters {
-        val random = Random.nextInt(0, bestMoves.size)
-        return ComputerMoveParameters(
-            bestMoves[random].pieceAfterMoveParameters,
-            Move(
-                bestMoves[random].piece,
-                bestMoves[random].positionY,
-                bestMoves[random].positionX
-            )
-        )
-    }
-
-    private fun generateBestMoves(
+    private fun getAvailableMoves(
         availablePieces: ArrayList<Piece>,
-        baseParametersGroup: BaseParametersGroup,
-        deep: Int
-    ): ArrayList<AIMove> {
-        val aiMoves = ArrayList<AIMove>()
+        baseParametersGroup: BaseParametersGroup
+    ): ArrayList<Move> {
+        val moves = ArrayList<Move>()
         for (piece in availablePieces) {
             baseParametersGroup.pieceParameters.piece = piece
-            val moves = PiecesHelper().showPieceMoves(baseParametersGroup)
-            val movesWithValues = generateMovesValues(moves, baseParametersGroup.pieceParameters)
-            aiMoves.addAll(movesWithValues)
-        }
-
-        return aiMoves
-    }
-
-    private fun generateMovesValues(params: PieceAfterMoveParameters, pieceParameters: PieceParameters): ArrayList<AIMove> {
-        val aiMoves = ArrayList<AIMove>()
-        for (i in 0..7){
-            for (j in 0..7){
-                if (params.moves[i][j]) {
-                    if (BoardHelper().isPiece(pieceParameters.board[i][j])) {
-                        aiMoves.add(AIMove(
-                            pieceParameters.piece,
-                            i,
-                            j,
-                            getPieceValue(PiecesHelper().findPiece(i, j, pieceParameters.piecesList)),
-                            params
-                        ))
-                    } else {
-                        aiMoves.add(AIMove(
-                            pieceParameters.piece,
-                            i,
-                            j,
-                            0,
-                            params
-                        ))
+            val params = PiecesHelper().showPieceMoves(baseParametersGroup)
+            for (i in 0..7) {
+                for (j in 0..7) {
+                    if (params.moves[i][j]) {
+                        moves.add(
+                            Move(
+                                piece,
+                                i,
+                                j
+                            )
+                        )
                     }
                 }
             }
         }
+        return moves
+    }
+
+    private fun getRandomBestMove(bestMoves: ArrayList<AIMove>): Move {
+        val random = Random.nextInt(0, bestMoves.size)
+        return Move(
+            bestMoves[random].piece,
+            bestMoves[random].positionY,
+            bestMoves[random].positionX
+        )
+    }
+
+    private fun generateBestMoves(
+        availableMoves: ArrayList<Move>,
+        baseParametersGroup: BaseParametersGroup,
+        deep: Int
+    ): ArrayList<AIMove> {
+        val aiMoves = ArrayList<AIMove>()
+        for (move in availableMoves) {
+            baseParametersGroup.pieceParameters.piece = move.piece
+            aiMoves.add(generateMoveValue(move, baseParametersGroup))
+        }
+
         return aiMoves
+    }
+
+    private fun generateMoveValue(move: Move, baseParametersGroup: BaseParametersGroup): AIMove {
+        if (BoardHelper().isPiece(baseParametersGroup.pieceParameters.board[move.positionY][move.positionX])) {
+            return AIMove(
+                move.piece,
+                move.positionY,
+                move.positionX,
+                getPieceValue(
+                    PiecesHelper().findPiece(
+                        move.positionY,
+                        move.positionX,
+                        baseParametersGroup.pieceParameters.piecesList
+                    )
+                )
+            )
+        }
+        return AIMove(
+            move.piece,
+            move.positionY,
+            move.positionX,
+            0
+        )
     }
 
     private fun getPieceValue(piece: Piece): Int {
         when (piece.type) {
             0 -> return 10
-            1,2 -> return 30
+            1, 2 -> return 30
             3 -> return 50
             4 -> return 90
             5 -> return 900
