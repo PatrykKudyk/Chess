@@ -2154,7 +2154,7 @@
             android:fontFamily="@font/dustismo_bold"
             android:gravity="center"
             android:text="CHECK"
-            android:textSize="40sp"
+            android:textSize="20sp"
             android:visibility="gone"
             app:layout_constraintHeight_percent="0.125"
             app:layout_constraintTop_toBottomOf="@id/cardView" />
@@ -2166,7 +2166,7 @@
             android:fontFamily="@font/dustismo_bold"
             android:gravity="center"
             android:text="CHECK"
-            android:textSize="20sp"
+            android:textSize="40sp"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@id/linear"
             app:layout_constraintHeight_percent="0.125" />

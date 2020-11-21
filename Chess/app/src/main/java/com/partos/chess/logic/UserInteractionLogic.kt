@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.fragment.app.FragmentManager
 import com.partos.chess.R
+import com.partos.chess.logic.computer.BestMoveComputer
 import com.partos.chess.logic.computer.RandomMoveComputer
 import com.partos.chess.logic.helpers.BoardHelper
 import com.partos.chess.logic.helpers.GameHelper
@@ -180,43 +181,43 @@ class UserInteractionLogic {
     }
 
     private fun handleComputerMove(computerType: Int) {
+        lateinit var params: ComputerMoveParameters
         when (computerType) {
-            0 -> {
-                val params = RandomMoveComputer().makeRandomMove(createBaseParametersGroup(), turn)
-                Handler().postDelayed({
-                    pieceFocused = params.move.piece
-                    checkFlagsFromComputerMove(params)
-                    endOfGame = GameHelper().checkChecks(createBaseParametersGroup(), rootView)
-                    if (!endOfGame) {
-                        endOfGame = checkEndOfGame(rootView)
-                    }
-                    gameFlags.playerTurn = true
-                }, 250)
-            }
+            0 -> params = RandomMoveComputer().makeRandomMove(createBaseParametersGroup(), turn)
+            1 -> params = BestMoveComputer().makeBestMove(createBaseParametersGroup(), turn, 0)
         }
+        Handler().postDelayed({
+            pieceFocused = params.move.piece
+            checkFlagsFromComputerMove(params)
+            endOfGame = GameHelper().checkChecks(createBaseParametersGroup(), rootView)
+            if (!endOfGame) {
+                endOfGame = checkEndOfGame(rootView)
+            }
+            gameFlags.playerTurn = true
+        }, 250)
     }
 
     private fun handleComputerVsComputerMove(computerType: Int) {
+        lateinit var params: ComputerMoveParameters
         when (computerType) {
-            0 -> {
-                val params = RandomMoveComputer().makeRandomMove(createBaseParametersGroup(), turn)
-                Handler().postDelayed({
-                    pieceFocused = params.move.piece
-                    checkFlagsFromComputerMove(params)
-                    endOfGame = GameHelper().checkChecks(createBaseParametersGroup(), rootView)
-                    if (!endOfGame) {
-                        endOfGame = checkEndOfGame(rootView)
-                    }
-                    if (!endOfGame){
-                        if (turn == 0) {
-                            handleComputerVsComputerMove(whiteComp)
-                        } else {
-                            handleComputerVsComputerMove(blackComp)
-                        }
-                    }
-                }, 250)
-            }
+            0 -> params = RandomMoveComputer().makeRandomMove(createBaseParametersGroup(), turn)
+            1 -> params = BestMoveComputer().makeBestMove(createBaseParametersGroup(), turn, 0)
         }
+        Handler().postDelayed({
+            pieceFocused = params.move.piece
+            checkFlagsFromComputerMove(params)
+            endOfGame = GameHelper().checkChecks(createBaseParametersGroup(), rootView)
+            if (!endOfGame) {
+                endOfGame = checkEndOfGame(rootView)
+            }
+            if (!endOfGame){
+                if (turn == 0) {
+                    handleComputerVsComputerMove(whiteComp)
+                } else {
+                    handleComputerVsComputerMove(blackComp)
+                }
+            }
+        }, 250)
     }
 
     private fun checkFlagsFromComputerMove(params: ComputerMoveParameters) {
