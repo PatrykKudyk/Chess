@@ -1,3 +1,11 @@
 <resources>
-    <string name="app_name">Chess</string>
+    <string name="app_name">Mobile Chess</string>
+    <string name="app_title">Chess</string>
+    <string name="play_button">Play</string>
+    <string name="how_do_you_want_to_play">How do you want to play?</string>
+    <string name="playerVsPlayer">Player vs Player</string>
+    <string name="playerVsComputer">Player vs Computer</string>
+    <string name="computerVsComputer">Computer vs Computer</string>
+    <string name="chooseComputerType">Choose computer type</string>
+    <string name="random">Random</string>
 </resources>
