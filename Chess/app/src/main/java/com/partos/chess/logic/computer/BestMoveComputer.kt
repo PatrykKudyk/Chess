@@ -6,19 +6,17 @@ import com.partos.chess.models.AIMove
 import com.partos.chess.models.Move
 import com.partos.chess.models.Piece
 import com.partos.chess.models.parameters.BaseParametersGroup
-import com.partos.chess.models.parameters.ComputerMoveParameters
 import kotlin.random.Random
 
 class BestMoveComputer {
 
     fun makeBestMove(
         baseParametersGroup: BaseParametersGroup,
-        turn: Int,
-        deep: Int
+        turn: Int
     ): Move {
         val availablePieces = getAvailablePieces(baseParametersGroup, turn)
         val availableMoves = getAvailableMoves(availablePieces, baseParametersGroup)
-        val aIMoves = generateBestMoves(availableMoves, baseParametersGroup, deep)
+        val aIMoves = generateBestMoves(availableMoves, baseParametersGroup)
         val bestMoveValue = getBestMoveValue(aIMoves)
         val bestMoves = getBestMoves(bestMoveValue, aIMoves)
         return getRandomBestMove(bestMoves)
@@ -60,8 +58,7 @@ class BestMoveComputer {
 
     private fun generateBestMoves(
         availableMoves: ArrayList<Move>,
-        baseParametersGroup: BaseParametersGroup,
-        deep: Int
+        baseParametersGroup: BaseParametersGroup
     ): ArrayList<AIMove> {
         val aiMoves = ArrayList<AIMove>()
         for (move in availableMoves) {

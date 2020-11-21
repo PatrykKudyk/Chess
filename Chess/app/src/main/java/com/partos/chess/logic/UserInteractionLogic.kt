@@ -184,7 +184,7 @@ class UserInteractionLogic {
         lateinit var move: Move
         when (computerType) {
             0 -> move = RandomMoveComputer().makeRandomMove(createBaseParametersGroup(), turn)
-            1 -> move = BestMoveComputer().makeBestMove(createBaseParametersGroup(), turn, 0)
+            1 -> move = BestMoveComputer().makeBestMove(createBaseParametersGroup(), turn)
         }
         Handler().postDelayed({
             pieceFocused = move.piece
@@ -201,7 +201,7 @@ class UserInteractionLogic {
         lateinit var move: Move
         when (computerType) {
             0 -> move = RandomMoveComputer().makeRandomMove(createBaseParametersGroup(), turn)
-            1 -> move = BestMoveComputer().makeBestMove(createBaseParametersGroup(), turn, 0)
+            1 -> move = BestMoveComputer().makeBestMove(createBaseParametersGroup(), turn)
         }
         Handler().postDelayed({
             pieceFocused = move.piece
