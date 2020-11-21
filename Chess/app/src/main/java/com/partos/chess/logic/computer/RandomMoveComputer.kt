@@ -13,7 +13,7 @@ class RandomMoveComputer {
     fun makeRandomMove(
         baseParametersGroup: BaseParametersGroup,
         turn: Int
-    ): ComputerMoveParameters {
+    ): Move {
         val availablePieces = getAvailablePieces(baseParametersGroup, turn)
         val chosenPiece = chooseRandomPiece(availablePieces, baseParametersGroup)
 
@@ -21,10 +21,8 @@ class RandomMoveComputer {
 
         val params = PiecesHelper().showPieceMoves(baseParametersGroup)
 
-        return ComputerMoveParameters(
-            params,
-            chooseRandomMove(params.moves, chosenPiece)
-        )
+        return chooseRandomMove(params.moves, chosenPiece)
+
     }
 
     private fun chooseRandomMove(moves: Array<Array<Boolean>>, chosenPiece: Piece): Move {
