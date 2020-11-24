@@ -37,4 +37,15 @@ class MovesHelper{
         return false
     }
 
+    fun getMovesNumber(moves: Array<Array<Boolean>>): Int {
+        var movesNumber = 0
+        for (array in moves) {
+            for (move in array) {
+                if (move) {
+                    movesNumber++
+                }
+            }
+        }
+        return movesNumber
+    }
 }

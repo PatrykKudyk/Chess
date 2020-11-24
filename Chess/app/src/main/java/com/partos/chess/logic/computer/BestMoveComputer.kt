@@ -1,5 +1,6 @@
 package com.partos.chess.logic.computer
 
+import com.partos.chess.logic.UserInteractionLogic
 import com.partos.chess.logic.helpers.BoardHelper
 import com.partos.chess.logic.helpers.piecesHelpers.PiecesHelper
 import com.partos.chess.models.AIMove
@@ -12,13 +13,16 @@ class BestMoveComputer {
 
     fun makeBestMove(
         baseParametersGroup: BaseParametersGroup,
-        turn: Int
+        turn: Int,
+        userInteractionLogic: UserInteractionLogic
     ): Move {
         val availablePieces = getAvailablePieces(baseParametersGroup, turn)
         val availableMoves = getAvailableMoves(availablePieces, baseParametersGroup)
-        val aIMoves = generateBestMoves(availableMoves, baseParametersGroup)
+        val aIMoves = generateBestMoves(availableMoves, baseParametersGroup, userInteractionLogic, turn)
+//        BoardHelper().resetBoard(baseParametersGroup.pieceParameters.piecesList, baseParametersGroup.pieceParameters.board, baseParametersGroup.pieceParameters.context)
         val bestMoveValue = getBestMoveValue(aIMoves)
         val bestMoves = getBestMoves(bestMoveValue, aIMoves)
+//        BoardHelper().resetBoard(baseParametersGroup.pieceParameters.piecesList, baseParametersGroup.pieceParameters.board, baseParametersGroup.pieceParameters.context)
         return getRandomBestMove(bestMoves)
     }
 
@@ -58,56 +62,41 @@ class BestMoveComputer {
 
     private fun generateBestMoves(
         availableMoves: ArrayList<Move>,
-        baseParametersGroup: BaseParametersGroup
+        baseParametersGroup: BaseParametersGroup,
+        userInteractionLogic: UserInteractionLogic,
+        turn: Int
     ): ArrayList<AIMove> {
         val aiMoves = ArrayList<AIMove>()
         for (move in availableMoves) {
             baseParametersGroup.pieceParameters.piece = move.piece
-            aiMoves.add(generateMoveValue(move, baseParametersGroup))
+            aiMoves.add(generateMoveValue(move, baseParametersGroup, userInteractionLogic, turn))
         }
 
         return aiMoves
     }
 
-    private fun generateMoveValue(move: Move, baseParametersGroup: BaseParametersGroup): AIMove {
-        if (BoardHelper().isPiece(baseParametersGroup.pieceParameters.board[move.positionY][move.positionX])) {
-            return AIMove(
-                move.piece,
-                move.positionY,
-                move.positionX,
-                getPieceValue(
-                    PiecesHelper().findPiece(
-                        move.positionY,
-                        move.positionX,
-                        baseParametersGroup.pieceParameters.piecesList
-                    )
-                )
-            )
-        }
+    private fun generateMoveValue(
+        move: Move,
+        baseParametersGroup: BaseParametersGroup,
+        userInteractionLogic: UserInteractionLogic,
+        turn: Int
+    ): AIMove {
+        val baseParams = baseParametersGroup.copy()
+        val userIL = UserInteractionLogic().makeCopy(userInteractionLogic)
+        baseParams.pieceParameters = userIL.simulateMove(move).pieceParameters
         return AIMove(
             move.piece,
             move.positionY,
             move.positionX,
-            0
+            MoveValueCalculator().calculateMoveValue(baseParams, turn)
         )
     }
 
-    private fun getPieceValue(piece: Piece): Int {
-        when (piece.type) {
-            0 -> return 10
-            1, 2 -> return 30
-            3 -> return 50
-            4 -> return 90
-            5 -> return 900
-        }
-        return 0
-    }
-
     private fun getBestMoveValue(aIMoves: java.util.ArrayList<AIMove>): Int {
-        var bestValue = 0
+        var bestValue = -1*Int.MAX_VALUE
         for (move in aIMoves) {
-            if (move.gain > bestValue) {
-                bestValue = move.gain
+            if (move.value > bestValue) {
+                bestValue = move.value
             }
         }
         return bestValue
@@ -116,7 +105,7 @@ class BestMoveComputer {
     private fun getBestMoves(bestMoveValue: Int, aIMoves: ArrayList<AIMove>): ArrayList<AIMove> {
         val aiMoves = ArrayList<AIMove>()
         for (move in aIMoves) {
-            if (move.gain == bestMoveValue) {
+            if (move.value == bestMoveValue) {
                 aiMoves.add(move)
             }
         }

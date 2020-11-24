@@ -184,11 +184,11 @@ class UserInteractionLogic {
         lateinit var move: Move
         when (computerType) {
             0 -> move = RandomMoveComputer().makeRandomMove(createBaseParametersGroup(), turn)
-            1 -> move = BestMoveComputer().makeBestMove(createBaseParametersGroup(), turn)
+            1 -> move = BestMoveComputer().makeBestMove(createBaseParametersGroup(), turn, this)
         }
         Handler().postDelayed({
             pieceFocused = move.piece
-            checkFlagsFromComputerMove(move)
+            makeMoveAsComputer(move)
             endOfGame = GameHelper().checkChecks(createBaseParametersGroup(), rootView)
             if (!endOfGame) {
                 endOfGame = checkEndOfGame(rootView)
@@ -199,13 +199,15 @@ class UserInteractionLogic {
 
     private fun handleComputerVsComputerMove(computerType: Int) {
         lateinit var move: Move
+        val baseParams = createBaseParametersGroup()
         when (computerType) {
             0 -> move = RandomMoveComputer().makeRandomMove(createBaseParametersGroup(), turn)
-            1 -> move = BestMoveComputer().makeBestMove(createBaseParametersGroup(), turn)
+            1 -> move = BestMoveComputer().makeBestMove(createBaseParametersGroup(), turn, this)
         }
+        recreateBaseParams(baseParams)
+        BoardHelper().resetBoard(piecesList, board, context)
         Handler().postDelayed({
-            pieceFocused = move.piece
-            checkFlagsFromComputerMove(move)
+            makeMoveAsComputer(move)
             endOfGame = GameHelper().checkChecks(createBaseParametersGroup(), rootView)
             if (!endOfGame) {
                 endOfGame = checkEndOfGame(rootView)
@@ -217,10 +219,11 @@ class UserInteractionLogic {
                     handleComputerVsComputerMove(blackComp)
                 }
             }
-        }, 250)
+        }, 50)
     }
 
-    private fun checkFlagsFromComputerMove(move: Move) {
+    fun makeMoveAsComputer(move: Move): BaseParametersGroup {
+        pieceFocused = move.piece
         val positionX = move.positionX
         val positionY = move.positionY
         if (isEnPassantWhite(positionY, positionX)) {
@@ -284,6 +287,26 @@ class UserInteractionLogic {
         } else {
             makeComputerMove(move)
         }
+        return createBaseParametersGroup()
+    }
+
+    fun simulateMove(move: Move): BaseParametersGroup {
+        val baseParametersGroup = createBaseParametersGroup()
+//        simulateMoveAsComputer(move)
+        makeMoveAsComputer(move)
+        val baseParamsToReturn = createBaseParametersGroup()
+        recreateBaseParams(baseParametersGroup)
+        return baseParamsToReturn
+    }
+
+    private fun recreateBaseParams(baseParametersGroup: BaseParametersGroup) {
+        this.pieceFocused = baseParametersGroup.pieceParameters.piece
+        this.piecesList = baseParametersGroup.pieceParameters.piecesList
+        this.board = baseParametersGroup.pieceParameters.board
+        this.movesList = baseParametersGroup.pieceParameters.moves
+        this.gameFlags = baseParametersGroup.gameFlags
+        this.pawnSpecialX = baseParametersGroup.pawnBeforeMoveParameters.pawnSpecialX
+        this.pawnSpecialY = baseParametersGroup.pawnBeforeMoveParameters.pawnSpecialY
     }
 
     private fun handlePlayerMove(positionY: Int, positionX: Int, rootView: View) {
@@ -642,7 +665,6 @@ class UserInteractionLogic {
         } else {
             incrementMovesWithNoCapture(pieceFocused.color)
         }
-        pieceFocused = findPiece(pieceFocused.positionY, pieceFocused.positionX)
         changePiecePosition(positionY, positionX, pieceFocused)
         resetMovesList()
         resetBoard()
@@ -710,21 +732,13 @@ class UserInteractionLogic {
 
     private fun resetBoard() {
         chooseLayout.visibility = View.GONE
-        for (array in board) {
-            for (image in array) {
-                image.setImageDrawable(null)
-            }
-        }
+        BoardHelper().resetBoard(piecesList, board, context)
         for (array in moves) {
             for (image in array) {
                 image.visibility = View.GONE
             }
         }
-        for (piece in piecesList) {
-            if (piece.isActive) {
-                BoardHelper().drawPiece(piece, board, context)
-            }
-        }
+
     }
 
     private fun isPiece(image: ImageView): Boolean {
@@ -811,15 +825,16 @@ class UserInteractionLogic {
     }
 
     private fun createBaseParametersGroup(): BaseParametersGroup {
+        var pieces = createPiecesCopy(piecesList)
         return BaseParametersGroup(
             PieceParameters(
-                pieceFocused,
-                board,
-                movesList,
-                piecesList,
+                pieceFocused.copy(),
+                board.clone(),
+                movesList.clone(),
+                pieces,
                 context
             ),
-            gameFlags,
+            gameFlags.copy(),
             PawnBeforeMoveParameters(
                 pawnSpecialX,
                 pawnSpecialY,
@@ -827,5 +842,36 @@ class UserInteractionLogic {
                 gameFlags.pawnSpecialWhite
             )
         )
+    }
+
+    fun makeCopy(userInteractionLogic: UserInteractionLogic): UserInteractionLogic {
+        val userInteraction = UserInteractionLogic()
+
+        userInteraction.pieceFocused = userInteractionLogic.pieceFocused.copy()
+        userInteraction.board = userInteractionLogic.board.clone()
+        userInteraction.movesList = userInteractionLogic.movesList.clone()
+        userInteraction.moves = userInteractionLogic.moves.clone()
+        userInteraction.piecesList = createPiecesCopy(userInteractionLogic.piecesList)
+        userInteraction.context = userInteractionLogic.context
+        userInteraction.rootView = userInteractionLogic.rootView
+        userInteraction.gameFlags = userInteractionLogic.gameFlags.copy()
+        userInteraction.moveX = userInteractionLogic.moveX
+        userInteraction.moveY = userInteractionLogic.moveY
+        userInteraction.turn = userInteractionLogic.turn
+        userInteraction.pawnSpecialX = userInteractionLogic.pawnSpecialX
+        userInteraction.pawnSpecialY = userInteractionLogic.pawnSpecialY
+        userInteraction.movesWithNoCaptureWhite = userInteractionLogic.movesWithNoCaptureWhite
+        userInteraction.movesWithNoCaptureBlack = userInteractionLogic.movesWithNoCaptureBlack
+        userInteraction.chooseLayout = userInteractionLogic.chooseLayout
+
+        return userInteraction
+    }
+
+    private fun createPiecesCopy(piecesList: ArrayList<Piece>): java.util.ArrayList<Piece> {
+        val pieces = ArrayList<Piece>()
+        for (piece in piecesList) {
+            pieces.add((piece.copy()))
+        }
+        return pieces
     }
 }
