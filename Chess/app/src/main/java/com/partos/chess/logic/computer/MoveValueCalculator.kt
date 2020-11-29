@@ -15,12 +15,40 @@ class MoveValueCalculator {
         val materialAdvantage =
             calculateMaterialAdvantage(baseParametersGroup.pieceParameters.piecesList, turn)
 //        val kingSafety = calculateKingSafety(baseParametersGroup, turn)
-        val pawnMiddleOccupation = calculatePawnMiddleOccupation(baseParametersGroup.pieceParameters.piecesList, turn)
- //       val middleMoveOccupation = calculateMiddleMoveOccupation(baseParametersGroup, turn)
-        return materialAdvantage + pawnMiddleOccupation //+ middleMoveOccupation //+ kingSafety
+        val pawnMiddleOccupation =
+            calculatePawnMiddleOccupation(baseParametersGroup.pieceParameters.piecesList, turn)
+//        val middleMoveOccupation = calculateMiddleMoveOccupation(baseParametersGroup, turn)
+        val checkAdvantage = calculateCheckAdvantage(baseParametersGroup, turn)
+        val pawnStructureRatio = calculatePawnStructureRatio(baseParametersGroup.pieceParameters.piecesList, turn)
+
+        return materialAdvantage + pawnMiddleOccupation + checkAdvantage //+ middleMoveOccupation //+ kingSafety
     }
 
-    private fun calculateMiddleMoveOccupation(baseParametersGroup: BaseParametersGroup, turn: Int): Int {
+    private fun calculatePawnStructureRatio(piecesList: java.util.ArrayList<Piece>, turn: Int): Int {
+        TODO("Not yet implemented")
+    }
+
+    private fun calculateCheckAdvantage(baseParametersGroup: BaseParametersGroup, turn: Int): Int {
+        var advantage = 0
+        val oppositeColor = if (turn == 0) {
+            1
+        } else {
+            0
+        }
+        if (PiecesHelper().isCheck(baseParametersGroup, oppositeColor)) {
+            if (PiecesHelper().isCheckMate(baseParametersGroup, oppositeColor)) {
+                advantage = 100000
+            } else {
+                advantage = 40
+            }
+        }
+        return advantage
+    }
+
+    private fun calculateMiddleMoveOccupation(
+        baseParametersGroup: BaseParametersGroup,
+        turn: Int
+    ): Int {
         var occupation = 0
         if (PiecesHelper().getActivePiecesAmount(baseParametersGroup.pieceParameters.piecesList) > 22) {
             for (piece in baseParametersGroup.pieceParameters.piecesList) {
@@ -43,7 +71,10 @@ class MoveValueCalculator {
         return occupation
     }
 
-    private fun calculatePawnMiddleOccupation(piecesList: java.util.ArrayList<Piece>, turn: Int): Int {
+    private fun calculatePawnMiddleOccupation(
+        piecesList: java.util.ArrayList<Piece>,
+        turn: Int
+    ): Int {
         var value = 0
         for (piece in piecesList) {
             if ((piece.positionY == 3 || piece.positionY == 4) && (piece.positionX == 3 || piece.positionX == 4) && piece.color == turn) {
@@ -94,7 +125,7 @@ class MoveValueCalculator {
                         king.positionX,
                         pieceParams.piecesList
                     ).color == king.color
-                ){
+                ) {
                     allySurroundings++
                 }
             }
@@ -106,7 +137,7 @@ class MoveValueCalculator {
                         king.positionX + 1,
                         pieceParams.piecesList
                     ).color == king.color
-                ){
+                ) {
                     allySurroundings++
                 }
             }
@@ -118,7 +149,7 @@ class MoveValueCalculator {
                         king.positionX + 1,
                         pieceParams.piecesList
                     ).color == king.color
-                ){
+                ) {
                     allySurroundings++
                 }
             }
@@ -130,7 +161,7 @@ class MoveValueCalculator {
                         king.positionX + 1,
                         pieceParams.piecesList
                     ).color == king.color
-                ){
+                ) {
                     allySurroundings++
                 }
             }
@@ -142,7 +173,7 @@ class MoveValueCalculator {
                         king.positionX,
                         pieceParams.piecesList
                     ).color == king.color
-                ){
+                ) {
                     allySurroundings++
                 }
             }
@@ -154,7 +185,7 @@ class MoveValueCalculator {
                         king.positionX - 1,
                         pieceParams.piecesList
                     ).color == king.color
-                ){
+                ) {
                     allySurroundings++
                 }
             }
@@ -166,7 +197,7 @@ class MoveValueCalculator {
                         king.positionX - 1,
                         pieceParams.piecesList
                     ).color == king.color
-                ){
+                ) {
                     allySurroundings++
                 }
             }
@@ -178,7 +209,7 @@ class MoveValueCalculator {
                         king.positionX - 1,
                         pieceParams.piecesList
                     ).color == king.color
-                ){
+                ) {
                     allySurroundings++
                 }
             }
