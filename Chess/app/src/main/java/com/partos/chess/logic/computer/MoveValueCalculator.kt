@@ -14,9 +14,43 @@ class MoveValueCalculator {
     fun calculateMoveValue(baseParametersGroup: BaseParametersGroup, turn: Int): Int {
         val materialAdvantage =
             calculateMaterialAdvantage(baseParametersGroup.pieceParameters.piecesList, turn)
-        val kingSafety = calculateKingSafety(baseParametersGroup, turn)
+//        val kingSafety = calculateKingSafety(baseParametersGroup, turn)
+        val pawnMiddleOccupation = calculatePawnMiddleOccupation(baseParametersGroup.pieceParameters.piecesList, turn)
+ //       val middleMoveOccupation = calculateMiddleMoveOccupation(baseParametersGroup, turn)
+        return materialAdvantage + pawnMiddleOccupation //+ middleMoveOccupation //+ kingSafety
+    }
 
-        return materialAdvantage + kingSafety
+    private fun calculateMiddleMoveOccupation(baseParametersGroup: BaseParametersGroup, turn: Int): Int {
+        var occupation = 0
+        if (PiecesHelper().getActivePiecesAmount(baseParametersGroup.pieceParameters.piecesList) > 22) {
+            for (piece in baseParametersGroup.pieceParameters.piecesList) {
+                baseParametersGroup.pieceParameters.piece = piece
+                val moves = PiecesHelper().showPieceMoves(baseParametersGroup).moves
+                if (moves[3][3]) {
+                    occupation += 5
+                }
+                if (moves[3][4]) {
+                    occupation += 5
+                }
+                if (moves[4][3]) {
+                    occupation += 5
+                }
+                if (moves[4][4]) {
+                    occupation += 5
+                }
+            }
+        }
+        return occupation
+    }
+
+    private fun calculatePawnMiddleOccupation(piecesList: java.util.ArrayList<Piece>, turn: Int): Int {
+        var value = 0
+        for (piece in piecesList) {
+            if ((piece.positionY == 3 || piece.positionY == 4) && (piece.positionX == 3 || piece.positionX == 4) && piece.color == turn) {
+                value += 30
+            }
+        }
+        return value
     }
 
     private fun calculateKingSafety(baseParametersGroup: BaseParametersGroup, turn: Int): Int {
@@ -164,13 +198,13 @@ class MoveValueCalculator {
     private fun calculateMaterialAdvantage(piecesList: ArrayList<Piece>, turn: Int): Int {
         var ownMaterial = 0
         for (piece in piecesList) {
-            if (piece.color == turn) {
+            if (piece.color == turn && piece.isActive) {
                 ownMaterial += getPieceValue(piece.type)
             }
         }
         var enemyMaterial = 0
         for (piece in piecesList) {
-            if (piece.color != turn) {
+            if (piece.color != turn && piece.isActive) {
                 enemyMaterial += getPieceValue(piece.type)
             }
         }

@@ -208,17 +208,19 @@ class UserInteractionLogic {
         BoardHelper().resetBoard(piecesList, board, context)
         Handler().postDelayed({
             makeMoveAsComputer(move)
-            endOfGame = GameHelper().checkChecks(createBaseParametersGroup(), rootView)
-            if (!endOfGame) {
-                endOfGame = checkEndOfGame(rootView)
-            }
-            if (!endOfGame){
-                if (turn == 0) {
-                    handleComputerVsComputerMove(whiteComp)
-                } else {
-                    handleComputerVsComputerMove(blackComp)
+            Handler().postDelayed({
+                endOfGame = GameHelper().checkChecks(createBaseParametersGroup(), rootView)
+                if (!endOfGame) {
+                    endOfGame = checkEndOfGame(rootView)
                 }
-            }
+                if (!endOfGame){
+                    if (turn == 0) {
+                        handleComputerVsComputerMove(whiteComp)
+                    } else {
+                        handleComputerVsComputerMove(blackComp)
+                    }
+                }
+            }, 300)
         }, 50)
     }
 
@@ -291,12 +293,129 @@ class UserInteractionLogic {
     }
 
     fun simulateMove(move: Move): BaseParametersGroup {
-        val baseParametersGroup = createBaseParametersGroup()
-//        simulateMoveAsComputer(move)
-        makeMoveAsComputer(move)
-        val baseParamsToReturn = createBaseParametersGroup()
-        recreateBaseParams(baseParametersGroup)
-        return baseParamsToReturn
+        pieceFocused = move.piece
+        val positionX = move.positionX
+        val positionY = move.positionY
+        if (isEnPassantWhite(positionY, positionX)) {
+            simulateWhiteEnPassantMove()
+        } else if (isEnPassantBlack(positionY, positionX)) {
+            simulateBlackEnPassantMove()
+        } else if (isSpecialBlackPawnMove(positionY)) {
+            simulateSpecialBlackPawnMove(positionY, positionX)
+        } else if (isSpecialWhitePawnMove(positionY)) {
+            simulateSpecialWhitePawnMove(positionY, positionX)
+        } else if (isWhiteKingLongCastle(positionY, positionX)) {
+            simulateWhiteKingLongCastleMove(positionY, positionX)
+        } else if (isWhiteKingShortCastle(positionY, positionX)) {
+            simulateWhiteKingShortCastleMove(positionY, positionX)
+        } else if (isBlackKingLongCastle(positionY, positionX)) {
+            simulateBlackKingLongCastleMove(positionY, positionX)
+        } else if (isBlackKingShortCastle(positionY, positionX)) {
+            simulateBlackKingShortCastleMove(positionY, positionX)
+        } else if (pieceFocused.type == 5 && pieceFocused.color == 0) {
+            resetWhiteKingCastlePossibilities()
+            simulateNormalMove(positionY, positionX)
+        } else if (pieceFocused.type == 3 && pieceFocused.color == 0 && pieceFocused.positionY == 7 && pieceFocused.positionX == 0) {
+            gameFlags.canCastleLongWhite = false
+            simulateNormalMove(positionY, positionX)
+        } else if (pieceFocused.type == 3 && pieceFocused.color == 0 && pieceFocused.positionY == 7 && pieceFocused.positionX == 7) {
+            gameFlags.canCastleShortWhite = false
+            simulateNormalMove(positionY, positionX)
+        } else if (pieceFocused.type == 5 && pieceFocused.color == 1) {
+            resetBlackKingCastlePossibilities()
+            simulateNormalMove(positionY, positionX)
+        } else if (pieceFocused.type == 3 && pieceFocused.color == 1 && pieceFocused.positionY == 0 && pieceFocused.positionX == 0) {
+            gameFlags.canCastleLongBlack = false
+            simulateNormalMove(positionY, positionX)
+        } else if (pieceFocused.type == 3 && pieceFocused.color == 1 && pieceFocused.positionY == 0 && pieceFocused.positionX == 7) {
+            gameFlags.canCastleShortBlack = false
+            simulateNormalMove(positionY, positionX)
+        } else {
+            simulateComputerMove(move)
+        }
+        return createBaseParametersGroup()
+    }
+
+    private fun simulateComputerMove(move: Move) {
+        if (isBlackPromotion(move.piece) || isWhitePromotion(move.piece)) {
+            promotePawn(move.positionY, move.positionX)
+        } else {
+            pieceFocused = findPiece(pieceFocused.positionY, pieceFocused.positionX)
+            simulateNormalMove(move.positionY, move.positionX)
+        }
+    }
+
+    private fun simulateNormalMove(positionY: Int, positionX: Int) {
+        if (isPiece(board[positionY][positionX])) {
+            resetMovesWithNoCapture(pieceFocused.color)
+            findPiece(positionY, positionX).isActive = false
+        } else {
+            incrementMovesWithNoCapture(pieceFocused.color)
+        }
+        changePiecePosition(positionY, positionX, pieceFocused)
+        resetSpecialPawnMovesFlags()
+    }
+
+    private fun simulateBlackKingShortCastleMove(positionY: Int, positionX: Int) {
+        incrementMovesWithNoCapture(pieceFocused.color)
+        resetBlackKingCastlePossibilities()
+        changePiecePosition(positionY, positionX, pieceFocused)
+        val rook = findPiece(0, 7)
+        changePiecePosition(0, 5, rook)
+    }
+
+    private fun simulateBlackKingLongCastleMove(positionY: Int, positionX: Int) {
+        incrementMovesWithNoCapture(pieceFocused.color)
+        resetBlackKingCastlePossibilities()
+        changePiecePosition(positionY, positionX, pieceFocused)
+        val rook = findPiece(0, 0)
+        changePiecePosition(0, 3, rook)
+    }
+
+    private fun simulateWhiteKingShortCastleMove(positionY: Int, positionX: Int) {
+        incrementMovesWithNoCapture(pieceFocused.color)
+        resetWhiteKingCastlePossibilities()
+        changePiecePosition(positionY, positionX, pieceFocused)
+        val rook = findPiece(7, 7)
+        changePiecePosition(7, 5, rook)
+    }
+
+    private fun simulateWhiteKingLongCastleMove(positionY: Int, positionX: Int) {
+        incrementMovesWithNoCapture(pieceFocused.color)
+        resetWhiteKingCastlePossibilities()
+        changePiecePosition(positionY, positionX, pieceFocused)
+        val rook = findPiece(7, 0)
+        changePiecePosition(7, 3, rook)
+    }
+
+    private fun simulateSpecialWhitePawnMove(positionY: Int, positionX: Int) {
+        incrementMovesWithNoCapture(pieceFocused.color)
+        pawnSpecialX = pieceFocused.positionX
+        pawnSpecialY = pieceFocused.positionY - 2
+        gameFlags.pawnSpecialWhite = true
+        changePiecePosition(positionY, positionX, pieceFocused)
+    }
+
+    private fun simulateSpecialBlackPawnMove(positionY: Int, positionX: Int) {
+        incrementMovesWithNoCapture(pieceFocused.color)
+        pawnSpecialX = pieceFocused.positionX
+        pawnSpecialY = pieceFocused.positionY + 2
+        gameFlags.pawnSpecialBlack = true
+        changePiecePosition(positionY, positionX, pieceFocused)
+    }
+
+    private fun simulateBlackEnPassantMove() {
+        findPiece(pawnSpecialY, pawnSpecialX).isActive = false
+        changePiecePosition(pawnSpecialY + 1, pawnSpecialX, pieceFocused)
+        resetMovesWithNoCapture(pieceFocused.color)
+        gameFlags.pawnSpecialWhite = false
+    }
+
+    private fun simulateWhiteEnPassantMove() {
+        findPiece(pawnSpecialY, pawnSpecialX).isActive = false
+        changePiecePosition(pawnSpecialY - 1, pawnSpecialX, pieceFocused)
+        resetMovesWithNoCapture(pieceFocused.color)
+        gameFlags.pawnSpecialBlack = false
     }
 
     private fun recreateBaseParams(baseParametersGroup: BaseParametersGroup) {
@@ -825,7 +944,7 @@ class UserInteractionLogic {
     }
 
     private fun createBaseParametersGroup(): BaseParametersGroup {
-        var pieces = createPiecesCopy(piecesList)
+        val pieces = createPiecesCopy(piecesList)
         return BaseParametersGroup(
             PieceParameters(
                 pieceFocused.copy(),
@@ -867,7 +986,7 @@ class UserInteractionLogic {
         return userInteraction
     }
 
-    private fun createPiecesCopy(piecesList: ArrayList<Piece>): java.util.ArrayList<Piece> {
+    private fun createPiecesCopy(piecesList: ArrayList<Piece>): ArrayList<Piece> {
         val pieces = ArrayList<Piece>()
         for (piece in piecesList) {
             pieces.add((piece.copy()))

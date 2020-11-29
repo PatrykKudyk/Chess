@@ -81,9 +81,8 @@ class BestMoveComputer {
         userInteractionLogic: UserInteractionLogic,
         turn: Int
     ): AIMove {
-        val baseParams = baseParametersGroup.copy()
         val userIL = UserInteractionLogic().makeCopy(userInteractionLogic)
-        baseParams.pieceParameters = userIL.simulateMove(move).pieceParameters
+        val baseParams = userIL.simulateMove(move)
         return AIMove(
             move.piece,
             move.positionY,

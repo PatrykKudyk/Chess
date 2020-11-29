@@ -42,12 +42,7 @@ class RookHelper {
                 ) {
                     moves[baseParametersGroup.pieceParameters.piece.positionY][baseParametersGroup.pieceParameters.piece.positionX - i] =
                         true
-                    if (isTake(
-                            baseParametersGroup,
-                            baseParametersGroup.pieceParameters.piece.positionY,
-                            baseParametersGroup.pieceParameters.piece.positionX - i
-                        )
-                    ) {
+                    if (BoardHelper().isPiece(baseParametersGroup.pieceParameters.board[baseParametersGroup.pieceParameters.piece.positionY][baseParametersGroup.pieceParameters.piece.positionX - i])) {
                         return
                     }
                 } else {
@@ -73,12 +68,7 @@ class RookHelper {
                 ) {
                     moves[baseParametersGroup.pieceParameters.piece.positionY - i][baseParametersGroup.pieceParameters.piece.positionX] =
                         true
-                    if (isTake(
-                            baseParametersGroup,
-                            baseParametersGroup.pieceParameters.piece.positionY - i,
-                            baseParametersGroup.pieceParameters.piece.positionX
-                        )
-                    ) {
+                    if (BoardHelper().isPiece(baseParametersGroup.pieceParameters.board[baseParametersGroup.pieceParameters.piece.positionY - i][baseParametersGroup.pieceParameters.piece.positionX])) {
                         return
                     }
                 } else {
@@ -104,12 +94,7 @@ class RookHelper {
                 ) {
                     moves[baseParametersGroup.pieceParameters.piece.positionY][baseParametersGroup.pieceParameters.piece.positionX + i] =
                         true
-                    if (isTake(
-                            baseParametersGroup,
-                            baseParametersGroup.pieceParameters.piece.positionY,
-                            baseParametersGroup.pieceParameters.piece.positionX + i
-                        )
-                    ) {
+                    if (BoardHelper().isPiece(baseParametersGroup.pieceParameters.board[baseParametersGroup.pieceParameters.piece.positionY][baseParametersGroup.pieceParameters.piece.positionX + i])) {
                         return
                     }
                 } else {
@@ -135,12 +120,7 @@ class RookHelper {
                 ) {
                     moves[baseParametersGroup.pieceParameters.piece.positionY + i][baseParametersGroup.pieceParameters.piece.positionX] =
                         true
-                    if (isTake(
-                            baseParametersGroup,
-                            baseParametersGroup.pieceParameters.piece.positionY + i,
-                            baseParametersGroup.pieceParameters.piece.positionX
-                        )
-                    ) {
+                    if (BoardHelper().isPiece(baseParametersGroup.pieceParameters.board[baseParametersGroup.pieceParameters.piece.positionY + i][baseParametersGroup.pieceParameters.piece.positionX])) {
                         return
                     }
                 } else {
@@ -160,12 +140,7 @@ class RookHelper {
             if ((baseParametersGroup.pieceParameters.piece.positionX - i) >= 0) {
                 moves[baseParametersGroup.pieceParameters.piece.positionY][baseParametersGroup.pieceParameters.piece.positionX - i] =
                     true
-                if (isTake(
-                        baseParametersGroup,
-                        baseParametersGroup.pieceParameters.piece.positionY,
-                        baseParametersGroup.pieceParameters.piece.positionX - i
-                    )
-                ) {
+                if (BoardHelper().isPiece(baseParametersGroup.pieceParameters.board[baseParametersGroup.pieceParameters.piece.positionY][baseParametersGroup.pieceParameters.piece.positionX - i])) {
                     return
                 }
             } else {
@@ -182,12 +157,7 @@ class RookHelper {
             if ((baseParametersGroup.pieceParameters.piece.positionY - i) >= 0) {
                 moves[baseParametersGroup.pieceParameters.piece.positionY - i][baseParametersGroup.pieceParameters.piece.positionX] =
                     true
-                if (isTake(
-                        baseParametersGroup,
-                        baseParametersGroup.pieceParameters.piece.positionY - i,
-                        baseParametersGroup.pieceParameters.piece.positionX
-                    )
-                ) {
+                if (BoardHelper().isPiece(baseParametersGroup.pieceParameters.board[baseParametersGroup.pieceParameters.piece.positionY - i][baseParametersGroup.pieceParameters.piece.positionX])) {
                     return
                 }
             } else {
@@ -204,12 +174,7 @@ class RookHelper {
             if ((baseParametersGroup.pieceParameters.piece.positionX + i) <= 7) {
                 moves[baseParametersGroup.pieceParameters.piece.positionY][baseParametersGroup.pieceParameters.piece.positionX + i] =
                     true
-                if (isTake(
-                        baseParametersGroup,
-                        baseParametersGroup.pieceParameters.piece.positionY,
-                        baseParametersGroup.pieceParameters.piece.positionX + i
-                    )
-                ) {
+                if (BoardHelper().isPiece(baseParametersGroup.pieceParameters.board[baseParametersGroup.pieceParameters.piece.positionY][baseParametersGroup.pieceParameters.piece.positionX + i])) {
                     return
                 }
             } else {
@@ -226,37 +191,12 @@ class RookHelper {
             if ((baseParametersGroup.pieceParameters.piece.positionY + i) <= 7) {
                 moves[baseParametersGroup.pieceParameters.piece.positionY + i][baseParametersGroup.pieceParameters.piece.positionX] =
                     true
-                if (isTake(
-                        baseParametersGroup,
-                        baseParametersGroup.pieceParameters.piece.positionY + i,
-                        baseParametersGroup.pieceParameters.piece.positionX
-                    )
-                ) {
+                if (BoardHelper().isPiece(baseParametersGroup.pieceParameters.board[baseParametersGroup.pieceParameters.piece.positionY + i][baseParametersGroup.pieceParameters.piece.positionX])) {
                     return
                 }
             } else {
                 return
             }
         }
-    }
-
-
-    private fun isTake(
-        baseParametersGroup: BaseParametersGroup,
-        positionY: Int,
-        positionX: Int
-    ): Boolean {
-        if (BoardHelper().isPiece(baseParametersGroup.pieceParameters.board[positionY][positionX])) {
-            if (PiecesHelper().isOppositeColorPiece(
-                    baseParametersGroup.pieceParameters,
-                    positionY,
-                    positionX
-                )
-            ) {
-                return true
-            }
-            return false
-        }
-        return false
     }
 }

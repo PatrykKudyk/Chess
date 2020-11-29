@@ -376,4 +376,14 @@ class PiecesHelper {
     fun hasKingMoves(baseParametersGroup: BaseParametersGroup): Boolean {
         return KingHelper().checkIfKingHasMoves(baseParametersGroup)
     }
+
+    fun getActivePiecesAmount(piecesList: ArrayList<Piece>): Int {
+        var amount = 0
+        for (piece in piecesList) {
+            if (piece.isActive) {
+                amount++
+            }
+        }
+        return amount
+    }
 }
