@@ -27,10 +27,103 @@ class MoveValueCalculator {
 
     private fun calculatePawnStructureRatio(piecesList: ArrayList<Piece>, turn: Int): Int {
         val pawnTable = PiecesHelper().createPawnTable(piecesList)
-        val pointsForTriplingEnemiesPawns = calculatePointsForTriplingPawns(pawnTable, turn)
-        val pointsForDoublingEnemiesPawns = calculatePointsForDoublingPawns(pawnTable, turn)
+        val pointsForTriplingPawns = calculatePointsForTriplingPawns(pawnTable, turn)
+        val pointsForDoublingPawns = calculatePointsForDoublingPawns(pawnTable, turn)
+        val pointsForIsolatingPawns = calculatePointsForIsolatedPawns(pawnTable, turn)
+        return pointsForTriplingPawns + pointsForDoublingPawns + pointsForIsolatingPawns
+    }
 
-        return pointsForTriplingEnemiesPawns + pointsForDoublingEnemiesPawns
+    private fun calculatePointsForIsolatedPawns(pawnTable: Array<Array<Int>>, turn: Int): Int {
+        var points = 0
+        val oppositeColor = if (turn == 0) {
+            1
+        } else {
+            0
+        }
+        for (i in 0..7) {
+            for (j in 0..7) {
+                if (pawnTable[i][j] == oppositeColor) {
+                    if (isPawnIsolated(pawnTable, i, j, oppositeColor)) {
+                        points += 6
+                    }
+                } else if (pawnTable[i][j] == turn) {
+                    if (isPawnIsolated(pawnTable, i, j, turn)) {
+                        points -= 6
+                    }
+                }
+            }
+        }
+
+        return points
+    }
+
+    private fun isPawnIsolated(pawnTable: Array<Array<Int>>, positionY: Int, positionX: Int, color: Int): Boolean {
+        return when (positionX) {
+            0 -> isPawnIsolatedLeft(pawnTable, positionY, positionX, color)
+            7 -> isPawnIsolatedRight(pawnTable, positionY, positionX, color)
+            else -> isPawnIsolatedCenter(pawnTable, positionY, positionX, color)
+        }
+    }
+
+    private fun isPawnIsolatedRight(
+        pawnTable: Array<Array<Int>>,
+        positionY: Int,
+        positionX: Int,
+        color: Int): Boolean {
+        if (pawnTable[positionY - 1][positionX] == color)
+            return false
+        if (pawnTable[positionY - 1][positionX - 1] == color)
+            return false
+        if (pawnTable[positionY][positionX - 1] == color)
+            return false
+        if (pawnTable[positionY + 1][positionX - 1] == color)
+            return false
+        if (pawnTable[positionY - 1][positionX] == color)
+            return false
+        return true
+    }
+
+    private fun isPawnIsolatedLeft(
+        pawnTable: Array<Array<Int>>,
+        positionY: Int,
+        positionX: Int,
+        color: Int): Boolean {
+        if (pawnTable[positionY - 1][positionX] == color)
+            return false
+        if (pawnTable[positionY - 1][positionX + 1] == color)
+            return false
+        if (pawnTable[positionY][positionX + 1] == color)
+            return false
+        if (pawnTable[positionY + 1][positionX + 1] == color)
+            return false
+        if (pawnTable[positionY - 1][positionX] == color)
+            return false
+        return true
+    }
+
+    private fun isPawnIsolatedCenter(
+        pawnTable: Array<Array<Int>>,
+        positionY: Int,
+        positionX: Int,
+        color: Int
+    ): Boolean {
+        if (pawnTable[positionY - 1][positionX] == color)
+            return false
+        if (pawnTable[positionY - 1][positionX - 1] == color)
+            return false
+        if (pawnTable[positionY][positionX - 1] == color)
+            return false
+        if (pawnTable[positionY + 1][positionX - 1] == color)
+            return false
+        if (pawnTable[positionY - 1][positionX + 1] == color)
+            return false
+        if (pawnTable[positionY][positionX + 1] == color)
+            return false
+        if (pawnTable[positionY + 1][positionX + 1] == color)
+            return false
+        if (pawnTable[positionY - 1][positionX] == color)
+            return false
+        return true
     }
 
     private fun calculatePointsForDoublingPawns(pawnTable: Array<Array<Int>>, turn: Int): Int {
