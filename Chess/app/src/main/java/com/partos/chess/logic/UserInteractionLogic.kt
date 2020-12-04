@@ -184,11 +184,11 @@ class UserInteractionLogic {
         lateinit var move: Move
         when (computerType) {
             0 -> move = RandomMoveComputer().makeRandomMove(createBaseParametersGroup(), turn)
-            1 -> move = BestMoveComputer().makeBestMove(createBaseParametersGroup(), turn)
+            1 -> move = BestMoveComputer().makeBestMove(createBaseParametersGroup(), turn, this)
         }
         Handler().postDelayed({
             pieceFocused = move.piece
-            checkFlagsFromComputerMove(move)
+            makeMoveAsComputer(move)
             endOfGame = GameHelper().checkChecks(createBaseParametersGroup(), rootView)
             if (!endOfGame) {
                 endOfGame = checkEndOfGame(rootView)
@@ -199,28 +199,33 @@ class UserInteractionLogic {
 
     private fun handleComputerVsComputerMove(computerType: Int) {
         lateinit var move: Move
+        val baseParams = createBaseParametersGroup()
         when (computerType) {
             0 -> move = RandomMoveComputer().makeRandomMove(createBaseParametersGroup(), turn)
-            1 -> move = BestMoveComputer().makeBestMove(createBaseParametersGroup(), turn)
+            1 -> move = BestMoveComputer().makeBestMove(createBaseParametersGroup(), turn, this)
         }
+        recreateBaseParams(baseParams)
+        BoardHelper().resetBoard(piecesList, board, context)
         Handler().postDelayed({
-            pieceFocused = move.piece
-            checkFlagsFromComputerMove(move)
-            endOfGame = GameHelper().checkChecks(createBaseParametersGroup(), rootView)
-            if (!endOfGame) {
-                endOfGame = checkEndOfGame(rootView)
-            }
-            if (!endOfGame){
-                if (turn == 0) {
-                    handleComputerVsComputerMove(whiteComp)
-                } else {
-                    handleComputerVsComputerMove(blackComp)
+            makeMoveAsComputer(move)
+            Handler().postDelayed({
+                endOfGame = GameHelper().checkChecks(createBaseParametersGroup(), rootView)
+                if (!endOfGame) {
+                    endOfGame = checkEndOfGame(rootView)
                 }
-            }
-        }, 250)
+                if (!endOfGame){
+                    if (turn == 0) {
+                        handleComputerVsComputerMove(whiteComp)
+                    } else {
+                        handleComputerVsComputerMove(blackComp)
+                    }
+                }
+            }, 300)
+        }, 50)
     }
 
-    private fun checkFlagsFromComputerMove(move: Move) {
+    fun makeMoveAsComputer(move: Move): BaseParametersGroup {
+        pieceFocused = move.piece
         val positionX = move.positionX
         val positionY = move.positionY
         if (isEnPassantWhite(positionY, positionX)) {
@@ -284,6 +289,154 @@ class UserInteractionLogic {
         } else {
             makeComputerMove(move)
         }
+        return createBaseParametersGroup()
+    }
+
+    fun simulateMove(move: Move): BaseParametersGroup {
+        pieceFocused = move.piece
+        val positionX = move.positionX
+        val positionY = move.positionY
+        if (isEnPassantWhite(positionY, positionX)) {
+            simulateWhiteEnPassantMove()
+        } else if (isEnPassantBlack(positionY, positionX)) {
+            simulateBlackEnPassantMove()
+        } else if (isSpecialBlackPawnMove(positionY)) {
+            simulateSpecialBlackPawnMove(positionY, positionX)
+        } else if (isSpecialWhitePawnMove(positionY)) {
+            simulateSpecialWhitePawnMove(positionY, positionX)
+        } else if (isWhiteKingLongCastle(positionY, positionX)) {
+            simulateWhiteKingLongCastleMove(positionY, positionX)
+        } else if (isWhiteKingShortCastle(positionY, positionX)) {
+            simulateWhiteKingShortCastleMove(positionY, positionX)
+        } else if (isBlackKingLongCastle(positionY, positionX)) {
+            simulateBlackKingLongCastleMove(positionY, positionX)
+        } else if (isBlackKingShortCastle(positionY, positionX)) {
+            simulateBlackKingShortCastleMove(positionY, positionX)
+        } else if (pieceFocused.type == 5 && pieceFocused.color == 0) {
+            resetWhiteKingCastlePossibilities()
+            simulateNormalMove(positionY, positionX)
+        } else if (pieceFocused.type == 3 && pieceFocused.color == 0 && pieceFocused.positionY == 7 && pieceFocused.positionX == 0) {
+            gameFlags.canCastleLongWhite = false
+            simulateNormalMove(positionY, positionX)
+        } else if (pieceFocused.type == 3 && pieceFocused.color == 0 && pieceFocused.positionY == 7 && pieceFocused.positionX == 7) {
+            gameFlags.canCastleShortWhite = false
+            simulateNormalMove(positionY, positionX)
+        } else if (pieceFocused.type == 5 && pieceFocused.color == 1) {
+            resetBlackKingCastlePossibilities()
+            simulateNormalMove(positionY, positionX)
+        } else if (pieceFocused.type == 3 && pieceFocused.color == 1 && pieceFocused.positionY == 0 && pieceFocused.positionX == 0) {
+            gameFlags.canCastleLongBlack = false
+            simulateNormalMove(positionY, positionX)
+        } else if (pieceFocused.type == 3 && pieceFocused.color == 1 && pieceFocused.positionY == 0 && pieceFocused.positionX == 7) {
+            gameFlags.canCastleShortBlack = false
+            simulateNormalMove(positionY, positionX)
+        } else {
+            simulateComputerMove(move)
+        }
+        return createBaseParametersGroup()
+    }
+
+    private fun simulateComputerMove(move: Move) {
+        if (isBlackPromotion(move.piece) || isWhitePromotion(move.piece)) {
+            simulatePromotePawn(move.positionY, move.positionX)
+        } else {
+            pieceFocused = findPiece(pieceFocused.positionY, pieceFocused.positionX)
+            simulateNormalMove(move.positionY, move.positionX)
+        }
+    }
+
+    private fun simulatePromotePawn(positionY: Int, positionX: Int) {
+        if (isPiece(board[positionY][positionX])) {
+            resetMovesWithNoCapture(pieceFocused.color)
+            findPiece(positionY, positionX).isActive = false
+        } else {
+            incrementMovesWithNoCapture(pieceFocused.color)
+        }
+        changePiecePositionPromotion(positionY, positionX, pieceFocused)
+        resetSpecialPawnMovesFlags()
+    }
+
+    private fun simulateNormalMove(positionY: Int, positionX: Int) {
+        if (isPiece(board[positionY][positionX])) {
+            resetMovesWithNoCapture(pieceFocused.color)
+            findPiece(positionY, positionX).isActive = false
+        } else {
+            incrementMovesWithNoCapture(pieceFocused.color)
+        }
+        changePiecePosition(positionY, positionX, pieceFocused)
+        resetSpecialPawnMovesFlags()
+    }
+
+    private fun simulateBlackKingShortCastleMove(positionY: Int, positionX: Int) {
+        incrementMovesWithNoCapture(pieceFocused.color)
+        resetBlackKingCastlePossibilities()
+        changePiecePosition(positionY, positionX, pieceFocused)
+        val rook = findPiece(0, 7)
+        changePiecePosition(0, 5, rook)
+    }
+
+    private fun simulateBlackKingLongCastleMove(positionY: Int, positionX: Int) {
+        incrementMovesWithNoCapture(pieceFocused.color)
+        resetBlackKingCastlePossibilities()
+        changePiecePosition(positionY, positionX, pieceFocused)
+        val rook = findPiece(0, 0)
+        changePiecePosition(0, 3, rook)
+    }
+
+    private fun simulateWhiteKingShortCastleMove(positionY: Int, positionX: Int) {
+        incrementMovesWithNoCapture(pieceFocused.color)
+        resetWhiteKingCastlePossibilities()
+        changePiecePosition(positionY, positionX, pieceFocused)
+        val rook = findPiece(7, 7)
+        changePiecePosition(7, 5, rook)
+    }
+
+    private fun simulateWhiteKingLongCastleMove(positionY: Int, positionX: Int) {
+        incrementMovesWithNoCapture(pieceFocused.color)
+        resetWhiteKingCastlePossibilities()
+        changePiecePosition(positionY, positionX, pieceFocused)
+        val rook = findPiece(7, 0)
+        changePiecePosition(7, 3, rook)
+    }
+
+    private fun simulateSpecialWhitePawnMove(positionY: Int, positionX: Int) {
+        incrementMovesWithNoCapture(pieceFocused.color)
+        pawnSpecialX = pieceFocused.positionX
+        pawnSpecialY = pieceFocused.positionY - 2
+        gameFlags.pawnSpecialWhite = true
+        changePiecePosition(positionY, positionX, pieceFocused)
+    }
+
+    private fun simulateSpecialBlackPawnMove(positionY: Int, positionX: Int) {
+        incrementMovesWithNoCapture(pieceFocused.color)
+        pawnSpecialX = pieceFocused.positionX
+        pawnSpecialY = pieceFocused.positionY + 2
+        gameFlags.pawnSpecialBlack = true
+        changePiecePosition(positionY, positionX, pieceFocused)
+    }
+
+    private fun simulateBlackEnPassantMove() {
+        findPiece(pawnSpecialY, pawnSpecialX).isActive = false
+        changePiecePosition(pawnSpecialY + 1, pawnSpecialX, pieceFocused)
+        resetMovesWithNoCapture(pieceFocused.color)
+        gameFlags.pawnSpecialWhite = false
+    }
+
+    private fun simulateWhiteEnPassantMove() {
+        findPiece(pawnSpecialY, pawnSpecialX).isActive = false
+        changePiecePosition(pawnSpecialY - 1, pawnSpecialX, pieceFocused)
+        resetMovesWithNoCapture(pieceFocused.color)
+        gameFlags.pawnSpecialBlack = false
+    }
+
+    private fun recreateBaseParams(baseParametersGroup: BaseParametersGroup) {
+        this.pieceFocused = baseParametersGroup.pieceParameters.piece
+        this.piecesList = baseParametersGroup.pieceParameters.piecesList
+        this.board = baseParametersGroup.pieceParameters.board
+        this.movesList = baseParametersGroup.pieceParameters.moves
+        this.gameFlags = baseParametersGroup.gameFlags
+        this.pawnSpecialX = baseParametersGroup.pawnBeforeMoveParameters.pawnSpecialX
+        this.pawnSpecialY = baseParametersGroup.pawnBeforeMoveParameters.pawnSpecialY
     }
 
     private fun handlePlayerMove(positionY: Int, positionX: Int, rootView: View) {
@@ -642,7 +795,6 @@ class UserInteractionLogic {
         } else {
             incrementMovesWithNoCapture(pieceFocused.color)
         }
-        pieceFocused = findPiece(pieceFocused.positionY, pieceFocused.positionX)
         changePiecePosition(positionY, positionX, pieceFocused)
         resetMovesList()
         resetBoard()
@@ -710,21 +862,13 @@ class UserInteractionLogic {
 
     private fun resetBoard() {
         chooseLayout.visibility = View.GONE
-        for (array in board) {
-            for (image in array) {
-                image.setImageDrawable(null)
-            }
-        }
+        BoardHelper().resetBoard(piecesList, board, context)
         for (array in moves) {
             for (image in array) {
                 image.visibility = View.GONE
             }
         }
-        for (piece in piecesList) {
-            if (piece.isActive) {
-                BoardHelper().drawPiece(piece, board, context)
-            }
-        }
+
     }
 
     private fun isPiece(image: ImageView): Boolean {
@@ -811,15 +955,16 @@ class UserInteractionLogic {
     }
 
     private fun createBaseParametersGroup(): BaseParametersGroup {
+        val pieces = createPiecesCopy(piecesList)
         return BaseParametersGroup(
             PieceParameters(
-                pieceFocused,
-                board,
-                movesList,
-                piecesList,
+                pieceFocused.copy(),
+                board.clone(),
+                movesList.clone(),
+                pieces,
                 context
             ),
-            gameFlags,
+            gameFlags.copy(),
             PawnBeforeMoveParameters(
                 pawnSpecialX,
                 pawnSpecialY,
@@ -827,5 +972,36 @@ class UserInteractionLogic {
                 gameFlags.pawnSpecialWhite
             )
         )
+    }
+
+    fun makeCopy(userInteractionLogic: UserInteractionLogic): UserInteractionLogic {
+        val userInteraction = UserInteractionLogic()
+
+        userInteraction.pieceFocused = userInteractionLogic.pieceFocused.copy()
+        userInteraction.board = userInteractionLogic.board.clone()
+        userInteraction.movesList = userInteractionLogic.movesList.clone()
+        userInteraction.moves = userInteractionLogic.moves.clone()
+        userInteraction.piecesList = createPiecesCopy(userInteractionLogic.piecesList)
+        userInteraction.context = userInteractionLogic.context
+        userInteraction.rootView = userInteractionLogic.rootView
+        userInteraction.gameFlags = userInteractionLogic.gameFlags.copy()
+        userInteraction.moveX = userInteractionLogic.moveX
+        userInteraction.moveY = userInteractionLogic.moveY
+        userInteraction.turn = userInteractionLogic.turn
+        userInteraction.pawnSpecialX = userInteractionLogic.pawnSpecialX
+        userInteraction.pawnSpecialY = userInteractionLogic.pawnSpecialY
+        userInteraction.movesWithNoCaptureWhite = userInteractionLogic.movesWithNoCaptureWhite
+        userInteraction.movesWithNoCaptureBlack = userInteractionLogic.movesWithNoCaptureBlack
+        userInteraction.chooseLayout = userInteractionLogic.chooseLayout
+
+        return userInteraction
+    }
+
+    private fun createPiecesCopy(piecesList: ArrayList<Piece>): ArrayList<Piece> {
+        val pieces = ArrayList<Piece>()
+        for (piece in piecesList) {
+            pieces.add((piece.copy()))
+        }
+        return pieces
     }
 }

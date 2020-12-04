@@ -61,12 +61,7 @@ class BishopHelper {
                 ) {
                     moves[baseParametersGroup.pieceParameters.piece.positionY + i][baseParametersGroup.pieceParameters.piece.positionX - i] =
                         true
-                    if (isTake(
-                            baseParametersGroup,
-                            baseParametersGroup.pieceParameters.piece.positionY + i,
-                            baseParametersGroup.pieceParameters.piece.positionX - i
-                        )
-                    ) {
+                    if (BoardHelper().isPiece(baseParametersGroup.pieceParameters.board[baseParametersGroup.pieceParameters.piece.positionY + i][baseParametersGroup.pieceParameters.piece.positionX - i])) {
                         return
                     }
                 } else {
@@ -92,12 +87,7 @@ class BishopHelper {
                 ) {
                     moves[baseParametersGroup.pieceParameters.piece.positionY + i][baseParametersGroup.pieceParameters.piece.positionX + i] =
                         true
-                    if (isTake(
-                            baseParametersGroup,
-                            baseParametersGroup.pieceParameters.piece.positionY + i,
-                            baseParametersGroup.pieceParameters.piece.positionX + i
-                        )
-                    ) {
+                    if (BoardHelper().isPiece(baseParametersGroup.pieceParameters.board[baseParametersGroup.pieceParameters.piece.positionY + i][baseParametersGroup.pieceParameters.piece.positionX + i])) {
                         return
                     }
                 } else {
@@ -123,12 +113,7 @@ class BishopHelper {
                 ) {
                     moves[baseParametersGroup.pieceParameters.piece.positionY - i][baseParametersGroup.pieceParameters.piece.positionX + i] =
                         true
-                    if (isTake(
-                            baseParametersGroup,
-                            baseParametersGroup.pieceParameters.piece.positionY - i,
-                            baseParametersGroup.pieceParameters.piece.positionX + i
-                        )
-                    ) {
+                    if (BoardHelper().isPiece(baseParametersGroup.pieceParameters.board[baseParametersGroup.pieceParameters.piece.positionY - i][baseParametersGroup.pieceParameters.piece.positionX + i])) {
                         return
                     }
                 } else {
@@ -154,12 +139,7 @@ class BishopHelper {
                 ) {
                     moves[baseParametersGroup.pieceParameters.piece.positionY - i][baseParametersGroup.pieceParameters.piece.positionX - i] =
                         true
-                    if (isTake(
-                            baseParametersGroup,
-                            baseParametersGroup.pieceParameters.piece.positionY - i,
-                            baseParametersGroup.pieceParameters.piece.positionX - i
-                        )
-                    ) {
+                    if (BoardHelper().isPiece(baseParametersGroup.pieceParameters.board[baseParametersGroup.pieceParameters.piece.positionY - i][baseParametersGroup.pieceParameters.piece.positionX - i])) {
                         return
                     }
                 } else {
@@ -179,14 +159,8 @@ class BishopHelper {
             if (baseParametersGroup.pieceParameters.piece.positionX - i >= 0 && baseParametersGroup.pieceParameters.piece.positionY + i <= 7) {
                 moves[baseParametersGroup.pieceParameters.piece.positionY + i][baseParametersGroup.pieceParameters.piece.positionX - i] =
                     true
-                if (isTake(
-                        baseParametersGroup,
-                        baseParametersGroup.pieceParameters.piece.positionY + i,
-                        baseParametersGroup.pieceParameters.piece.positionX - i
-                    )
-                ) {
+                if (BoardHelper().isPiece(baseParametersGroup.pieceParameters.board[baseParametersGroup.pieceParameters.piece.positionY + i][baseParametersGroup.pieceParameters.piece.positionX - i])) {
                     return
-
                 }
             } else {
                 return
@@ -202,12 +176,7 @@ class BishopHelper {
             if (baseParametersGroup.pieceParameters.piece.positionX + i <= 7 && baseParametersGroup.pieceParameters.piece.positionY + i <= 7) {
                 moves[baseParametersGroup.pieceParameters.piece.positionY + i][baseParametersGroup.pieceParameters.piece.positionX + i] =
                     true
-                if (isTake(
-                        baseParametersGroup,
-                        baseParametersGroup.pieceParameters.piece.positionY + i,
-                        baseParametersGroup.pieceParameters.piece.positionX + i
-                    )
-                ) {
+                if (BoardHelper().isPiece(baseParametersGroup.pieceParameters.board[baseParametersGroup.pieceParameters.piece.positionY + i][baseParametersGroup.pieceParameters.piece.positionX + i])) {
                     return
                 }
             } else {
@@ -224,12 +193,7 @@ class BishopHelper {
             if (baseParametersGroup.pieceParameters.piece.positionX + i <= 7 && baseParametersGroup.pieceParameters.piece.positionY - i >= 0) {
                 moves[baseParametersGroup.pieceParameters.piece.positionY - i][baseParametersGroup.pieceParameters.piece.positionX + i] =
                     true
-                if (isTake(
-                        baseParametersGroup,
-                        baseParametersGroup.pieceParameters.piece.positionY - i,
-                        baseParametersGroup.pieceParameters.piece.positionX + i
-                    )
-                ) {
+                if (BoardHelper().isPiece(baseParametersGroup.pieceParameters.board[baseParametersGroup.pieceParameters.piece.positionY - i][baseParametersGroup.pieceParameters.piece.positionX + i])) {
                     return
                 }
             } else {
@@ -246,36 +210,13 @@ class BishopHelper {
             if (baseParametersGroup.pieceParameters.piece.positionX - i >= 0 && baseParametersGroup.pieceParameters.piece.positionY - i >= 0) {
                 moves[baseParametersGroup.pieceParameters.piece.positionY - i][baseParametersGroup.pieceParameters.piece.positionX - i] =
                     true
-                if (isTake(
-                        baseParametersGroup,
-                        baseParametersGroup.pieceParameters.piece.positionY - i,
-                        baseParametersGroup.pieceParameters.piece.positionX - i
-                    )
-                ) {
+                if (BoardHelper().isPiece(baseParametersGroup.pieceParameters.board[baseParametersGroup.pieceParameters.piece.positionY - i][baseParametersGroup.pieceParameters.piece.positionX - i])) {
                     return
                 }
+
             } else {
                 return
             }
         }
-    }
-
-    private fun isTake(
-        baseParametersGroup: BaseParametersGroup,
-        positionY: Int,
-        positionX: Int
-    ): Boolean {
-        if (BoardHelper().isPiece(baseParametersGroup.pieceParameters.board[positionY][positionX])) {
-            if (PiecesHelper().isOppositeColorPiece(
-                    baseParametersGroup.pieceParameters,
-                    positionY,
-                    positionX
-                )
-            ) {
-                return true
-            }
-            return false
-        }
-        return false
     }
 }
