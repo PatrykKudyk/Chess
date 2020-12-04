@@ -19,14 +19,255 @@ class MoveValueCalculator {
             calculatePawnMiddleOccupation(baseParametersGroup.pieceParameters.piecesList, turn)
 //        val middleMoveOccupation = calculateMiddleMoveOccupation(baseParametersGroup, turn)
         val checkAdvantage = calculateCheckAdvantage(baseParametersGroup, turn)
-        val pawnStructureRatio = calculatePawnStructureRatio(baseParametersGroup.pieceParameters.piecesList, turn)
+        val pawnStructureRatio =
+            calculatePawnStructureRatio(baseParametersGroup.pieceParameters.piecesList, turn)
 
-        return materialAdvantage + pawnMiddleOccupation + checkAdvantage //+ middleMoveOccupation //+ kingSafety
+        return materialAdvantage + pawnMiddleOccupation + checkAdvantage + pawnStructureRatio//+ middleMoveOccupation //+ kingSafety
     }
 
-    private fun calculatePawnStructureRatio(piecesList: java.util.ArrayList<Piece>, turn: Int): Int {
-        TODO("Not yet implemented")
+    private fun calculatePawnStructureRatio(piecesList: ArrayList<Piece>, turn: Int): Int {
+        val pawnTable = PiecesHelper().createPawnTable(piecesList)
+        val pointsForTriplingEnemiesPawns = calculatePointsForTriplingPawns(pawnTable, turn)
+        val pointsForDoublingEnemiesPawns = calculatePointsForDoublingPawns(pawnTable, turn)
+
+        return pointsForTriplingEnemiesPawns + pointsForDoublingEnemiesPawns
     }
+
+    private fun calculatePointsForDoublingPawns(pawnTable: Array<Array<Int>>, turn: Int): Int {
+        var points = 0
+        val oppositeColor = if (turn == 0) {
+            1
+        } else {
+            0
+        }
+        for (i in 0..7) {
+            var enemyPawns = 0
+            var enemyPawn1x = -1
+            var enemyPawn2x = -1
+            var enemyPawn1y = -1
+            var enemyPawn2y = -1
+            var allyPawns = 0
+            var allyPawn1x = -1
+            var allyPawn2x = -1
+            var allyPawn1y = -1
+            var allyPawn2y = -1
+
+            for (j in 0..7) {
+                if (pawnTable[j][i] == oppositeColor) {
+                    enemyPawns++
+                    if (enemyPawn1x != -1) {
+                        enemyPawn2x = i
+                        enemyPawn2y = j
+                    } else {
+                        enemyPawn1x = i
+                        enemyPawn1y = j
+                    }
+                }
+                if (pawnTable[j][i] == turn) {
+                    allyPawns++
+                    if (allyPawn1x != -1) {
+                        allyPawn2x = i
+                        allyPawn2y = j
+                    } else {
+                        allyPawn1x = i
+                        allyPawn1y = j
+                    }
+                }
+            }
+            if (enemyPawns == 2) {
+                if (checkIfTwoPawnsAreIsolated(
+                        pawnTable,
+                        enemyPawn1x,
+                        enemyPawn1y,
+                        enemyPawn2x,
+                        enemyPawn2y,
+                        oppositeColor
+                    )
+                ) {
+                    points += 9
+                }
+            }
+            if (allyPawns == 2) {
+                if (checkIfTwoPawnsAreIsolated(
+                        pawnTable,
+                        allyPawn1x,
+                        allyPawn1y,
+                        allyPawn2x,
+                        allyPawn2y,
+                        oppositeColor
+                    )
+                ) {
+                    points -= 9
+                }
+            }
+        }
+        return points
+    }
+
+    private fun checkIfTwoPawnsAreIsolated(
+        pawnTable: Array<Array<Int>>,
+        pawn1x: Int,
+        pawn1y: Int,
+        pawn2x: Int,
+        pawn2y: Int,
+        color: Int
+    ): Boolean {
+        if (pawn1x == 0) {
+            return checkIfTwoPawnsAreIsolatedForLeftColumn(pawnTable, pawn1x, pawn1y, pawn2x, pawn2y, color)
+        } else if (pawn1x == 7) {
+            return checkIfTwoPawnsAreIsolatedForRightColumn(pawnTable, pawn1x, pawn1y, pawn2x, pawn2y, color)
+        } else {
+            return checkIfTwoPawnsAreIsolatedForCenterColumn(pawnTable, pawn1x, pawn1y, pawn2x, pawn2y, color)
+        }
+    }
+
+    private fun checkIfTwoPawnsAreIsolatedForCenterColumn(
+        pawnTable: Array<Array<Int>>,
+        pawn1x: Int,
+        pawn1y: Int,
+        pawn2x: Int,
+        pawn2y: Int,
+        color: Int
+    ): Boolean {
+        if (pawnTable[pawn1y - 1][pawn1x] == color)
+            return false
+        if (pawnTable[pawn1y - 1][pawn1x - 1] == color)
+            return false
+        if (pawnTable[pawn1y][pawn1x - 1] == color)
+            return false
+        if (pawnTable[pawn1y + 1][pawn1x - 1] == color)
+            return false
+        if (pawnTable[pawn1y - 1][pawn1x + 1] == color)
+            return false
+        if (pawnTable[pawn1y][pawn1x + 1] == color)
+            return false
+        if (pawnTable[pawn1y + 1][pawn1x + 1] == color)
+            return false
+        if (pawn1y + 1 != pawn2y) {
+            if (pawnTable[pawn1y - 1][pawn1x] == color)
+                return false
+        }
+        if (pawn2y - 1 != pawn1y) {
+            if (pawnTable[pawn2y - 1][pawn2x] == color)
+                return false
+        }
+        if (pawnTable[pawn2y - 1][pawn2x - 1] == color)
+            return false
+        if (pawnTable[pawn2y][pawn2x - 1] == color)
+            return false
+        if (pawnTable[pawn2y + 1][pawn2x - 1] == color)
+            return false
+        if (pawnTable[pawn2y - 1][pawn2x + 1] == color)
+            return false
+        if (pawnTable[pawn2y][pawn2x + 1] == color)
+            return false
+        if (pawnTable[pawn2y + 1][pawn2x + 1] == color)
+            return false
+        if (pawnTable[pawn2y - 1][pawn2x] == color)
+            return false
+
+        return true
+    }
+
+    private fun checkIfTwoPawnsAreIsolatedForRightColumn(
+        pawnTable: Array<Array<Int>>,
+        pawn1x: Int,
+        pawn1y: Int,
+        pawn2x: Int,
+        pawn2y: Int,
+        color: Int
+    ): Boolean {
+        if (pawnTable[pawn1y - 1][pawn1x] == color)
+            return false
+        if (pawnTable[pawn1y - 1][pawn1x - 1] == color)
+            return false
+        if (pawnTable[pawn1y][pawn1x - 1] == color)
+            return false
+        if (pawnTable[pawn1y + 1][pawn1x - 1] == color)
+            return false
+        if (pawn1y + 1 != pawn2y) {
+            if (pawnTable[pawn1y - 1][pawn1x] == color)
+                return false
+        }
+        if (pawn2y - 1 != pawn1y) {
+            if (pawnTable[pawn2y - 1][pawn2x] == color)
+                return false
+        }
+        if (pawnTable[pawn2y - 1][pawn2x - 1] == color)
+            return false
+        if (pawnTable[pawn2y][pawn2x - 1] == color)
+            return false
+        if (pawnTable[pawn2y + 1][pawn2x - 1] == color)
+            return false
+        if (pawnTable[pawn2y - 1][pawn2x] == color)
+            return false
+
+        return true
+    }
+
+    private fun checkIfTwoPawnsAreIsolatedForLeftColumn(
+        pawnTable: Array<Array<Int>>,
+        pawn1x: Int,
+        pawn1y: Int,
+        pawn2x: Int,
+        pawn2y: Int,
+        color: Int
+    ): Boolean {
+        if (pawnTable[pawn1y - 1][pawn1x] == color)
+            return false
+        if (pawnTable[pawn1y - 1][pawn1x + 1] == color)
+            return false
+        if (pawnTable[pawn1y][pawn1x + 1] == color)
+            return false
+        if (pawnTable[pawn1y + 1][pawn1x + 1] == color)
+            return false
+        if (pawn1y + 1 != pawn2y) {
+            if (pawnTable[pawn1y - 1][pawn1x] == color)
+                return false
+        }
+        if (pawn2y - 1 != pawn1y) {
+            if (pawnTable[pawn2y - 1][pawn2x] == color)
+                return false
+        }
+        if (pawnTable[pawn2y - 1][pawn2x + 1] == color)
+            return false
+        if (pawnTable[pawn2y][pawn2x + 1] == color)
+            return false
+        if (pawnTable[pawn2y + 1][pawn2x + 1] == color)
+            return false
+        if (pawnTable[pawn2y - 1][pawn2x] == color)
+            return false
+
+        return true
+    }
+
+    private fun calculatePointsForTriplingPawns(pawnTable: Array<Array<Int>>, turn: Int): Int {
+        var points = 0
+        val oppositeColor = if (turn == 0) {
+            1
+        } else {
+            0
+        }
+        for (i in 0..7) {
+            var enemyPawns = 0
+            var ownPawns = 0
+            for (j in 0..7) {
+                if (pawnTable[j][i] == oppositeColor) {
+                    enemyPawns++
+                } else if (pawnTable[j][i] == turn) {
+                    ownPawns++
+                }
+            }
+            if (enemyPawns >= 3) {
+                points += 15
+            }
+            if (ownPawns >= 3) {
+                points -= 15
+            }
+        }
+        return points
+    }
+
 
     private fun calculateCheckAdvantage(baseParametersGroup: BaseParametersGroup, turn: Int): Int {
         var advantage = 0
@@ -76,9 +317,11 @@ class MoveValueCalculator {
         turn: Int
     ): Int {
         var value = 0
-        for (piece in piecesList) {
-            if ((piece.positionY == 3 || piece.positionY == 4) && (piece.positionX == 3 || piece.positionX == 4) && piece.color == turn) {
-                value += 30
+        if (PiecesHelper().getActivePiecesAmount(piecesList) > 24) {
+            for (piece in piecesList) {
+                if ((piece.positionY == 3 || piece.positionY == 4) && (piece.positionX == 3 || piece.positionX == 4) && piece.color == turn) {
+                    value += 30
+                }
             }
         }
         return value

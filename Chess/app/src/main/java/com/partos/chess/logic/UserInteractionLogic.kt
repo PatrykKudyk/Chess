@@ -338,11 +338,22 @@ class UserInteractionLogic {
 
     private fun simulateComputerMove(move: Move) {
         if (isBlackPromotion(move.piece) || isWhitePromotion(move.piece)) {
-            promotePawn(move.positionY, move.positionX)
+            simulatePromotePawn(move.positionY, move.positionX)
         } else {
             pieceFocused = findPiece(pieceFocused.positionY, pieceFocused.positionX)
             simulateNormalMove(move.positionY, move.positionX)
         }
+    }
+
+    private fun simulatePromotePawn(positionY: Int, positionX: Int) {
+        if (isPiece(board[positionY][positionX])) {
+            resetMovesWithNoCapture(pieceFocused.color)
+            findPiece(positionY, positionX).isActive = false
+        } else {
+            incrementMovesWithNoCapture(pieceFocused.color)
+        }
+        changePiecePositionPromotion(positionY, positionX, pieceFocused)
+        resetSpecialPawnMovesFlags()
     }
 
     private fun simulateNormalMove(positionY: Int, positionX: Int) {

@@ -386,4 +386,26 @@ class PiecesHelper {
         }
         return amount
     }
+
+    fun createPawnTable(piecesList: ArrayList<Piece>): Array<Array<Int>> {
+        val piecesArray = createEmptyPiecesArray()
+        for (piece in piecesList) {
+            if (piece.isActive && piece.type == 0) {
+                piecesArray[piece.positionY][piece.positionX] = piece.color
+            }
+        }
+        return piecesArray
+    }
+
+    private fun createEmptyPiecesArray(): Array<Array<Int>> {
+        val array1 = arrayOf(-1, -1, -1, -1, -1, -1, -1, -1)
+        val array2 = arrayOf(-1, -1, -1, -1, -1, -1, -1, -1)
+        val array3 = arrayOf(-1, -1, -1, -1, -1, -1, -1, -1)
+        val array4 = arrayOf(-1, -1, -1, -1, -1, -1, -1, -1)
+        val array5 = arrayOf(-1, -1, -1, -1, -1, -1, -1, -1)
+        val array6 = arrayOf(-1, -1, -1, -1, -1, -1, -1, -1)
+        val array7 = arrayOf(-1, -1, -1, -1, -1, -1, -1, -1)
+        val array8 = arrayOf(-1, -1, -1, -1, -1, -1, -1, -1)
+        return arrayOf(array1, array2, array3, array4, array5, array6, array7, array8)
+    }
 }
