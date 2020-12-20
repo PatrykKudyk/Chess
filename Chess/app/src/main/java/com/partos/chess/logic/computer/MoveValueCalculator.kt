@@ -19,10 +19,10 @@ class MoveValueCalculator {
             calculatePawnMiddleOccupation(baseParametersGroup.pieceParameters.piecesList, turn)
 //        val middleMoveOccupation = calculateMiddleMoveOccupation(baseParametersGroup, turn)
         val checkAdvantage = calculateCheckAdvantage(baseParametersGroup, turn)
-        val pawnStructureRatio =
-            calculatePawnStructureRatio(baseParametersGroup.pieceParameters.piecesList, turn)
+//        val pawnStructureRatio =
+//            calculatePawnStructureRatio(baseParametersGroup.pieceParameters.piecesList, turn)
 
-        return materialAdvantage + pawnMiddleOccupation + checkAdvantage + pawnStructureRatio//+ middleMoveOccupation //+ kingSafety
+        return materialAdvantage + pawnMiddleOccupation + checkAdvantage //+ pawnStructureRatio//+ middleMoveOccupation //+ kingSafety
     }
 
     private fun calculatePawnStructureRatio(piecesList: ArrayList<Piece>, turn: Int): Int {

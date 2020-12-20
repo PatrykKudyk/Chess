@@ -8,6 +8,7 @@ import android.widget.LinearLayout
 import androidx.fragment.app.FragmentManager
 import com.partos.chess.R
 import com.partos.chess.logic.computer.BestMoveComputer
+import com.partos.chess.logic.computer.MiniMaxComputer
 import com.partos.chess.logic.computer.RandomMoveComputer
 import com.partos.chess.logic.helpers.BoardHelper
 import com.partos.chess.logic.helpers.GameHelper
@@ -185,6 +186,7 @@ class UserInteractionLogic {
         when (computerType) {
             0 -> move = RandomMoveComputer().makeRandomMove(createBaseParametersGroup(), turn)
             1 -> move = BestMoveComputer().makeBestMove(createBaseParametersGroup(), turn, this)
+            2 -> move = MiniMaxComputer().getBestMove(createBaseParametersGroup(), turn, this, 1)
         }
         Handler().postDelayed({
             pieceFocused = move.piece
@@ -203,6 +205,7 @@ class UserInteractionLogic {
         when (computerType) {
             0 -> move = RandomMoveComputer().makeRandomMove(createBaseParametersGroup(), turn)
             1 -> move = BestMoveComputer().makeBestMove(createBaseParametersGroup(), turn, this)
+            2 -> move = MiniMaxComputer().getBestMove(createBaseParametersGroup(), turn, this, 2)
         }
         recreateBaseParams(baseParams)
         BoardHelper().resetBoard(piecesList, board, context)
@@ -224,7 +227,7 @@ class UserInteractionLogic {
         }, 50)
     }
 
-    fun makeMoveAsComputer(move: Move): BaseParametersGroup {
+    private fun makeMoveAsComputer(move: Move): BaseParametersGroup {
         pieceFocused = move.piece
         val positionX = move.positionX
         val positionY = move.positionY
@@ -416,15 +419,15 @@ class UserInteractionLogic {
     }
 
     private fun simulateBlackEnPassantMove() {
-        findPiece(pawnSpecialY, pawnSpecialX).isActive = false
         changePiecePosition(pawnSpecialY + 1, pawnSpecialX, pieceFocused)
+        findPiece(pawnSpecialY, pawnSpecialX).isActive = false
         resetMovesWithNoCapture(pieceFocused.color)
         gameFlags.pawnSpecialWhite = false
     }
 
     private fun simulateWhiteEnPassantMove() {
-        findPiece(pawnSpecialY, pawnSpecialX).isActive = false
         changePiecePosition(pawnSpecialY - 1, pawnSpecialX, pieceFocused)
+        findPiece(pawnSpecialY, pawnSpecialX).isActive = false
         resetMovesWithNoCapture(pieceFocused.color)
         gameFlags.pawnSpecialBlack = false
     }
@@ -598,15 +601,18 @@ class UserInteractionLogic {
     }
 
     private fun changePiecePosition(positionY: Int, positionX: Int, piece: Piece) {
-        piecesList.set(
-            piecesList.indexOf(piece), Piece(
-                piece.type,
-                piece.color,
-                positionX,
-                positionY,
-                true
+        val index = piecesList.indexOf(piece)
+        if (piece != Piece(0,0,0,0, false)) {
+            piecesList.set(
+                index, Piece(
+                    piece.type,
+                    piece.color,
+                    positionX,
+                    positionY,
+                    true
+                )
             )
-        )
+        }
     }
 
     private fun promotePawn(positionY: Int, positionX: Int) {
@@ -954,7 +960,7 @@ class UserInteractionLogic {
         chooseQueen = rootView.findViewById(R.id.board_choose_queen)
     }
 
-    private fun createBaseParametersGroup(): BaseParametersGroup {
+    fun createBaseParametersGroup(): BaseParametersGroup {
         val pieces = createPiecesCopy(piecesList)
         return BaseParametersGroup(
             PieceParameters(
@@ -1003,5 +1009,16 @@ class UserInteractionLogic {
             pieces.add((piece.copy()))
         }
         return pieces
+    }
+
+    fun setBaseParameters(baseParameters: BaseParametersGroup) {
+        this.pieceFocused = baseParameters.pieceParameters.piece.copy()
+        this.board = baseParameters.pieceParameters.board.clone()
+        this.movesList = baseParameters.pieceParameters.moves.clone()
+        this.piecesList = createPiecesCopy(baseParameters.pieceParameters.piecesList)
+        this.context = baseParameters.pieceParameters.context
+        this.gameFlags = baseParameters.gameFlags.copy()
+        this.pawnSpecialX = baseParameters.pawnBeforeMoveParameters.pawnSpecialX
+        this.pawnSpecialY = baseParameters.pawnBeforeMoveParameters.pawnSpecialY
     }
 }
