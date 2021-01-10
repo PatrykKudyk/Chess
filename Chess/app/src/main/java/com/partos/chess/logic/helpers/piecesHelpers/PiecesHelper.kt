@@ -356,23 +356,6 @@ class PiecesHelper {
         return false
     }
 
-    fun isOppositeColorPiece(
-        pieceParams: PieceParameters,
-        positionY: Int,
-        positionX: Int
-    ): Boolean {
-        val colorOpposite = if (pieceParams.piece.color == 0) {
-            1
-        } else {
-            0
-        }
-        return findPiece(
-            (positionY),
-            (positionX),
-            pieceParams.piecesList
-        ).color == colorOpposite
-    }
-
     fun hasKingMoves(baseParametersGroup: BaseParametersGroup): Boolean {
         return KingHelper().checkIfKingHasMoves(baseParametersGroup)
     }

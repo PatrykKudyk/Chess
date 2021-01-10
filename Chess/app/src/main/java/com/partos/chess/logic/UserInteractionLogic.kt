@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.fragment.app.FragmentManager
 import com.partos.chess.R
+import com.partos.chess.enums.PieceType
 import com.partos.chess.logic.computer.BestMoveComputer
 import com.partos.chess.logic.computer.MiniMaxComputer
 import com.partos.chess.logic.computer.RandomMoveComputer
@@ -14,10 +15,11 @@ import com.partos.chess.logic.helpers.BoardHelper
 import com.partos.chess.logic.helpers.GameHelper
 import com.partos.chess.logic.helpers.MovesHelper
 import com.partos.chess.logic.helpers.piecesHelpers.PiecesHelper
-import com.partos.chess.models.GameFlags
-import com.partos.chess.models.Move
-import com.partos.chess.models.Piece
-import com.partos.chess.models.parameters.*
+import com.partos.chess.models.*
+import com.partos.chess.models.parameters.BaseParametersGroup
+import com.partos.chess.models.parameters.PawnBeforeMoveParameters
+import com.partos.chess.models.parameters.PieceParameters
+import com.partos.chess.models.parameters.TakenEndGameParameters
 import kotlin.random.Random
 
 class UserInteractionLogic {
@@ -186,7 +188,7 @@ class UserInteractionLogic {
         when (computerType) {
             0 -> move = RandomMoveComputer().makeRandomMove(createBaseParametersGroup(), turn)
             1 -> move = BestMoveComputer().makeBestMove(createBaseParametersGroup(), turn, this)
-            2 -> move = MiniMaxComputer().getBestMove(createBaseParametersGroup(), turn, this, 1)
+            2 -> move = MiniMaxComputer().getBestMove(createGameDescription(), 1, turn)
         }
         Handler().postDelayed({
             pieceFocused = move.piece
@@ -205,7 +207,7 @@ class UserInteractionLogic {
         when (computerType) {
             0 -> move = RandomMoveComputer().makeRandomMove(createBaseParametersGroup(), turn)
             1 -> move = BestMoveComputer().makeBestMove(createBaseParametersGroup(), turn, this)
-            2 -> move = MiniMaxComputer().getBestMove(createBaseParametersGroup(), turn, this, 2)
+            2 -> move = MiniMaxComputer().getBestMove(createGameDescription(), 1, turn)
         }
         recreateBaseParams(baseParams)
         BoardHelper().resetBoard(piecesList, board, context)
@@ -216,7 +218,7 @@ class UserInteractionLogic {
                 if (!endOfGame) {
                     endOfGame = checkEndOfGame(rootView)
                 }
-                if (!endOfGame){
+                if (!endOfGame) {
                     if (turn == 0) {
                         handleComputerVsComputerMove(whiteComp)
                     } else {
@@ -602,7 +604,7 @@ class UserInteractionLogic {
 
     private fun changePiecePosition(positionY: Int, positionX: Int, piece: Piece) {
         val index = piecesList.indexOf(piece)
-        if (piece != Piece(0,0,0,0, false)) {
+        if (piece != Piece(0, 0, 0, 0, false)) {
             piecesList.set(
                 index, Piece(
                     piece.type,
@@ -1020,5 +1022,79 @@ class UserInteractionLogic {
         this.gameFlags = baseParameters.gameFlags.copy()
         this.pawnSpecialX = baseParameters.pawnBeforeMoveParameters.pawnSpecialX
         this.pawnSpecialY = baseParameters.pawnBeforeMoveParameters.pawnSpecialY
+    }
+
+    private fun createGameDescription(): GameDescription {
+        return GameDescription(
+            gameFlags,
+            createBoardFromPiecesList(),
+            Coordinates(pawnSpecialX, pawnSpecialY)
+        )
+    }
+
+    private fun createBoardFromPiecesList(): Array<Array<PieceType>> {
+        val arr1 = Array(8) { PieceType.Empty }
+        val arr2 = Array(8) { PieceType.Empty }
+        val arr3 = Array(8) { PieceType.Empty }
+        val arr4 = Array(8) { PieceType.Empty }
+        val arr5 = Array(8) { PieceType.Empty }
+        val arr6 = Array(8) { PieceType.Empty }
+        val arr7 = Array(8) { PieceType.Empty }
+        val arr8 = Array(8) { PieceType.Empty }
+        val board = arrayOf(arr1, arr2, arr3, arr4, arr5, arr6, arr7, arr8)
+        for (piece in piecesList) {
+            if (piece.isActive) {
+                board[piece.positionY][piece.positionX] = getPieceCode(piece.type, piece.color)
+            }
+        }
+        return board
+    }
+
+    private fun getPieceCode(type: Int, color: Int): PieceType {
+        when (type) {
+            0 -> {
+                return if (color == 0) {
+                    PieceType.WhitePawn
+                } else {
+                    PieceType.BlackPawn
+                }
+            }
+            1 -> {
+                return if (color == 0) {
+                    PieceType.WhiteBishop
+                } else {
+                    PieceType.BlackBishop
+                }
+            }
+            2 -> {
+                return if (color == 0) {
+                    PieceType.WhiteKnight
+                } else {
+                    PieceType.BlackKnight
+                }
+            }
+            3 -> {
+                return if (color == 0) {
+                    PieceType.WhiteRook
+                } else {
+                    PieceType.BlackRook
+                }
+            }
+            4 -> {
+                return if (color == 0) {
+                    PieceType.WhiteQueen
+                } else {
+                    PieceType.BlackQueen
+                }
+            }
+            5 -> {
+                return if (color == 0) {
+                    PieceType.WhiteKing
+                } else {
+                    PieceType.BlackKing
+                }
+            }
+        }
+        return PieceType.Empty
     }
 }
