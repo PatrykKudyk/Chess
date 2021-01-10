@@ -22,10 +22,10 @@ class PiecesBoardHelper {
                 movesAndFlags = PawnHelper().getBlackPawnMoves(pieceY, pieceX, gameDescription)
             }
             PieceType.WhiteBishop -> {
-                movesAndFlags
+                movesAndFlags = BishopHelper().showWhiteBishopMoves(pieceY, pieceX, gameDescription)
             }
             PieceType.BlackBishop -> {
-
+                movesAndFlags = BishopHelper().showBlackBishopMoves(pieceY, pieceX, gameDescription)
             }
             PieceType.WhiteKnight -> {
 
@@ -69,10 +69,10 @@ class PiecesBoardHelper {
                 moves = PawnHelper().checkBlackPawnMoves(pieceY, pieceX, gameDescription)
             }
             PieceType.WhiteBishop -> {
-
+                moves = BishopHelper().checkWhiteBishopMoves(pieceY, pieceX, gameDescription)
             }
             PieceType.BlackBishop -> {
-
+                moves = BishopHelper().checkBlackBishopMoves(pieceY, pieceX, gameDescription)
             }
             PieceType.WhiteKnight -> {
 
