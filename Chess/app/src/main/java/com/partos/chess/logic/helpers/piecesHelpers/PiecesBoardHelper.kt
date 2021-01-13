@@ -40,10 +40,10 @@ class PiecesBoardHelper {
                 movesAndFlags = RookHelper().showBlackRookMoves(pieceY, pieceX, gameDescription)
             }
             PieceType.WhiteQueen -> {
-
+                movesAndFlags = QueenHelper().showWhiteQueenMoves(pieceY, pieceX, gameDescription)
             }
             PieceType.BlackQueen -> {
-
+                movesAndFlags = QueenHelper().showBlackQueenMoves(pieceY, pieceX, gameDescription)
             }
             PieceType.WhiteKing -> {
 
@@ -87,10 +87,10 @@ class PiecesBoardHelper {
                 moves = RookHelper().checkBlackRookMoves(pieceY, pieceX, gameDescription)
             }
             PieceType.WhiteQueen -> {
-
+                moves = QueenHelper().checkWhiteQueenMoves(pieceY, pieceX, gameDescription)
             }
             PieceType.BlackQueen -> {
-
+                moves = QueenHelper().checkBlackQueenMoves(pieceY, pieceX, gameDescription)
             }
             PieceType.WhiteKing -> {
 
