@@ -246,6 +246,8 @@ class BishopHelper {
                     } else if (color == 1 && PiecesEnumHelper().isWhite(gameDescription.board[pieceY + i][pieceX - i])) {
                         moves[pieceY + i][pieceX - i] = true
                         return
+                    } else {
+                        return
                     }
                 } else {
                     return
@@ -281,6 +283,8 @@ class BishopHelper {
                         return
                     } else if (color == 1 && PiecesEnumHelper().isWhite(gameDescription.board[pieceY + i][pieceX + i])) {
                         moves[pieceY + i][pieceX + i] = true
+                        return
+                    } else {
                         return
                     }
                 } else {
@@ -318,6 +322,8 @@ class BishopHelper {
                     } else if (color == 1 && PiecesEnumHelper().isWhite(gameDescription.board[pieceY - i][pieceX + i])) {
                         moves[pieceY - i][pieceX + i] = true
                         return
+                    } else {
+                        return
                     }
                 } else {
                     return
@@ -353,6 +359,8 @@ class BishopHelper {
                         return
                     } else if (color == 1 && PiecesEnumHelper().isWhite(gameDescription.board[pieceY - i][pieceX - i])) {
                         moves[pieceY - i][pieceX - i] = true
+                        return
+                    } else {
                         return
                     }
                 } else {
@@ -450,6 +458,8 @@ class BishopHelper {
                 } else if (color == 1 && PiecesEnumHelper().isWhite(gameDescription.board[pieceY + i][pieceX - i])) {
                     moves[pieceY + i][pieceX - i] = true
                     return
+                } else {
+                    return
                 }
             } else {
                 return
@@ -474,6 +484,8 @@ class BishopHelper {
                     return
                 } else if (color == 1 && PiecesEnumHelper().isWhite(gameDescription.board[pieceY + i][pieceX + i])) {
                     moves[pieceY + i][pieceX + i] = true
+                    return
+                } else {
                     return
                 }
             } else {
@@ -500,6 +512,8 @@ class BishopHelper {
                 } else if (color == 1 && PiecesEnumHelper().isWhite(gameDescription.board[pieceY - i][pieceX + i])) {
                     moves[pieceY - i][pieceX + i] = true
                     return
+                } else {
+                    return
                 }
             } else {
                 return
@@ -523,6 +537,8 @@ class BishopHelper {
                     return
                 } else if (color == 1 && PiecesEnumHelper().isWhite(gameDescription.board[pieceY - i][pieceX - i])) {
                     moves[pieceY - i][pieceX - i] = true
+                    return
+                } else {
                     return
                 }
             } else {

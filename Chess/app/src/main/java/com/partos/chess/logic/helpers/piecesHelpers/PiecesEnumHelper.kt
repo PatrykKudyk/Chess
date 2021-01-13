@@ -12,10 +12,26 @@ class PiecesEnumHelper {
        }
    }
 
+    fun isWhiteOrEmpty(pieceType: PieceType): Boolean {
+        when (pieceType) {
+            PieceType.WhitePawn, PieceType.WhiteBishop, PieceType.WhiteKnight, PieceType.WhiteRook,
+            PieceType.WhiteQueen, PieceType.WhiteKing, PieceType.Empty -> return true
+            else -> return false
+        }
+    }
+
     fun isBlack(pieceType: PieceType): Boolean {
         when (pieceType) {
             PieceType.BlackPawn, PieceType.BlackBishop, PieceType.BlackKnight, PieceType.BlackRook,
             PieceType.BlackQueen, PieceType.BlackKing -> return true
+            else -> return false
+        }
+    }
+
+    fun isBlackOrEmpty(pieceType: PieceType): Boolean {
+        when (pieceType) {
+            PieceType.BlackPawn, PieceType.BlackBishop, PieceType.BlackKnight, PieceType.BlackRook,
+            PieceType.BlackQueen, PieceType.BlackKing, PieceType.Empty -> return true
             else -> return false
         }
     }

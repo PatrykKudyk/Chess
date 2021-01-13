@@ -28,10 +28,10 @@ class PiecesBoardHelper {
                 movesAndFlags = BishopHelper().showBlackBishopMoves(pieceY, pieceX, gameDescription)
             }
             PieceType.WhiteKnight -> {
-
+                movesAndFlags = KnightHelper().showWhiteKnightMoves(pieceY, pieceX, gameDescription)
             }
             PieceType.BlackKnight -> {
-
+                movesAndFlags = KnightHelper().showBlackKnightMoves(pieceY, pieceX, gameDescription)
             }
             PieceType.WhiteRook -> {
 
@@ -75,10 +75,10 @@ class PiecesBoardHelper {
                 moves = BishopHelper().checkBlackBishopMoves(pieceY, pieceX, gameDescription)
             }
             PieceType.WhiteKnight -> {
-
+                moves = KnightHelper().checkWhiteKnightMoves(pieceY, pieceX, gameDescription)
             }
             PieceType.BlackKnight -> {
-
+                moves = KnightHelper().checkBlackKnightMoves(pieceY, pieceX, gameDescription)
             }
             PieceType.WhiteRook -> {
 
