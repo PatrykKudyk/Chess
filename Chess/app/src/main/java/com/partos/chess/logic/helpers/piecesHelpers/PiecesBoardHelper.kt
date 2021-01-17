@@ -46,16 +46,16 @@ class PiecesBoardHelper {
                 movesAndFlags = QueenHelper().showBlackQueenMoves(pieceY, pieceX, gameDescription)
             }
             PieceType.WhiteKing -> {
-
+                movesAndFlags = KingHelper().showWhiteKingMoves(pieceY, pieceX, gameDescription)
             }
             PieceType.BlackKing -> {
-
+                movesAndFlags = KingHelper().showBlackKingMoves(pieceY, pieceX, gameDescription)
             }
         }
         return movesAndFlags
     }
 
-    fun checkPieceMoves(
+    private fun checkPieceMoves(
         gameDescription: GameDescription,
         pieceY: Int,
         pieceX: Int
@@ -93,10 +93,10 @@ class PiecesBoardHelper {
                 moves = QueenHelper().checkBlackQueenMoves(pieceY, pieceX, gameDescription)
             }
             PieceType.WhiteKing -> {
-
+                moves = KingHelper().checkWhiteKingMoves(pieceY, pieceX, gameDescription)
             }
             PieceType.BlackKing -> {
-
+                moves = KingHelper().checkBlackKingMoves(pieceY, pieceX, gameDescription)
             }
         }
         return moves
@@ -116,7 +116,7 @@ class PiecesBoardHelper {
         return !isCheck(board, color, gameDescription)
     }
 
-    fun isCheck(
+    private fun isCheck(
         board: Array<Array<PieceType>>,
         color: Int,
         gameDescription: GameDescription

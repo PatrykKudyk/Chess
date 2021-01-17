@@ -1,10 +1,12 @@
 package com.partos.chess.logic.helpers.piecesHelpers
 
+import com.partos.chess.enums.PieceType
 import com.partos.chess.logic.helpers.BoardHelper
 import com.partos.chess.logic.helpers.MovesHelper
-import com.partos.chess.models.GameFlags
+import com.partos.chess.models.GameDescription
 import com.partos.chess.models.Piece
 import com.partos.chess.models.parameters.BaseParametersGroup
+import com.partos.chess.models.parameters.MovesAndFlags
 import com.partos.chess.models.parameters.PieceAfterMoveParameters
 import com.partos.chess.models.parameters.PieceParameters
 import kotlin.math.abs
@@ -149,6 +151,375 @@ class KingHelper {
             }
         }
         return returnParams
+    }
+
+    fun showBlackKingMoves(
+        pieceY: Int,
+        pieceX: Int,
+        gameDescription: GameDescription
+    ): MovesAndFlags {
+        val flags = gameDescription.gameFlags
+        val moves = MovesHelper().createMovesList()
+
+        if (pieceY >= 1) {
+            if (canKingMove(
+                    pieceY,
+                    pieceX,
+                    pieceY - 1,
+                    pieceX,
+                    gameDescription,
+                    1
+                )
+            ) {
+                moves[pieceY - 1][pieceX] = true
+            }
+        }
+        if (pieceY >= 1 && pieceX <= 6) {
+            if (canKingMove(
+                    pieceY,
+                    pieceX,
+                    pieceY - 1,
+                    pieceX + 1,
+                    gameDescription,
+                    1
+                )
+            ) {
+                moves[pieceY - 1][pieceX + 1] = true
+            }
+        }
+        if (pieceX <= 6) {
+            if (canKingMove(
+                    pieceY,
+                    pieceX,
+                    pieceY,
+                    pieceX + 1,
+                    gameDescription,
+                    1
+                )
+            ) {
+                moves[pieceY][pieceX + 1] = true
+            }
+        }
+        if (pieceY <= 6 && pieceX <= 6) {
+            if (canKingMove(
+                    pieceY,
+                    pieceX,
+                    pieceY + 1,
+                    pieceX + 1,
+                    gameDescription,
+                    1
+                )
+            ) {
+                moves[pieceY + 1][pieceX + 1] = true
+            }
+        }
+        if (pieceY <= 6) {
+            if (canKingMove(
+                    pieceY,
+                    pieceX,
+                    pieceY + 1,
+                    pieceX,
+                    gameDescription,
+                    1
+                )
+            ) {
+                moves[pieceY + 1][pieceX] = true
+            }
+        }
+        if (pieceY <= 6 && pieceX >= 1) {
+            if (canKingMove(
+                    pieceY,
+                    pieceX,
+                    pieceY + 1,
+                    pieceX - 1,
+                    gameDescription,
+                    1
+                )
+            ) {
+                moves[pieceY + 1][pieceX - 1] = true
+            }
+        }
+        if (pieceX >= 1) {
+            if (canKingMove(
+                    pieceY,
+                    pieceX,
+                    pieceY,
+                    pieceX - 1,
+                    gameDescription,
+                    1
+                )
+            ) {
+                moves[pieceY][pieceX - 1] = true
+            }
+        }
+        if (pieceY >= 1 && pieceX >= 1) {
+            if (canKingMove(
+                    pieceY,
+                    pieceX,
+                    pieceY - 1,
+                    pieceX - 1,
+                    gameDescription,
+                    1
+                )
+            ) {
+                moves[pieceY - 1][pieceX - 1] = true
+            }
+        }
+        if (canBlackKingMakeLongCastle(gameDescription)) {
+            moves[0][2] = true
+            flags.longBlackCastleAvailable = true
+        }
+        if (canBlackKingMakeShortCastle(gameDescription)) {
+            moves[0][6] = true
+            flags.shortBlackCastleAvailable = true
+        }
+        return MovesAndFlags(
+            moves,
+            flags
+        )
+    }
+
+    fun showWhiteKingMoves(
+        pieceY: Int,
+        pieceX: Int,
+        gameDescription: GameDescription
+    ): MovesAndFlags {
+        val flags = gameDescription.gameFlags
+        val moves = MovesHelper().createMovesList()
+
+        if (pieceY >= 1) {
+            if (canKingMove(
+                    pieceY,
+                    pieceX,
+                    pieceY - 1,
+                    pieceX,
+                    gameDescription,
+                    0
+                )
+            ) {
+                moves[pieceY - 1][pieceX] = true
+            }
+        }
+        if (pieceY >= 1 && pieceX <= 6) {
+            if (canKingMove(
+                    pieceY,
+                    pieceX,
+                    pieceY - 1,
+                    pieceX + 1,
+                    gameDescription,
+                    0
+                )
+            ) {
+                moves[pieceY - 1][pieceX + 1] = true
+            }
+        }
+        if (pieceX <= 6) {
+            if (canKingMove(
+                    pieceY,
+                    pieceX,
+                    pieceY,
+                    pieceX + 1,
+                    gameDescription,
+                    0
+                )
+            ) {
+                moves[pieceY][pieceX + 1] = true
+            }
+        }
+        if (pieceY <= 6 && pieceX <= 6) {
+            if (canKingMove(
+                    pieceY,
+                    pieceX,
+                    pieceY + 1,
+                    pieceX + 1,
+                    gameDescription,
+                    0
+                )
+            ) {
+                moves[pieceY + 1][pieceX + 1] = true
+            }
+        }
+        if (pieceY <= 6) {
+            if (canKingMove(
+                    pieceY,
+                    pieceX,
+                    pieceY + 1,
+                    pieceX,
+                    gameDescription,
+                    0
+                )
+            ) {
+                moves[pieceY + 1][pieceX] = true
+            }
+        }
+        if (pieceY <= 6 && pieceX >= 1) {
+            if (canKingMove(
+                    pieceY,
+                    pieceX,
+                    pieceY + 1,
+                    pieceX - 1,
+                    gameDescription,
+                    0
+                )
+            ) {
+                moves[pieceY + 1][pieceX - 1] = true
+            }
+        }
+        if (pieceX >= 1) {
+            if (canKingMove(
+                    pieceY,
+                    pieceX,
+                    pieceY,
+                    pieceX - 1,
+                    gameDescription,
+                    0
+                )
+            ) {
+                moves[pieceY][pieceX - 1] = true
+            }
+        }
+        if (pieceY >= 1 && pieceX >= 1) {
+            if (canKingMove(
+                    pieceY,
+                    pieceX,
+                    pieceY - 1,
+                    pieceX - 1,
+                    gameDescription,
+                    0
+                )
+            ) {
+                moves[pieceY - 1][pieceX - 1] = true
+            }
+        }
+        if (canWhiteKingMakeLongCastle(gameDescription)) {
+            moves[7][2] = true
+            flags.longWhiteCastleAvailable = true
+        }
+        if (canWhiteKingMakeShortCastle(gameDescription)) {
+            moves[7][6] = true
+            flags.shortWhiteCastleAvailable = true
+        }
+        return MovesAndFlags(
+            moves,
+            flags
+        )
+    }
+
+    fun checkBlackKingMoves(
+        pieceY: Int,
+        pieceX: Int,
+        gameDescription: GameDescription
+    ): Array<Array<Boolean>> {
+        val moves = MovesHelper().createMovesList()
+
+        if (pieceY >= 1) {
+            if (!isWhiteKingTooClose(pieceY - 1, pieceX, gameDescription.board)) {
+                moves[pieceY - 1][pieceX] = true
+            }
+        }
+        if (pieceY >= 1 && pieceX <= 6) {
+            if (!isWhiteKingTooClose(pieceY - 1, pieceX + 1, gameDescription.board)) {
+                moves[pieceY - 1][pieceX + 1] = true
+            }
+        }
+        if (pieceX <= 6) {
+            if (!isWhiteKingTooClose(pieceY, pieceX + 1, gameDescription.board)) {
+                moves[pieceY][pieceX + 1] = true
+            }
+        }
+        if (pieceY <= 6 && pieceX <= 6) {
+            if (!isWhiteKingTooClose(pieceY + 1, pieceX + 1, gameDescription.board)) {
+                moves[pieceY + 1][pieceX + 1] = true
+            }
+        }
+        if (pieceY <= 6) {
+            if (!isWhiteKingTooClose(pieceY + 1, pieceX, gameDescription.board)) {
+                moves[pieceY + 1][pieceX] = true
+            }
+        }
+        if (pieceY <= 6 && pieceX >= 1) {
+            if (!isWhiteKingTooClose(pieceY + 1, pieceX - 1, gameDescription.board)) {
+                moves[pieceY + 1][pieceX - 1] = true
+            }
+        }
+        if (pieceX >= 1) {
+            if (!isWhiteKingTooClose(pieceY, pieceX - 1, gameDescription.board)) {
+                moves[pieceY][pieceX - 1] = true
+            }
+        }
+        if (pieceY >= 1 && pieceX >= 1) {
+            if (!isWhiteKingTooClose(pieceY - 1, pieceX - 1, gameDescription.board)) {
+                moves[pieceY - 1][pieceX - 1] = true
+            }
+        }
+        return moves
+    }
+
+    fun checkWhiteKingMoves(
+        pieceY: Int,
+        pieceX: Int,
+        gameDescription: GameDescription
+    ): Array<Array<Boolean>> {
+        val moves = MovesHelper().createMovesList()
+
+        if (pieceY >= 1) {
+            if (!isBlackKingTooClose(pieceY - 1, pieceX, gameDescription.board)) {
+                moves[pieceY - 1][pieceX] = true
+            }
+        }
+        if (pieceY >= 1 && pieceX <= 6) {
+            if (!isBlackKingTooClose(pieceY - 1, pieceX + 1, gameDescription.board)) {
+                moves[pieceY - 1][pieceX + 1] = true
+            }
+        }
+        if (pieceX <= 6) {
+            if (!isBlackKingTooClose(pieceY, pieceX + 1, gameDescription.board)) {
+                moves[pieceY][pieceX + 1] = true
+            }
+        }
+        if (pieceY <= 6 && pieceX <= 6) {
+            if (!isBlackKingTooClose(pieceY + 1, pieceX + 1, gameDescription.board)) {
+                moves[pieceY + 1][pieceX + 1] = true
+            }
+        }
+        if (pieceY <= 6) {
+            if (!isBlackKingTooClose(pieceY + 1, pieceX, gameDescription.board)) {
+                moves[pieceY + 1][pieceX] = true
+            }
+        }
+        if (pieceY <= 6 && pieceX >= 1) {
+            if (!isBlackKingTooClose(pieceY + 1, pieceX - 1, gameDescription.board)) {
+                moves[pieceY + 1][pieceX - 1] = true
+            }
+        }
+        if (pieceX >= 1) {
+            if (!isBlackKingTooClose(pieceY, pieceX - 1, gameDescription.board)) {
+                moves[pieceY][pieceX - 1] = true
+            }
+        }
+        if (pieceY >= 1 && pieceX >= 1) {
+            if (!isBlackKingTooClose(pieceY - 1, pieceX - 1, gameDescription.board)) {
+                moves[pieceY - 1][pieceX - 1] = true
+            }
+        }
+        return moves
+    }
+
+    private fun canKingMove(
+        pieceY: Int,
+        pieceX: Int,
+        moveY: Int,
+        moveX: Int,
+        gameDescription: GameDescription,
+        color: Int
+    ): Boolean {
+        return if (color == 0) {
+            !isBlackKingTooClose(moveY, moveX, gameDescription.board) &&
+                    PiecesBoardHelper().canPieceMove(pieceY, pieceX, moveY, moveX, gameDescription, 0)
+        } else {
+            !isWhiteKingTooClose(moveY, moveX, gameDescription.board) &&
+                    PiecesBoardHelper().canPieceMove(pieceY, pieceX, moveY, moveX, gameDescription, 1)
+        }
     }
 
     private fun canKingMove(
@@ -308,6 +679,17 @@ class KingHelper {
         return false
     }
 
+    private fun canBlackKingMakeShortCastle(
+        gameDescription: GameDescription
+    ): Boolean {
+        if (gameDescription.gameFlags.canCastleShortBlack && areNoPiecesInBlackKingShortCastle(gameDescription.board)) {
+            if (!isBlackKingCheckAtShortCastle(gameDescription)) {
+                return true
+            }
+        }
+        return false
+    }
+
     fun isOtherKingTooClose(
         positionY: Int,
         positionX: Int,
@@ -319,6 +701,86 @@ class KingHelper {
             if (abs(otherKing.positionY - positionY) <= 1) {
                 return true
             }
+        }
+        return false
+    }
+
+    private fun isWhiteKingTooClose(
+        pieceY: Int,
+        pieceX: Int,
+        board: Array<Array<PieceType>>
+    ): Boolean {
+        if (pieceY > 0) {
+            if (board[pieceY - 1][pieceX] == PieceType.BlackKing)
+                return true
+        }
+        if (pieceY > 0 && pieceX < 7) {
+            if (board[pieceY - 1][pieceX + 1] == PieceType.BlackKing)
+                return true
+        }
+        if (pieceX < 7) {
+            if (board[pieceY][pieceX + 1] == PieceType.BlackKing)
+                return true
+        }
+        if (pieceY < 7 && pieceX < 7) {
+            if (board[pieceY + 1][pieceX + 1] == PieceType.BlackKing)
+                return true
+        }
+        if (pieceY < 7 && pieceX < 7) {
+            if (board[pieceY + 1][pieceX] == PieceType.BlackKing)
+                return true
+        }
+        if (pieceY < 7 && pieceX > 0) {
+            if (board[pieceY + 1][pieceX - 1] == PieceType.BlackKing)
+                return true
+        }
+        if (pieceX > 0) {
+            if (board[pieceY][pieceX - 1] == PieceType.BlackKing)
+                return true
+        }
+        if (pieceY > 0 && pieceX > 0) {
+            if (board[pieceY - 1][pieceX - 1] == PieceType.BlackKing)
+                return true
+        }
+        return false
+    }
+
+    private fun isBlackKingTooClose(
+        pieceY: Int,
+        pieceX: Int,
+        board: Array<Array<PieceType>>
+    ): Boolean {
+        if (pieceY > 0) {
+            if (board[pieceY - 1][pieceX] == PieceType.WhiteKing)
+                return true
+        }
+        if (pieceY > 0 && pieceX < 7) {
+            if (board[pieceY - 1][pieceX + 1] == PieceType.WhiteKing)
+                return true
+        }
+        if (pieceX < 7) {
+            if (board[pieceY][pieceX + 1] == PieceType.WhiteKing)
+                return true
+        }
+        if (pieceY < 7 && pieceX < 7) {
+            if (board[pieceY + 1][pieceX + 1] == PieceType.WhiteKing)
+                return true
+        }
+        if (pieceY < 7 && pieceX < 7) {
+            if (board[pieceY + 1][pieceX] == PieceType.WhiteKing)
+                return true
+        }
+        if (pieceY < 7 && pieceX > 0) {
+            if (board[pieceY + 1][pieceX - 1] == PieceType.WhiteKing)
+                return true
+        }
+        if (pieceX > 0) {
+            if (board[pieceY][pieceX - 1] == PieceType.WhiteKing)
+                return true
+        }
+        if (pieceY > 0 && pieceX > 0) {
+            if (board[pieceY - 1][pieceX - 1] == PieceType.WhiteKing)
+                return true
         }
         return false
     }
@@ -368,10 +830,22 @@ class KingHelper {
         return false
     }
 
+    private fun isBlackKingCheckAtShortCastle(gameDescription: GameDescription): Boolean {
+        if (!PiecesBoardHelper().canPieceMove(0,4, 0,5, gameDescription, 1) ||
+            !PiecesBoardHelper().canPieceMove(0,4, 0,6, gameDescription, 1)){
+            return true
+        }
+        return false
+    }
+
     private fun areNoPiecesInBlackKingShortCastle(baseParametersGroup: BaseParametersGroup): Boolean {
         return !BoardHelper().isPiece(baseParametersGroup.pieceParameters.board[0][5]) && !BoardHelper().isPiece(
             baseParametersGroup.pieceParameters.board[0][6]
         )
+    }
+
+    private fun areNoPiecesInBlackKingShortCastle(board: Array<Array<PieceType>>): Boolean {
+        return board[0][5] == PieceType.Empty && board[0][6] == PieceType.Empty
     }
 
     private fun canBlackKingMakeLongCastle(
@@ -382,6 +856,17 @@ class KingHelper {
             )
         ) {
             if (!isBlackKingCheckAtLongCastle(baseParametersGroup)) {
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun canBlackKingMakeLongCastle(gameDescription: GameDescription): Boolean {
+        if (gameDescription.gameFlags.canCastleLongBlack &&
+            areNoPiecesInBlackKingLongCastle(gameDescription.board)
+        ) {
+            if (!isBlackKingCheckAtLongCastle(gameDescription)) {
                 return true
             }
         }
@@ -422,12 +907,25 @@ class KingHelper {
         return false
     }
 
+    private fun isBlackKingCheckAtLongCastle(gameDescription: GameDescription): Boolean {
+        if (!PiecesBoardHelper().canPieceMove(0,4, 0,3, gameDescription, 1) ||
+            !PiecesBoardHelper().canPieceMove(0,4, 0,2, gameDescription, 1)){
+            return true
+        }
+        return false
+    }
+
     private fun areNoPiecesInBlackKingLongCastle(baseParametersGroup: BaseParametersGroup): Boolean {
         return !BoardHelper().isPiece(baseParametersGroup.pieceParameters.board[0][3]) && !BoardHelper().isPiece(
             baseParametersGroup.pieceParameters.board[0][2]
         ) && !BoardHelper().isPiece(
             baseParametersGroup.pieceParameters.board[0][1]
         )
+    }
+
+    private fun areNoPiecesInBlackKingLongCastle(board: Array<Array<PieceType>>): Boolean {
+        return board[0][3] == PieceType.Empty && board[0][2] == PieceType.Empty &&
+                board[0][1] == PieceType.Empty
     }
 
     private fun canWhiteKingMakeShortCastle(
@@ -438,6 +936,18 @@ class KingHelper {
             )
         ) {
             if (!isWhiteKingCheckAtShortCastle(baseParametersGroup)) {
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun canWhiteKingMakeShortCastle(
+        gameDescription: GameDescription
+    ): Boolean {
+        if (gameDescription.gameFlags.canCastleShortWhite && areNoPiecesInWhiteKingShortCastle(gameDescription.board)
+        ) {
+            if (!isWhiteKingCheckAtShortCastle(gameDescription)) {
                 return true
             }
         }
@@ -478,10 +988,22 @@ class KingHelper {
         return false
     }
 
+    private fun isWhiteKingCheckAtShortCastle(gameDescription: GameDescription): Boolean {
+        if (!PiecesBoardHelper().canPieceMove(7,4, 0,5, gameDescription, 0) ||
+            !PiecesBoardHelper().canPieceMove(7,4, 0,6, gameDescription, 0)){
+            return true
+        }
+        return false
+    }
+
     private fun areNoPiecesInWhiteKingShortCastle(baseParametersGroup: BaseParametersGroup): Boolean {
         return !BoardHelper().isPiece(baseParametersGroup.pieceParameters.board[7][5]) && !BoardHelper().isPiece(
             baseParametersGroup.pieceParameters.board[7][6]
         )
+    }
+
+    private fun areNoPiecesInWhiteKingShortCastle(board: Array<Array<PieceType>>): Boolean {
+        return board[7][5] == PieceType.Empty && board[7][6] == PieceType.Empty
     }
 
     private fun canWhiteKingMakeLongCastle(
@@ -498,11 +1020,29 @@ class KingHelper {
         return false
     }
 
+    private fun canWhiteKingMakeLongCastle(
+        gameDescription: GameDescription
+    ): Boolean {
+        if (gameDescription.gameFlags.canCastleLongWhite && areNoPiecesInWhiteKingLongCastle(gameDescription.board)
+        ) {
+            if (!isWhiteKingCheckAtLongCastle(gameDescription)) {
+                return true
+            }
+        }
+        return false
+    }
+
+
     private fun areNoPiecesInWhiteKingLongCastle(baseParametersGroup: BaseParametersGroup): Boolean {
         return !BoardHelper().isPiece(baseParametersGroup.pieceParameters.board[7][3]) && !BoardHelper().isPiece(
             baseParametersGroup.pieceParameters.board[7][2]
         ) &&
                 !BoardHelper().isPiece(baseParametersGroup.pieceParameters.board[7][1])
+    }
+
+    private fun areNoPiecesInWhiteKingLongCastle(board: Array<Array<PieceType>>): Boolean {
+        return board[7][3] == PieceType.Empty && board[7][2] == PieceType.Empty &&
+                board[7][1] == PieceType.Empty
     }
 
     private fun isWhiteKingCheckAtLongCastle(baseParametersGroup: BaseParametersGroup): Boolean {
@@ -534,6 +1074,14 @@ class KingHelper {
         } else if (isWhiteCheck(pieces1, baseParametersGroup)) {
             return true
         } else if (isWhiteCheck(pieces2, baseParametersGroup)) {
+            return true
+        }
+        return false
+    }
+
+    private fun isWhiteKingCheckAtLongCastle(gameDescription: GameDescription): Boolean {
+        if (!PiecesBoardHelper().canPieceMove(7,4, 0,3, gameDescription, 0) ||
+            !PiecesBoardHelper().canPieceMove(7,4, 0,2, gameDescription, 0)){
             return true
         }
         return false
