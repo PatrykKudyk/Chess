@@ -1,8 +1,11 @@
 package com.partos.chess.logic.helpers.piecesHelpers
 
+import com.partos.chess.enums.PieceType
 import com.partos.chess.logic.helpers.BoardHelper
 import com.partos.chess.logic.helpers.MovesHelper
+import com.partos.chess.models.GameDescription
 import com.partos.chess.models.parameters.BaseParametersGroup
+import com.partos.chess.models.parameters.MovesAndFlags
 import com.partos.chess.models.parameters.PieceAfterMoveParameters
 
 class PawnHelper {
@@ -302,6 +305,352 @@ class PawnHelper {
         if (!BoardHelper().isPiece(baseParametersGroup.pieceParameters.board[baseParametersGroup.pieceParameters.piece.positionY + 1][baseParametersGroup.pieceParameters.piece.positionX])) {
             returnParams.moves[baseParametersGroup.pieceParameters.piece.positionY + 1][baseParametersGroup.pieceParameters.piece.positionX] =
                 true
+        }
+    }
+
+    fun getWhitePawnMoves(
+        pieceY: Int,
+        pieceX: Int,
+        gameDescription: GameDescription
+    ): MovesAndFlags {
+        var flagsToReturn = gameDescription.gameFlags.copy()
+        var moves = MovesHelper().createMovesList()
+        if (pieceY == 6) {
+            moves = getBasicWhitePawnMoves(pieceY, pieceX, gameDescription, moves)
+            if (gameDescription.board[pieceY - 2][pieceX] == PieceType.Empty &&
+                gameDescription.board[pieceY - 1][pieceX] == PieceType.Empty
+            ) {
+                if (PiecesBoardHelper().canPieceMove(
+                        pieceY,
+                        pieceX,
+                        pieceY - 2,
+                        pieceX,
+                        gameDescription,
+                        0
+                    )
+                ) {
+                    moves[pieceY - 2][pieceX] = true
+                }
+            }
+        } else if (pieceY == 3) {
+            if (gameDescription.gameFlags.pawnSpecialBlack) {
+                if (pieceY == gameDescription.pawnSpecialMove.y &&
+                    (gameDescription.pawnSpecialMove.x == (pieceX + 1) ||
+                            gameDescription.pawnSpecialMove.x == (pieceX - 1))
+                ) {
+                    if (PiecesBoardHelper().canPieceMove(
+                            pieceY,
+                            pieceX,
+                            pieceY - 1,
+                            gameDescription.pawnSpecialMove.x,
+                            gameDescription,
+                            0
+                        )
+                    ) {
+                        moves[pieceY - 1][gameDescription.pawnSpecialMove.x] = true
+                    }
+                }
+            }
+            moves = getBasicWhitePawnMoves(pieceY, pieceX, gameDescription, moves)
+        } else if (pieceY > 1) {
+            moves = getBasicWhitePawnMoves(pieceY, pieceX, gameDescription, moves)
+        } else if (pieceY == 1) {
+            moves = getBasicWhitePawnMoves(pieceY, pieceX, gameDescription, moves)
+            flagsToReturn.isChoose = true
+        }
+        return MovesAndFlags(
+            moves,
+            flagsToReturn
+        )
+    }
+
+    fun checkWhitePawnMoves(
+        pieceY: Int,
+        pieceX: Int,
+        gameDescription: GameDescription
+    ): Array<Array<Boolean>> {
+        var moves = MovesHelper().createMovesList()
+        if (pieceY == 6) {
+            moves = checkBasicWhitePawnMoves(pieceY, pieceX, gameDescription, moves)
+            if (gameDescription.board[pieceY - 2][pieceX] == PieceType.Empty &&
+                gameDescription.board[pieceY - 1][pieceX] == PieceType.Empty
+            ) {
+                moves[pieceY - 2][pieceX] = true
+            }
+        } else if (pieceY == 3) {
+            if (gameDescription.gameFlags.pawnSpecialBlack) {
+                if (pieceY == gameDescription.pawnSpecialMove.y &&
+                    (gameDescription.pawnSpecialMove.x == (pieceX + 1) ||
+                            gameDescription.pawnSpecialMove.x == (pieceX - 1))
+                ) {
+                    moves[pieceY - 1][gameDescription.pawnSpecialMove.x] = true
+                }
+            }
+            moves = checkBasicWhitePawnMoves(pieceY, pieceX, gameDescription, moves)
+        } else if (pieceY > 1) {
+            moves = checkBasicWhitePawnMoves(pieceY, pieceX, gameDescription, moves)
+        } else if (pieceY == 1) {
+            moves = checkBasicWhitePawnMoves(pieceY, pieceX, gameDescription, moves)
+        }
+        return moves
+    }
+
+    fun getBasicWhitePawnMoves(
+        pieceY: Int,
+        pieceX: Int,
+        gameDescription: GameDescription,
+        moves: Array<Array<Boolean>>
+    ): Array<Array<Boolean>> {
+        if (pieceX > 0) {
+            if (canWhitePawnTake(gameDescription.board[pieceY - 1][pieceX - 1])) {
+                if (PiecesBoardHelper().canPieceMove(
+                        pieceY,
+                        pieceX,
+                        pieceY - 1,
+                        pieceX - 1,
+                        gameDescription,
+                        0
+                    )
+                ) {
+                    moves[pieceY - 1][pieceX - 1] = true
+                }
+            }
+        }
+
+        if (pieceX < 7) {
+            if (canWhitePawnTake(gameDescription.board[pieceY - 1][pieceX + 1])) {
+                if (PiecesBoardHelper().canPieceMove(
+                        pieceY,
+                        pieceX,
+                        pieceY - 1,
+                        pieceX + 1,
+                        gameDescription,
+                        0
+                    )
+                ) {
+                    moves[pieceY - 1][pieceX + 1] = true
+                }
+            }
+        }
+
+        if (gameDescription.board[pieceY - 1][pieceX] == PieceType.Empty) {
+            if (PiecesBoardHelper().canPieceMove(
+                    pieceY,
+                    pieceX,
+                    pieceY - 1,
+                    pieceX,
+                    gameDescription,
+                    0
+                )
+            ) {
+                moves[pieceY - 1][pieceX] = true
+            }
+        }
+        return moves
+    }
+
+    fun checkBasicWhitePawnMoves(
+        pieceY: Int,
+        pieceX: Int,
+        gameDescription: GameDescription,
+        moves: Array<Array<Boolean>>
+    ): Array<Array<Boolean>> {
+        if (pieceX > 0) {
+            if (canWhitePawnTake(gameDescription.board[pieceY - 1][pieceX - 1])) {
+                moves[pieceY - 1][pieceX - 1] = true
+            }
+        }
+
+        if (pieceX < 7) {
+            if (canWhitePawnTake(gameDescription.board[pieceY - 1][pieceX + 1])) {
+                moves[pieceY - 1][pieceX + 1] = true
+            }
+        }
+
+        if (gameDescription.board[pieceY - 1][pieceX] == PieceType.Empty) {
+            moves[pieceY - 1][pieceX] = true
+        }
+        return moves
+    }
+
+    fun getBlackPawnMoves(
+        pieceY: Int,
+        pieceX: Int,
+        gameDescription: GameDescription
+    ): MovesAndFlags {
+        var flagsToReturn = gameDescription.gameFlags.copy()
+        var moves = MovesHelper().createMovesList()
+        if (pieceY == 1) {
+            moves = getBasicBlackPawnMoves(pieceY, pieceX, gameDescription, moves)
+            if (gameDescription.board[pieceY + 2][pieceX] == PieceType.Empty &&
+                gameDescription.board[pieceY + 1][pieceX] == PieceType.Empty
+            ) {
+                if (PiecesBoardHelper().canPieceMove(
+                        pieceY,
+                        pieceX,
+                        pieceY + 2,
+                        pieceX,
+                        gameDescription,
+                        1
+                    )
+                ) {
+                    moves[pieceY + 2][pieceX] = true
+                }
+            }
+        } else if (pieceY == 4) {
+            if (gameDescription.gameFlags.pawnSpecialBlack) {
+                if (pieceY == gameDescription.pawnSpecialMove.y &&
+                    (gameDescription.pawnSpecialMove.x == (pieceX + 1) ||
+                            gameDescription.pawnSpecialMove.x == (pieceX - 1))
+                ) {
+                    if (PiecesBoardHelper().canPieceMove(
+                            pieceY,
+                            pieceX,
+                            pieceY + 1,
+                            gameDescription.pawnSpecialMove.x,
+                            gameDescription,
+                            1
+                        )
+                    ) {
+                        moves[pieceY + 1][gameDescription.pawnSpecialMove.x] = true
+                    }
+                }
+            }
+            moves = getBasicBlackPawnMoves(pieceY, pieceX, gameDescription, moves)
+        } else if (pieceY < 7) {
+            moves = getBasicBlackPawnMoves(pieceY, pieceX, gameDescription, moves)
+        } else if (pieceY == 7) {
+            moves = getBasicBlackPawnMoves(pieceY, pieceX, gameDescription, moves)
+            flagsToReturn.isChoose = true
+        }
+        return MovesAndFlags(
+            moves,
+            flagsToReturn
+        )
+    }
+
+    fun checkBlackPawnMoves(
+        pieceY: Int,
+        pieceX: Int,
+        gameDescription: GameDescription
+    ): Array<Array<Boolean>> {
+        var moves = MovesHelper().createMovesList()
+        if (pieceY == 1) {
+            moves = checkBasicBlackPawnMoves(pieceY, pieceX, gameDescription, moves)
+            if (gameDescription.board[pieceY + 2][pieceX] == PieceType.Empty &&
+                gameDescription.board[pieceY + 1][pieceX] == PieceType.Empty
+            ) {
+                moves[pieceY + 2][pieceX] = true
+            }
+        } else if (pieceY == 4) {
+            if (gameDescription.gameFlags.pawnSpecialBlack) {
+                if (pieceY == gameDescription.pawnSpecialMove.y &&
+                    (gameDescription.pawnSpecialMove.x == (pieceX + 1) ||
+                            gameDescription.pawnSpecialMove.x == (pieceX - 1))
+                ) {
+                    moves[pieceY + 1][gameDescription.pawnSpecialMove.x] = true
+                }
+            }
+            moves = checkBasicBlackPawnMoves(pieceY, pieceX, gameDescription, moves)
+        } else if (pieceY < 7) {
+            moves = checkBasicBlackPawnMoves(pieceY, pieceX, gameDescription, moves)
+        } else if (pieceY == 7) {
+            moves = checkBasicBlackPawnMoves(pieceY, pieceX, gameDescription, moves)
+        }
+        return moves
+    }
+
+    fun getBasicBlackPawnMoves(
+        pieceY: Int,
+        pieceX: Int,
+        gameDescription: GameDescription,
+        moves: Array<Array<Boolean>>
+    ): Array<Array<Boolean>> {
+        if (pieceX > 0) {
+            if (canBlackPawnTake(gameDescription.board[pieceY + 1][pieceX - 1])) {
+                if (PiecesBoardHelper().canPieceMove(
+                        pieceY,
+                        pieceX,
+                        pieceY + 1,
+                        pieceX - 1,
+                        gameDescription,
+                        1
+                    )
+                ) {
+                    moves[pieceY + 1][pieceX - 1] = true
+                }
+            }
+        }
+
+        if (pieceX < 7) {
+            if (canBlackPawnTake(gameDescription.board[pieceY + 1][pieceX + 1])) {
+                if (PiecesBoardHelper().canPieceMove(
+                        pieceY,
+                        pieceX,
+                        pieceY + 1,
+                        pieceX + 1,
+                        gameDescription,
+                        1
+                    )
+                ) {
+                    moves[pieceY + 1][pieceX + 1] = true
+                }
+            }
+        }
+
+        if (gameDescription.board[pieceY + 1][pieceX] == PieceType.Empty) {
+            if (PiecesBoardHelper().canPieceMove(
+                    pieceY,
+                    pieceX,
+                    pieceY + 1,
+                    pieceX,
+                    gameDescription,
+                    1
+                )
+            ) {
+                moves[pieceY + 1][pieceX] = true
+            }
+        }
+        return moves
+    }
+
+    fun checkBasicBlackPawnMoves(
+        pieceY: Int,
+        pieceX: Int,
+        gameDescription: GameDescription,
+        moves: Array<Array<Boolean>>
+    ): Array<Array<Boolean>> {
+        if (pieceX > 0) {
+            if (canBlackPawnTake(gameDescription.board[pieceY + 1][pieceX - 1])) {
+                moves[pieceY + 1][pieceX - 1] = true
+            }
+        }
+
+        if (pieceX < 7) {
+            if (canBlackPawnTake(gameDescription.board[pieceY + 1][pieceX + 1])) {
+                moves[pieceY + 1][pieceX + 1] = true
+            }
+        }
+
+        if (gameDescription.board[pieceY + 1][pieceX] == PieceType.Empty) {
+            moves[pieceY + 1][pieceX] = true
+        }
+        return moves
+    }
+
+    private fun canWhitePawnTake(pieceType: PieceType): Boolean {
+        when (pieceType) {
+            PieceType.BlackPawn, PieceType.BlackBishop, PieceType.BlackKnight, PieceType.BlackRook,
+            PieceType.BlackQueen, PieceType.BlackKing -> return true
+            else -> return false
+        }
+    }
+
+    private fun canBlackPawnTake(pieceType: PieceType): Boolean {
+        when (pieceType) {
+            PieceType.WhitePawn, PieceType.WhiteBishop, PieceType.WhiteKnight, PieceType.WhiteRook,
+            PieceType.WhiteQueen, PieceType.WhiteKing -> return true
+            else -> return false
         }
     }
 }

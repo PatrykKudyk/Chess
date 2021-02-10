@@ -1,16 +1,18 @@
 package com.partos.chess.logic.helpers
 
+import com.partos.chess.enums.PieceType
+
 class MovesHelper{
 
     fun createMovesList(): Array<Array<Boolean>> {
-        val array1 = arrayOf(false, false, false, false, false, false, false, false)
-        val array2 = arrayOf(false, false, false, false, false, false, false, false)
-        val array3 = arrayOf(false, false, false, false, false, false, false, false)
-        val array4 = arrayOf(false, false, false, false, false, false, false, false)
-        val array5 = arrayOf(false, false, false, false, false, false, false, false)
-        val array6 = arrayOf(false, false, false, false, false, false, false, false)
-        val array7 = arrayOf(false, false, false, false, false, false, false, false)
-        val array8 = arrayOf(false, false, false, false, false, false, false, false)
+        val array1 = Array(8) {false}
+        val array2 = Array(8) {false}
+        val array3 = Array(8) {false}
+        val array4 = Array(8) {false}
+        val array5 = Array(8) {false}
+        val array6 = Array(8) {false}
+        val array7 = Array(8) {false}
+        val array8 = Array(8) {false}
         return arrayOf(array1, array2, array3, array4, array5, array6, array7, array8)
     }
 
