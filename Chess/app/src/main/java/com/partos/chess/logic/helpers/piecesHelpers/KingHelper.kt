@@ -711,46 +711,6 @@ class KingHelper {
         board: Array<Array<PieceType>>
     ): Boolean {
         if (pieceY > 0) {
-            if (board[pieceY - 1][pieceX] == PieceType.BlackKing)
-                return true
-        }
-        if (pieceY > 0 && pieceX < 7) {
-            if (board[pieceY - 1][pieceX + 1] == PieceType.BlackKing)
-                return true
-        }
-        if (pieceX < 7) {
-            if (board[pieceY][pieceX + 1] == PieceType.BlackKing)
-                return true
-        }
-        if (pieceY < 7 && pieceX < 7) {
-            if (board[pieceY + 1][pieceX + 1] == PieceType.BlackKing)
-                return true
-        }
-        if (pieceY < 7 && pieceX < 7) {
-            if (board[pieceY + 1][pieceX] == PieceType.BlackKing)
-                return true
-        }
-        if (pieceY < 7 && pieceX > 0) {
-            if (board[pieceY + 1][pieceX - 1] == PieceType.BlackKing)
-                return true
-        }
-        if (pieceX > 0) {
-            if (board[pieceY][pieceX - 1] == PieceType.BlackKing)
-                return true
-        }
-        if (pieceY > 0 && pieceX > 0) {
-            if (board[pieceY - 1][pieceX - 1] == PieceType.BlackKing)
-                return true
-        }
-        return false
-    }
-
-    private fun isBlackKingTooClose(
-        pieceY: Int,
-        pieceX: Int,
-        board: Array<Array<PieceType>>
-    ): Boolean {
-        if (pieceY > 0) {
             if (board[pieceY - 1][pieceX] == PieceType.WhiteKing)
                 return true
         }
@@ -780,6 +740,46 @@ class KingHelper {
         }
         if (pieceY > 0 && pieceX > 0) {
             if (board[pieceY - 1][pieceX - 1] == PieceType.WhiteKing)
+                return true
+        }
+        return false
+    }
+
+    private fun isBlackKingTooClose(
+        pieceY: Int,
+        pieceX: Int,
+        board: Array<Array<PieceType>>
+    ): Boolean {
+        if (pieceY > 0) {
+            if (board[pieceY - 1][pieceX] == PieceType.BlackKing)
+                return true
+        }
+        if (pieceY > 0 && pieceX < 7) {
+            if (board[pieceY - 1][pieceX + 1] == PieceType.BlackKing)
+                return true
+        }
+        if (pieceX < 7) {
+            if (board[pieceY][pieceX + 1] == PieceType.BlackKing)
+                return true
+        }
+        if (pieceY < 7 && pieceX < 7) {
+            if (board[pieceY + 1][pieceX + 1] == PieceType.BlackKing)
+                return true
+        }
+        if (pieceY < 7 && pieceX < 7) {
+            if (board[pieceY + 1][pieceX] == PieceType.BlackKing)
+                return true
+        }
+        if (pieceY < 7 && pieceX > 0) {
+            if (board[pieceY + 1][pieceX - 1] == PieceType.BlackKing)
+                return true
+        }
+        if (pieceX > 0) {
+            if (board[pieceY][pieceX - 1] == PieceType.BlackKing)
+                return true
+        }
+        if (pieceY > 0 && pieceX > 0) {
+            if (board[pieceY - 1][pieceX - 1] == PieceType.BlackKing)
                 return true
         }
         return false

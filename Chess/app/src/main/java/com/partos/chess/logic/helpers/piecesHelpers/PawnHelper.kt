@@ -491,7 +491,7 @@ class PawnHelper {
                         pieceY + 2,
                         pieceX,
                         gameDescription,
-                        0
+                        1
                     )
                 ) {
                     moves[pieceY + 2][pieceX] = true
@@ -509,7 +509,7 @@ class PawnHelper {
                             pieceY + 1,
                             gameDescription.pawnSpecialMove.x,
                             gameDescription,
-                            0
+                            1
                         )
                     ) {
                         moves[pieceY + 1][gameDescription.pawnSpecialMove.x] = true
@@ -574,7 +574,7 @@ class PawnHelper {
                         pieceY + 1,
                         pieceX - 1,
                         gameDescription,
-                        0
+                        1
                     )
                 ) {
                     moves[pieceY + 1][pieceX - 1] = true
@@ -590,7 +590,7 @@ class PawnHelper {
                         pieceY + 1,
                         pieceX + 1,
                         gameDescription,
-                        0
+                        1
                     )
                 ) {
                     moves[pieceY + 1][pieceX + 1] = true
@@ -605,7 +605,7 @@ class PawnHelper {
                     pieceY + 1,
                     pieceX,
                     gameDescription,
-                    0
+                    1
                 )
             ) {
                 moves[pieceY + 1][pieceX] = true

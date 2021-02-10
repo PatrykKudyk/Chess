@@ -27,10 +27,10 @@ class RookHelper {
     ): MovesAndFlags {
         val moves = MovesHelper().createMovesList()
 
-        showTopMoves(pieceY, pieceX, gameDescription, moves, 0)
-        showRightMoves(pieceY, pieceX, gameDescription, moves, 0)
-        showBottomMoves(pieceY, pieceX, gameDescription, moves, 0)
-        showLeftMoves(pieceY, pieceX, gameDescription, moves, 0)
+        showWhiteTopMoves(pieceY, pieceX, gameDescription, moves)
+        showWhiteRightMoves(pieceY, pieceX, gameDescription, moves)
+        showWhiteBottomMoves(pieceY, pieceX, gameDescription, moves)
+        showWhiteLeftMoves(pieceY, pieceX, gameDescription, moves)
 
         return MovesAndFlags(
             moves,
@@ -45,10 +45,10 @@ class RookHelper {
     ): MovesAndFlags {
         val moves = MovesHelper().createMovesList()
 
-        showTopMoves(pieceY, pieceX, gameDescription, moves, 1)
-        showRightMoves(pieceY, pieceX, gameDescription, moves, 1)
-        showBottomMoves(pieceY, pieceX, gameDescription, moves, 1)
-        showLeftMoves(pieceY, pieceX, gameDescription, moves, 1)
+        showBlackTopMoves(pieceY, pieceX, gameDescription, moves)
+        showBlackRightMoves(pieceY, pieceX, gameDescription, moves)
+        showBlackBottomMoves(pieceY, pieceX, gameDescription, moves)
+        showBlackLeftMoves(pieceY, pieceX, gameDescription, moves)
 
         return MovesAndFlags(
             moves,
@@ -74,10 +74,10 @@ class RookHelper {
     ): Array<Array<Boolean>> {
         val moves = MovesHelper().createMovesList()
 
-        checkTopMoves(pieceY, pieceX, gameDescription, moves, 0)
-        checkRightMoves(pieceY, pieceX, gameDescription, moves, 0)
-        checkBottomMoves(pieceY, pieceX, gameDescription, moves, 0)
-        checkLeftMoves(pieceY, pieceX, gameDescription, moves, 0)
+        checkWhiteTopMoves(pieceY, pieceX, gameDescription, moves)
+        checkWhiteRightMoves(pieceY, pieceX, gameDescription, moves)
+        checkWhiteBottomMoves(pieceY, pieceX, gameDescription, moves)
+        checkWhiteLeftMoves(pieceY, pieceX, gameDescription, moves)
 
         return moves
     }
@@ -89,10 +89,10 @@ class RookHelper {
     ): Array<Array<Boolean>> {
         val moves = MovesHelper().createMovesList()
 
-        checkTopMoves(pieceY, pieceX, gameDescription, moves, 1)
-        checkRightMoves(pieceY, pieceX, gameDescription, moves, 1)
-        checkBottomMoves(pieceY, pieceX, gameDescription, moves, 1)
-        checkLeftMoves(pieceY, pieceX, gameDescription, moves, 1)
+        checkBlackTopMoves(pieceY, pieceX, gameDescription, moves)
+        checkBlackRightMoves(pieceY, pieceX, gameDescription, moves)
+        checkBlackBottomMoves(pieceY, pieceX, gameDescription, moves)
+        checkBlackLeftMoves(pieceY, pieceX, gameDescription, moves)
 
         return moves
     }
@@ -201,152 +201,344 @@ class RookHelper {
         }
     }
 
-    private fun showLeftMoves(
+    private fun showWhiteLeftMoves(
         pieceY: Int,
         pieceX: Int,
         gameDescription: GameDescription,
-        moves: Array<Array<Boolean>>,
-        color: Int
+        moves: Array<Array<Boolean>>
     ) {
         for (i in 1..8) {
             if (pieceX - i >= 0) {
-                if (PiecesBoardHelper().canPieceMove(
-                        pieceY,
-                        pieceX,
-                        pieceY,
-                        pieceX - i,
-                        gameDescription,
-                        color
-                    )
-                ) {
-                    if (gameDescription.board[pieceY][pieceX - i] == PieceType.Empty) {
+                if (gameDescription.board[pieceY][pieceX - i] == PieceType.Empty) {
+                    if (PiecesBoardHelper().canPieceMove(
+                            pieceY,
+                            pieceX,
+                            pieceY,
+                            pieceX - i,
+                            gameDescription,
+                            0
+                        )
+                    ) {
                         moves[pieceY][pieceX - i] = true
-                    } else if (color == 0 && PiecesEnumHelper().isBlack(gameDescription.board[pieceY][pieceX - i])) {
-                        moves[pieceY][pieceX - i] = true
-                        return
-                    } else if (color == 1 && PiecesEnumHelper().isWhite(gameDescription.board[pieceY][pieceX - i])) {
+                    }
+                } else if (PiecesEnumHelper().isBlack(gameDescription.board[pieceY][pieceX - i])) {
+                    if (PiecesBoardHelper().canPieceMove(
+                            pieceY,
+                            pieceX,
+                            pieceY,
+                            pieceX - i,
+                            gameDescription,
+                            0
+                        )
+                    ) {
                         moves[pieceY][pieceX - i] = true
                         return
                     } else {
                         return
                     }
-                } else {
+                } else
                     return
-                }
             } else {
                 return
             }
         }
     }
 
-    private fun showRightMoves(
+    private fun showWhiteRightMoves(
         pieceY: Int,
         pieceX: Int,
         gameDescription: GameDescription,
-        moves: Array<Array<Boolean>>,
-        color: Int
+        moves: Array<Array<Boolean>>
     ) {
         for (i in 1..8) {
             if (pieceX + i <= 7) {
-                if (PiecesBoardHelper().canPieceMove(
-                        pieceY,
-                        pieceX,
-                        pieceY,
-                        pieceX + i,
-                        gameDescription,
-                        color
-                    )
-                ) {
-                    if (gameDescription.board[pieceY][pieceX + i] == PieceType.Empty) {
+                if (gameDescription.board[pieceY][pieceX + i] == PieceType.Empty) {
+                    if (PiecesBoardHelper().canPieceMove(
+                            pieceY,
+                            pieceX,
+                            pieceY,
+                            pieceX + i,
+                            gameDescription,
+                            0
+                        )
+                    ) {
                         moves[pieceY][pieceX + i] = true
-                    } else if (color == 0 && PiecesEnumHelper().isBlack(gameDescription.board[pieceY][pieceX + i])) {
-                        moves[pieceY][pieceX + i] = true
-                        return
-                    } else if (color == 1 && PiecesEnumHelper().isWhite(gameDescription.board[pieceY][pieceX + i])) {
+                    }
+                } else if (PiecesEnumHelper().isBlack(gameDescription.board[pieceY][pieceX + i])) {
+                    if (PiecesBoardHelper().canPieceMove(
+                            pieceY,
+                            pieceX,
+                            pieceY,
+                            pieceX + i,
+                            gameDescription,
+                            0
+                        )
+                    ) {
                         moves[pieceY][pieceX + i] = true
                         return
                     } else {
                         return
                     }
-                } else {
+                } else
                     return
-                }
             } else {
                 return
             }
         }
     }
 
-    private fun showTopMoves(
+    private fun showWhiteTopMoves(
         pieceY: Int,
         pieceX: Int,
         gameDescription: GameDescription,
-        moves: Array<Array<Boolean>>,
-        color: Int
+        moves: Array<Array<Boolean>>
     ) {
         for (i in 1..8) {
             if (pieceY - i >= 0) {
-                if (PiecesBoardHelper().canPieceMove(
-                        pieceY,
-                        pieceX,
-                        pieceY - i,
-                        pieceX,
-                        gameDescription,
-                        color
-                    )
-                ) {
-                    if (gameDescription.board[pieceY - i][pieceX] == PieceType.Empty) {
+                if (gameDescription.board[pieceY - i][pieceX] == PieceType.Empty) {
+                    if (PiecesBoardHelper().canPieceMove(
+                            pieceY,
+                            pieceX,
+                            pieceY - i,
+                            pieceX,
+                            gameDescription,
+                            0
+                        )
+                    ) {
                         moves[pieceY - i][pieceX] = true
-                    } else if (color == 0 && PiecesEnumHelper().isBlack(gameDescription.board[pieceY - i][pieceX])) {
-                        moves[pieceY - i][pieceX] = true
-                        return
-                    } else if (color == 1 && PiecesEnumHelper().isWhite(gameDescription.board[pieceY - i][pieceX])) {
+                    }
+                } else if (PiecesEnumHelper().isBlack(gameDescription.board[pieceY - i][pieceX])) {
+                    if (PiecesBoardHelper().canPieceMove(
+                            pieceY,
+                            pieceX,
+                            pieceY - i,
+                            pieceX,
+                            gameDescription,
+                            0
+                        )
+                    ) {
                         moves[pieceY - i][pieceX] = true
                         return
                     } else {
                         return
                     }
-                } else {
+                } else
                     return
-                }
             } else {
                 return
             }
         }
     }
 
-    private fun showBottomMoves(
+    private fun showWhiteBottomMoves(
         pieceY: Int,
         pieceX: Int,
         gameDescription: GameDescription,
-        moves: Array<Array<Boolean>>,
-        color: Int
+        moves: Array<Array<Boolean>>
     ) {
         for (i in 1..8) {
             if (pieceY + i <= 7) {
-                if (PiecesBoardHelper().canPieceMove(
-                        pieceY,
-                        pieceX,
-                        pieceY + i,
-                        pieceX,
-                        gameDescription,
-                        color
-                    )
-                ) {
-                    if (gameDescription.board[pieceY + i][pieceX] == PieceType.Empty) {
+                if (gameDescription.board[pieceY + i][pieceX] == PieceType.Empty) {
+                    if (PiecesBoardHelper().canPieceMove(
+                            pieceY,
+                            pieceX,
+                            pieceY + i,
+                            pieceX,
+                            gameDescription,
+                            0
+                        )
+                    ) {
                         moves[pieceY + i][pieceX] = true
-                    } else if (color == 0 && PiecesEnumHelper().isBlack(gameDescription.board[pieceY + i][pieceX])) {
-                        moves[pieceY + i][pieceX] = true
-                        return
-                    } else if (color == 1 && PiecesEnumHelper().isWhite(gameDescription.board[pieceY + i][pieceX])) {
+                    }
+                } else if (PiecesEnumHelper().isBlack(gameDescription.board[pieceY + i][pieceX])) {
+                    if (PiecesBoardHelper().canPieceMove(
+                            pieceY,
+                            pieceX,
+                            pieceY + i,
+                            pieceX,
+                            gameDescription,
+                            0
+                        )
+                    ) {
                         moves[pieceY + i][pieceX] = true
                         return
                     } else {
                         return
                     }
-                } else {
+                } else
                     return
-                }
+            } else {
+                return
+            }
+        }
+    }
+
+    private fun showBlackLeftMoves(
+        pieceY: Int,
+        pieceX: Int,
+        gameDescription: GameDescription,
+        moves: Array<Array<Boolean>>
+    ) {
+        for (i in 1..8) {
+            if (pieceX - i >= 0) {
+                if (gameDescription.board[pieceY][pieceX - i] == PieceType.Empty) {
+                    if (PiecesBoardHelper().canPieceMove(
+                            pieceY,
+                            pieceX,
+                            pieceY,
+                            pieceX - i,
+                            gameDescription,
+                            1
+                        )
+                    ) {
+                        moves[pieceY][pieceX - i] = true
+                    }
+                } else if (PiecesEnumHelper().isWhite(gameDescription.board[pieceY][pieceX - i])) {
+                    if (PiecesBoardHelper().canPieceMove(
+                            pieceY,
+                            pieceX,
+                            pieceY,
+                            pieceX - i,
+                            gameDescription,
+                            1
+                        )
+                    ) {
+                        moves[pieceY][pieceX - i] = true
+                        return
+                    } else {
+                        return
+                    }
+                } else
+                    return
+            } else {
+                return
+            }
+        }
+    }
+
+    private fun showBlackRightMoves(
+        pieceY: Int,
+        pieceX: Int,
+        gameDescription: GameDescription,
+        moves: Array<Array<Boolean>>
+    ) {
+        for (i in 1..8) {
+            if (pieceX + i <= 7) {
+                if (gameDescription.board[pieceY][pieceX + i] == PieceType.Empty) {
+                    if (PiecesBoardHelper().canPieceMove(
+                            pieceY,
+                            pieceX,
+                            pieceY,
+                            pieceX + i,
+                            gameDescription,
+                            1
+                        )
+                    ) {
+                        moves[pieceY][pieceX + i] = true
+                    }
+                } else if (PiecesEnumHelper().isWhite(gameDescription.board[pieceY][pieceX + i])) {
+                    if (PiecesBoardHelper().canPieceMove(
+                            pieceY,
+                            pieceX,
+                            pieceY,
+                            pieceX + i,
+                            gameDescription,
+                            1
+                        )
+                    ) {
+                        moves[pieceY][pieceX + i] = true
+                        return
+                    } else {
+                        return
+                    }
+                } else
+                    return
+            } else {
+                return
+            }
+        }
+    }
+
+    private fun showBlackTopMoves(
+        pieceY: Int,
+        pieceX: Int,
+        gameDescription: GameDescription,
+        moves: Array<Array<Boolean>>
+    ) {
+        for (i in 1..8) {
+            if (pieceY - i >= 0) {
+                if (gameDescription.board[pieceY - i][pieceX] == PieceType.Empty) {
+                    if (PiecesBoardHelper().canPieceMove(
+                            pieceY,
+                            pieceX,
+                            pieceY - i,
+                            pieceX,
+                            gameDescription,
+                            1
+                        )
+                    ) {
+                        moves[pieceY - i][pieceX] = true
+                    }
+                } else if (PiecesEnumHelper().isWhite(gameDescription.board[pieceY - i][pieceX])) {
+                    if (PiecesBoardHelper().canPieceMove(
+                            pieceY,
+                            pieceX,
+                            pieceY - i,
+                            pieceX,
+                            gameDescription,
+                            1
+                        )
+                    ) {
+                        moves[pieceY - i][pieceX] = true
+                        return
+                    } else {
+                        return
+                    }
+                } else
+                    return
+            } else {
+                return
+            }
+        }
+    }
+
+    private fun showBlackBottomMoves(
+        pieceY: Int,
+        pieceX: Int,
+        gameDescription: GameDescription,
+        moves: Array<Array<Boolean>>
+    ) {
+        for (i in 1..8) {
+            if (pieceY + i <= 7) {
+                if (gameDescription.board[pieceY + i][pieceX] == PieceType.Empty) {
+                    if (PiecesBoardHelper().canPieceMove(
+                            pieceY,
+                            pieceX,
+                            pieceY + i,
+                            pieceX,
+                            gameDescription,
+                            1
+                        )
+                    ) {
+                        moves[pieceY + i][pieceX] = true
+                    }
+                } else if (PiecesEnumHelper().isWhite(gameDescription.board[pieceY + i][pieceX])) {
+                    if (PiecesBoardHelper().canPieceMove(
+                            pieceY,
+                            pieceX,
+                            pieceY + i,
+                            pieceX,
+                            gameDescription,
+                            1
+                        )
+                    ) {
+                        moves[pieceY + i][pieceX] = true
+                        return
+                    } else {
+                        return
+                    }
+                } else
+                    return
             } else {
                 return
             }
@@ -421,107 +613,172 @@ class RookHelper {
         }
     }
 
-    private fun checkLeftMoves(
+    private fun checkWhiteLeftMoves(
         pieceY: Int,
         pieceX: Int,
         gameDescription: GameDescription,
-        moves: Array<Array<Boolean>>,
-        color: Int
+        moves: Array<Array<Boolean>>
     ) {
         for (i in 1..8) {
             if (pieceX - i >= 0) {
                 if (gameDescription.board[pieceY][pieceX - i] == PieceType.Empty) {
                     moves[pieceY][pieceX - i] = true
-                } else if (color == 0 && PiecesEnumHelper().isBlack(gameDescription.board[pieceY][pieceX - i])) {
+                } else if (PiecesEnumHelper().isBlack(gameDescription.board[pieceY][pieceX - i])) {
                     moves[pieceY][pieceX - i] = true
                     return
-                } else if (color == 1 && PiecesEnumHelper().isWhite(gameDescription.board[pieceY][pieceX - i])) {
-                    moves[pieceY][pieceX - i] = true
+                } else
                     return
-                } else {
-                    return
-                }
             } else {
                 return
             }
         }
     }
 
-    private fun checkRightMoves(
+    private fun checkWhiteRightMoves(
         pieceY: Int,
         pieceX: Int,
         gameDescription: GameDescription,
-        moves: Array<Array<Boolean>>,
-        color: Int
+        moves: Array<Array<Boolean>>
     ) {
         for (i in 1..8) {
             if (pieceX + i <= 7) {
                 if (gameDescription.board[pieceY][pieceX + i] == PieceType.Empty) {
                     moves[pieceY][pieceX + i] = true
-                } else if (color == 0 && PiecesEnumHelper().isBlack(gameDescription.board[pieceY][pieceX + i])) {
+                } else if (PiecesEnumHelper().isBlack(gameDescription.board[pieceY][pieceX + i])) {
                     moves[pieceY][pieceX + i] = true
                     return
-                } else if (color == 1 && PiecesEnumHelper().isWhite(gameDescription.board[pieceY][pieceX + i])) {
-                    moves[pieceY][pieceX + i] = true
+                } else
                     return
-                } else {
-                    return
-                }
             } else {
                 return
             }
         }
     }
 
-    private fun checkTopMoves(
+    private fun checkWhiteTopMoves(
         pieceY: Int,
         pieceX: Int,
         gameDescription: GameDescription,
-        moves: Array<Array<Boolean>>,
-        color: Int
+        moves: Array<Array<Boolean>>
     ) {
         for (i in 1..8) {
             if (pieceY - i >= 0) {
                 if (gameDescription.board[pieceY - i][pieceX] == PieceType.Empty) {
                     moves[pieceY - i][pieceX] = true
-                } else if (color == 0 && PiecesEnumHelper().isBlack(gameDescription.board[pieceY - i][pieceX])) {
+                } else if (PiecesEnumHelper().isBlack(gameDescription.board[pieceY - i][pieceX])) {
                     moves[pieceY - i][pieceX] = true
                     return
-                } else if (color == 1 && PiecesEnumHelper().isWhite(gameDescription.board[pieceY - i][pieceX])) {
-                    moves[pieceY - i][pieceX] = true
+                } else
                     return
-                } else {
-                    return
-                }
             } else {
                 return
             }
         }
     }
 
-    private fun checkBottomMoves(
+    private fun checkWhiteBottomMoves(
         pieceY: Int,
         pieceX: Int,
         gameDescription: GameDescription,
-        moves: Array<Array<Boolean>>,
-        color: Int
+        moves: Array<Array<Boolean>>
     ) {
         for (i in 1..8) {
             if (pieceY + i <= 7) {
                 if (gameDescription.board[pieceY + i][pieceX] == PieceType.Empty) {
                     moves[pieceY + i][pieceX] = true
-                } else if (color == 0 && PiecesEnumHelper().isBlack(gameDescription.board[pieceY + i][pieceX])) {
+                } else if (PiecesEnumHelper().isBlack(gameDescription.board[pieceY + i][pieceX])) {
                     moves[pieceY + i][pieceX] = true
                     return
-                } else if (color == 1 && PiecesEnumHelper().isWhite(gameDescription.board[pieceY + i][pieceX])) {
-                    moves[pieceY + i][pieceX] = true
+                } else
                     return
-                } else {
-                    return
-                }
             } else {
                 return
             }
         }
     }
+
+    private fun checkBlackLeftMoves(
+        pieceY: Int,
+        pieceX: Int,
+        gameDescription: GameDescription,
+        moves: Array<Array<Boolean>>
+    ) {
+        for (i in 1..8) {
+            if (pieceX - i >= 0) {
+                if (gameDescription.board[pieceY][pieceX - i] == PieceType.Empty) {
+                    moves[pieceY][pieceX - i] = true
+                } else if (PiecesEnumHelper().isWhite(gameDescription.board[pieceY][pieceX - i])) {
+                    moves[pieceY][pieceX - i] = true
+                    return
+                } else
+                    return
+            } else {
+                return
+            }
+        }
+    }
+
+    private fun checkBlackRightMoves(
+        pieceY: Int,
+        pieceX: Int,
+        gameDescription: GameDescription,
+        moves: Array<Array<Boolean>>
+    ) {
+        for (i in 1..8) {
+            if (pieceX + i <= 7) {
+                if (gameDescription.board[pieceY][pieceX + i] == PieceType.Empty) {
+                    moves[pieceY][pieceX + i] = true
+                } else if (PiecesEnumHelper().isWhite(gameDescription.board[pieceY][pieceX + i])) {
+                    moves[pieceY][pieceX + i] = true
+                    return
+                } else
+                    return
+            } else {
+                return
+            }
+        }
+    }
+
+    private fun checkBlackTopMoves(
+        pieceY: Int,
+        pieceX: Int,
+        gameDescription: GameDescription,
+        moves: Array<Array<Boolean>>
+    ) {
+        for (i in 1..8) {
+            if (pieceY - i >= 0) {
+                if (gameDescription.board[pieceY - i][pieceX] == PieceType.Empty) {
+                    moves[pieceY - i][pieceX] = true
+                } else if (PiecesEnumHelper().isWhite(gameDescription.board[pieceY - i][pieceX])) {
+                    moves[pieceY - i][pieceX] = true
+                    return
+                } else
+                    return
+            } else {
+                return
+            }
+        }
+    }
+
+    private fun checkBlackBottomMoves(
+        pieceY: Int,
+        pieceX: Int,
+        gameDescription: GameDescription,
+        moves: Array<Array<Boolean>>
+    ) {
+        for (i in 1..8) {
+            if (pieceY + i <= 7) {
+                if (gameDescription.board[pieceY + i][pieceX] == PieceType.Empty) {
+                    moves[pieceY + i][pieceX] = true
+                } else if (PiecesEnumHelper().isWhite(gameDescription.board[pieceY + i][pieceX])) {
+                    moves[pieceY + i][pieceX] = true
+                    return
+                } else
+                    return
+            } else {
+                return
+            }
+        }
+    }
+
 }

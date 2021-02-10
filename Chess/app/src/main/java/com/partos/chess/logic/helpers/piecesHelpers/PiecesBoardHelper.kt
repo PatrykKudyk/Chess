@@ -110,10 +110,42 @@ class PiecesBoardHelper {
         gameDescription: GameDescription,
         color: Int
     ): Boolean {
-        val board = gameDescription.board.clone()
-        board[moveY][moveX] = board[pieceY][pieceX]
-        board[pieceY][pieceX] = PieceType.Empty
-        return !isCheck(board, color, gameDescription)
+        if (color == 0 && PiecesEnumHelper().isWhite(gameDescription.board[moveY][moveX])){
+            return false
+        } else if (color == 1 && PiecesEnumHelper().isBlack(gameDescription.board[moveY][moveX])){
+            return false
+        }
+        val boardAfterMove = getBoardAfterMakingMove(gameDescription.board, pieceY, pieceX, moveY, moveX)
+        val gameDescriptionCopy = gameDescription.copy()
+        gameDescriptionCopy.board = boardAfterMove
+        val isChecked = isCheck(boardAfterMove, color, gameDescriptionCopy)
+        return !isChecked
+    }
+
+    private fun getBoardAfterMakingMove(
+        board: Array<Array<PieceType>>,
+        pieceY: Int,
+        pieceX: Int,
+        moveY: Int,
+        moveX: Int
+    ): Array<Array<PieceType>> {
+        val arr1 = Array(8) { PieceType.Empty }
+        val arr2 = Array(8) { PieceType.Empty }
+        val arr3 = Array(8) { PieceType.Empty }
+        val arr4 = Array(8) { PieceType.Empty }
+        val arr5 = Array(8) { PieceType.Empty }
+        val arr6 = Array(8) { PieceType.Empty }
+        val arr7 = Array(8) { PieceType.Empty }
+        val arr8 = Array(8) { PieceType.Empty }
+        val boardToReturn = arrayOf(arr1, arr2, arr3, arr4, arr5, arr6, arr7, arr8)
+        for (i in 0..7){
+            for (j in 0..7){
+                boardToReturn[i][j] = PiecesEnumHelper().getPieceType(board[i][j])
+            }
+        }
+        boardToReturn[moveY][moveX] = PiecesEnumHelper().getPieceType(boardToReturn[pieceY][pieceX])
+        boardToReturn[pieceY][pieceX] = PieceType.Empty
+        return boardToReturn
     }
 
     private fun isCheck(
@@ -129,14 +161,15 @@ class PiecesBoardHelper {
                     king = Coordinates(j, i)
                 else if (color == 1 && board[i][j] == PieceType.BlackKing)
                     king = Coordinates(j, i)
-                if (color == 0 && PiecesEnumHelper().isWhite(board[i][j]))
+                if (color == 0 && PiecesEnumHelper().isBlack(board[i][j]))
                     moves =
                         MovesHelper().mergeMovesLists(moves, checkPieceMoves(gameDescription, i, j))
-                else if (color == 1 && PiecesEnumHelper().isBlack(board[i][j]))
+                else if (color == 1 && PiecesEnumHelper().isWhite(board[i][j]))
                     moves =
                         MovesHelper().mergeMovesLists(moves, checkPieceMoves(gameDescription, i, j))
             }
         }
-        return moves[king.y][king.x]
+        val move = moves[king.y][king.x]
+        return move
     }
 }

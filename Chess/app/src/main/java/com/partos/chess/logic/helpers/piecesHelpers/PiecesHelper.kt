@@ -52,6 +52,15 @@ class PiecesHelper {
         piecesList.add(Piece(4, 1, 3, 0, true))
         piecesList.add(Piece(5, 1, 4, 0, true))
 
+//        piecesList.add(Piece(5, 1, 4, 0, true))
+//        piecesList.add(Piece(5, 0, 4, 7, true))
+//
+//        piecesList.add(Piece(4, 1, 6, 5, true))
+//        piecesList.add(Piece(0, 0, 3, 6, true))
+//        piecesList.add(Piece(0, 0, 4, 6, true))
+//        piecesList.add(Piece(0, 0, 3, 7, true))
+//        piecesList.add(Piece(0, 0, 5, 7, true))
+
         return piecesList
     }
 

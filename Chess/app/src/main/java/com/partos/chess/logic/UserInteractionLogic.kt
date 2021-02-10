@@ -173,7 +173,9 @@ class UserInteractionLogic {
                                 handlePlayerMove(i, j, rootView)
                                 if (gameFlags.didPlayerMoved && !endOfGame) {
                                     gameFlags.playerTurn = false
-                                    handleComputerMove(computerType)
+                                    Handler().postDelayed({
+                                        handleComputerMove(computerType)
+                                    }, 1000)
                                 }
                             }
                         }
@@ -188,7 +190,7 @@ class UserInteractionLogic {
         when (computerType) {
             0 -> move = RandomMoveComputer().makeRandomMove(createBaseParametersGroup(), turn)
             1 -> move = BestMoveComputer().makeBestMove(createBaseParametersGroup(), turn, this)
-            2 -> move = MiniMaxComputer().getBestMove(createGameDescription(), 1, turn)
+            2 -> move = MiniMaxComputer().getBestMove(createGameDescription(), 1, turn, piecesList)
         }
         Handler().postDelayed({
             pieceFocused = move.piece
@@ -207,7 +209,7 @@ class UserInteractionLogic {
         when (computerType) {
             0 -> move = RandomMoveComputer().makeRandomMove(createBaseParametersGroup(), turn)
             1 -> move = BestMoveComputer().makeBestMove(createBaseParametersGroup(), turn, this)
-            2 -> move = MiniMaxComputer().getBestMove(createGameDescription(), 1, turn)
+            2 -> move = MiniMaxComputer().getBestMove(createGameDescription(), 1, turn, piecesList)
         }
         recreateBaseParams(baseParams)
         BoardHelper().resetBoard(piecesList, board, context)
