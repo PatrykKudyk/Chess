@@ -1,26 +1,36 @@
 package com.partos.chess.logic.helpers
 
-import com.partos.chess.enums.PieceType
-
-class MovesHelper{
+class MovesHelper {
 
     fun createMovesList(): Array<Array<Boolean>> {
-        val array1 = Array(8) {false}
-        val array2 = Array(8) {false}
-        val array3 = Array(8) {false}
-        val array4 = Array(8) {false}
-        val array5 = Array(8) {false}
-        val array6 = Array(8) {false}
-        val array7 = Array(8) {false}
-        val array8 = Array(8) {false}
-        return arrayOf(array1, array2, array3, array4, array5, array6, array7, array8)
+        return Array(8) { Array(8) { false } }
     }
 
-    fun mergeMovesLists(movesList: Array<Array<Boolean>>, moves: Array<Array<Boolean>>): Array<Array<Boolean>> {
+    fun mergeMovesLists(
+        movesList: Array<Array<Boolean>>,
+        moves: Array<Array<Boolean>>
+    ): Array<Array<Boolean>> {
         val movesToReturn = createMovesList()
         for (i in 0..7) {
             for (j in 0..7) {
                 if (movesList[i][j] || moves[i][j]) {
+                    movesToReturn[i][j] = true
+                }
+            }
+        }
+        return movesToReturn
+    }
+
+    fun mergeMovesLists(
+        moves1: Array<Array<Boolean>>,
+        moves2: Array<Array<Boolean>>,
+        moves3: Array<Array<Boolean>>,
+        moves4: Array<Array<Boolean>>
+    ): Array<Array<Boolean>> {
+        val movesToReturn = createMovesList()
+        for (i in 0..7) {
+            for (j in 0..7) {
+                if (moves1[i][j] || moves2[i][j] || moves3[i][j] || moves4[i][j]) {
                     movesToReturn[i][j] = true
                 }
             }

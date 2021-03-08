@@ -118,26 +118,17 @@ class PiecesBoardHelper {
         val boardAfterMove = getBoardAfterMakingMove(gameDescription.board, pieceY, pieceX, moveY, moveX)
         val gameDescriptionCopy = gameDescription.copy()
         gameDescriptionCopy.board = boardAfterMove
-        val isChecked = isCheck(boardAfterMove, color, gameDescriptionCopy)
-        return !isChecked
+        return !isCheck(boardAfterMove, color, gameDescriptionCopy)
     }
 
-    private fun getBoardAfterMakingMove(
+    fun getBoardAfterMakingMove(
         board: Array<Array<PieceType>>,
         pieceY: Int,
         pieceX: Int,
         moveY: Int,
         moveX: Int
     ): Array<Array<PieceType>> {
-        val arr1 = Array(8) { PieceType.Empty }
-        val arr2 = Array(8) { PieceType.Empty }
-        val arr3 = Array(8) { PieceType.Empty }
-        val arr4 = Array(8) { PieceType.Empty }
-        val arr5 = Array(8) { PieceType.Empty }
-        val arr6 = Array(8) { PieceType.Empty }
-        val arr7 = Array(8) { PieceType.Empty }
-        val arr8 = Array(8) { PieceType.Empty }
-        val boardToReturn = arrayOf(arr1, arr2, arr3, arr4, arr5, arr6, arr7, arr8)
+        val boardToReturn = Array(8) { Array(8) {PieceType.Empty} }
         for (i in 0..7){
             for (j in 0..7){
                 boardToReturn[i][j] = PiecesEnumHelper().getPieceType(board[i][j])
@@ -169,7 +160,6 @@ class PiecesBoardHelper {
                         MovesHelper().mergeMovesLists(moves, checkPieceMoves(gameDescription, i, j))
             }
         }
-        val move = moves[king.y][king.x]
-        return move
+        return moves[king.y][king.x]
     }
 }

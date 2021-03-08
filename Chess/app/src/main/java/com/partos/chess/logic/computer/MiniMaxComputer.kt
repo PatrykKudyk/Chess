@@ -1,12 +1,10 @@
 package com.partos.chess.logic.computer
 
-import android.os.Handler
 import com.partos.chess.logic.helpers.piecesHelpers.PiecesBoardHelper
 import com.partos.chess.logic.helpers.piecesHelpers.PiecesEnumHelper
 import com.partos.chess.logic.helpers.piecesHelpers.PiecesHelper
 import com.partos.chess.models.*
 import com.partos.chess.models.parameters.MovesAndFlags
-import kotlin.random.Random
 
 class MiniMaxComputer {
 
@@ -16,31 +14,58 @@ class MiniMaxComputer {
         turn: Int,
         piecesList: ArrayList<Piece>
     ): Move {
-        val moves = getAllMoves(gameDescription, turn)
-        val rand = Random.nextInt(0, moves.size)
-        val chosenMove = moves[rand]
+//        MyApp.searchedNodes.clear()
+        val baseMoves = createBaseMoves(gameDescription, turn, depth)
+//        for (move in baseMoves){
+//            MyApp.searchedNodes.add(move.boardMove.gameDescription.toString())
+//        }
+
+        for (move in baseMoves){
+            move.createMovesTree()
+        }
+        val chosenMove = getBestMoveFromNodes(baseMoves, depth)
+//        val random = Random.nextInt(0, baseMoves.size)
+//        val chosenMove = baseMoves[random]
         val piece = PiecesHelper().findPiece(
-            chosenMove.pieceCoordinates.y,
-            chosenMove.pieceCoordinates.x,
+            chosenMove.boardMove.pieceCoordinates.y,
+            chosenMove.boardMove.pieceCoordinates.x,
             piecesList
         )
         return Move(
             piece,
-            chosenMove.moveCoordinates.y,
-            chosenMove.moveCoordinates.x
+            chosenMove.boardMove.moveCoordinates.y,
+            chosenMove.boardMove.moveCoordinates.x
         )
     }
 
-    private fun getAllMoves(gameDescription: GameDescription, turn: Int): ArrayList<BoardMove> {
+    private fun getBestMoveFromNodes(baseMoves: ArrayList<MinMaxNode>, depth: Int): MinMaxNode {
+
+    }
+
+    private fun createBaseMoves(
+        gameDescription: GameDescription,
+        turn: Int,
+        depth: Int
+    ): ArrayList<MinMaxNode> {
+        val nodesList = ArrayList<MinMaxNode>()
         val board = gameDescription.board
-        val boardMoves = ArrayList<BoardMove>()
         if (turn == 0) {
             for (i in 0..7) {
                 for (j in 0..7) {
                     if (PiecesEnumHelper().isWhite(board[i][j])) {
                         val moves = PiecesBoardHelper().getPieceMoves(gameDescription, i, j)
-                        val pieceMoves = getPieceMoves(moves, i, j)
-                        boardMoves.addAll(pieceMoves)
+                        val pieceMoves = getPieceMoves(moves, i, j, gameDescription)
+                        for (move in pieceMoves) {
+                            nodesList.add(
+                                MinMaxNode(
+                                    BoardMoveValueCalculator().calculateMoveValue(move.gameDescription, turn),
+                                    move,
+                                    ArrayList(),
+                                    turn,
+                                    depth
+                                )
+                            )
+                        }
                     }
                 }
             }
@@ -49,34 +74,51 @@ class MiniMaxComputer {
                 for (j in 0..7) {
                     if (PiecesEnumHelper().isBlack(board[i][j])) {
                         val moves = PiecesBoardHelper().getPieceMoves(gameDescription, i, j)
-                        val pieceMoves = getPieceMoves(moves, i, j)
-                        boardMoves.addAll(pieceMoves)
+                        val pieceMoves = getPieceMoves(moves, i, j, gameDescription)
+                        for (move in pieceMoves) {
+                            nodesList.add(
+                                MinMaxNode(
+                                    BoardMoveValueCalculator().calculateMoveValue(move.gameDescription, turn),
+                                    move,
+                                    ArrayList(),
+                                    turn,
+                                    depth
+                                )
+                            )
+                        }
                     }
                 }
             }
         }
-        return boardMoves
+        return nodesList
     }
 
     private fun getPieceMoves(
         moves: MovesAndFlags,
         pieceY: Int,
-        pieceX: Int
+        pieceX: Int,
+        gameDescription: GameDescription
     ): ArrayList<BoardMove> {
         val boardMoves = ArrayList<BoardMove>()
         for (i in 0..7) {
             for (j in 0..7) {
                 if (moves.moves[i][j]) {
+                    val board = PiecesBoardHelper().getBoardAfterMakingMove(
+                        gameDescription.board,
+                        pieceY,
+                        pieceX,
+                        i,
+                        j
+                    )
                     boardMoves.add(
                         BoardMove(
-                            Coordinates(
-                                pieceX,
-                                pieceY
+                            GameDescription(
+                                gameDescription.gameFlags,
+                                board,
+                                gameDescription.pawnSpecialMove
                             ),
-                            Coordinates(
-                                j,
-                                i
-                            )
+                            Coordinates(pieceX, pieceY),
+                            Coordinates(j, i)
                         )
                     )
                 }

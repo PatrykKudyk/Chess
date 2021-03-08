@@ -7,6 +7,8 @@ import com.partos.chess.models.GameDescription
 import com.partos.chess.models.Piece
 import com.partos.chess.models.parameters.BaseParametersGroup
 import com.partos.chess.models.parameters.MovesAndFlags
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 
 class BishopHelper {
 
@@ -25,7 +27,7 @@ class BishopHelper {
         pieceY: Int,
         pieceX: Int,
         gameDescription: GameDescription
-    ): MovesAndFlags {
+    ): MovesAndFlags{
         val moves = MovesHelper().createMovesList()
 
         showWhiteTopLeftMoves(pieceY, pieceX, gameDescription, moves)
@@ -262,6 +264,7 @@ class BishopHelper {
                 return
             }
         }
+        return
     }
 
     private fun showWhiteBottomRightMoves(
@@ -306,6 +309,7 @@ class BishopHelper {
                 return
             }
         }
+        return
     }
 
     private fun showWhiteTopRightMoves(
@@ -350,6 +354,7 @@ class BishopHelper {
                 return
             }
         }
+        return
     }
 
     private fun showWhiteTopLeftMoves(
@@ -357,7 +362,7 @@ class BishopHelper {
         pieceX: Int,
         gameDescription: GameDescription,
         moves: Array<Array<Boolean>>
-    ) {
+    ){
         for (i in 1..8) {
             if (pieceX - i >= 0 && pieceY - i >= 0) {
                 if (gameDescription.board[pieceY - i][pieceX - i] == PieceType.Empty) {
@@ -394,6 +399,7 @@ class BishopHelper {
                 return
             }
         }
+        return
     }
 
     private fun showBlackBottomLeftMoves(
@@ -415,8 +421,6 @@ class BishopHelper {
                         )
                     ) {
                         moves[pieceY + i][pieceX - i] = true
-                    } else {
-                        return
                     }
                 } else if (PiecesEnumHelper().isWhite(gameDescription.board[pieceY + i][pieceX - i])) {
                     if (PiecesBoardHelper().canPieceMove(
@@ -440,6 +444,7 @@ class BishopHelper {
                 return
             }
         }
+        return
     }
 
     private fun showBlackBottomRightMoves(
@@ -461,8 +466,6 @@ class BishopHelper {
                         )
                     ) {
                         moves[pieceY + i][pieceX + i] = true
-                    } else {
-                        return
                     }
                 } else if (PiecesEnumHelper().isWhite(gameDescription.board[pieceY + i][pieceX + i])) {
                     if (PiecesBoardHelper().canPieceMove(
