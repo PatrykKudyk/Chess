@@ -5,6 +5,10 @@ import com.partos.chess.logic.helpers.MovesHelper
 import com.partos.chess.models.Coordinates
 import com.partos.chess.models.GameDescription
 import com.partos.chess.models.parameters.MovesAndFlags
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 
 class PiecesBoardHelper {
 
@@ -110,12 +114,13 @@ class PiecesBoardHelper {
         gameDescription: GameDescription,
         color: Int
     ): Boolean {
-        if (color == 0 && PiecesEnumHelper().isWhite(gameDescription.board[moveY][moveX])){
+        if (color == 0 && PiecesEnumHelper().isWhite(gameDescription.board[moveY][moveX])) {
             return false
-        } else if (color == 1 && PiecesEnumHelper().isBlack(gameDescription.board[moveY][moveX])){
+        } else if (color == 1 && PiecesEnumHelper().isBlack(gameDescription.board[moveY][moveX])) {
             return false
         }
-        val boardAfterMove = getBoardAfterMakingMove(gameDescription.board, pieceY, pieceX, moveY, moveX)
+        val boardAfterMove =
+            getBoardAfterMakingMove(gameDescription.board, pieceY, pieceX, moveY, moveX)
         val gameDescriptionCopy = gameDescription.copy()
         gameDescriptionCopy.board = boardAfterMove
         return !isCheck(boardAfterMove, color, gameDescriptionCopy)
@@ -128,9 +133,9 @@ class PiecesBoardHelper {
         moveY: Int,
         moveX: Int
     ): Array<Array<PieceType>> {
-        val boardToReturn = Array(8) { Array(8) {PieceType.Empty} }
-        for (i in 0..7){
-            for (j in 0..7){
+        val boardToReturn = Array(8) { Array(8) { PieceType.Empty } }
+        for (i in 0..7) {
+            for (j in 0..7) {
                 boardToReturn[i][j] = PiecesEnumHelper().getPieceType(board[i][j])
             }
         }
@@ -143,8 +148,9 @@ class PiecesBoardHelper {
         board: Array<Array<PieceType>>,
         color: Int,
         gameDescription: GameDescription
-    ): Boolean {
+    ): Boolean  {
         var moves = MovesHelper().createMovesList()
+        var movesArraysList = ArrayList<Array<Array<Boolean>>>()
         lateinit var king: Coordinates
         for (i in 0..7) {
             for (j in 0..7) {
@@ -152,14 +158,14 @@ class PiecesBoardHelper {
                     king = Coordinates(j, i)
                 else if (color == 1 && board[i][j] == PieceType.BlackKing)
                     king = Coordinates(j, i)
-                if (color == 0 && PiecesEnumHelper().isBlack(board[i][j]))
-                    moves =
-                        MovesHelper().mergeMovesLists(moves, checkPieceMoves(gameDescription, i, j))
-                else if (color == 1 && PiecesEnumHelper().isWhite(board[i][j]))
-                    moves =
-                        MovesHelper().mergeMovesLists(moves, checkPieceMoves(gameDescription, i, j))
+                if (color == 0 && PiecesEnumHelper().isBlack(board[i][j])) {
+                    movesArraysList.add(checkPieceMoves(gameDescription, i, j))
+                } else if (color == 1 && PiecesEnumHelper().isWhite(board[i][j])) {
+                    movesArraysList.add(checkPieceMoves(gameDescription, i, j))
+                }
             }
         }
+        moves = MovesHelper().mergeMovesLists(moves, movesArraysList)
         return moves[king.y][king.x]
     }
 }

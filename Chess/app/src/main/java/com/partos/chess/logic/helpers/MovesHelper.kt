@@ -22,20 +22,24 @@ class MovesHelper {
     }
 
     fun mergeMovesLists(
-        moves1: Array<Array<Boolean>>,
-        moves2: Array<Array<Boolean>>,
-        moves3: Array<Array<Boolean>>,
-        moves4: Array<Array<Boolean>>
+        moves: Array<Array<Boolean>>,
+        movesList: ArrayList<Array<Array<Boolean>>>
     ): Array<Array<Boolean>> {
-        val movesToReturn = createMovesList()
         for (i in 0..7) {
             for (j in 0..7) {
-                if (moves1[i][j] || moves2[i][j] || moves3[i][j] || moves4[i][j]) {
-                    movesToReturn[i][j] = true
-                }
+                if (isAnyTrue(movesList, i, j))
+                    moves[i][j] = true;
             }
         }
-        return movesToReturn
+        return moves
+    }
+
+    private fun isAnyTrue(movesList: ArrayList<Array<Array<Boolean>>>, i: Int, j: Int): Boolean {
+        for (array in movesList){
+            if (array[i][j])
+                return true
+        }
+        return false
     }
 
     fun checkIsAnyMovePossible(moves: Array<Array<Boolean>>): Boolean {

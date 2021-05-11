@@ -10,4 +10,6 @@ data class TakenEndGameParameters(
     val movesWithNoCaptureBlack: Int,
     val movesWithNoCaptureWhite: Int,
     val turn: Int,
+    val timeBlack: Int,
+    val timeWhite: Int
 )

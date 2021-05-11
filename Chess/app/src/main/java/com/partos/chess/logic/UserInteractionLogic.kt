@@ -5,8 +5,10 @@ import android.os.Handler
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import com.partos.chess.R
+import com.partos.chess.activities.MainActivity
 import com.partos.chess.enums.PieceType
 import com.partos.chess.logic.computer.BestMoveComputer
 import com.partos.chess.logic.computer.MiniMaxComputer
@@ -15,6 +17,8 @@ import com.partos.chess.logic.helpers.BoardHelper
 import com.partos.chess.logic.helpers.GameHelper
 import com.partos.chess.logic.helpers.MovesHelper
 import com.partos.chess.logic.helpers.piecesHelpers.PiecesHelper
+import com.partos.chess.logic.timer.TimeFormatter
+import com.partos.chess.logic.timer.TimerThread
 import com.partos.chess.models.*
 import com.partos.chess.models.parameters.BaseParametersGroup
 import com.partos.chess.models.parameters.PawnBeforeMoveParameters
@@ -30,13 +34,15 @@ class UserInteractionLogic {
     private lateinit var chooseKnight: ImageView
     private lateinit var chooseRook: ImageView
     private lateinit var chooseQueen: ImageView
+    private lateinit var timeBlackTextView: TextView
+    private lateinit var timeWhiteTextView: TextView
     private lateinit var movesList: Array<Array<Boolean>>
     private lateinit var board: Array<Array<ImageView>>
     private lateinit var moves: Array<Array<ImageView>>
     private lateinit var piecesList: ArrayList<Piece>
     private lateinit var context: Context
     private lateinit var rootView: View
-    private lateinit var pieceFocused: Piece
+    lateinit var pieceFocused: Piece
     private lateinit var gameFlags: GameFlags
 
     private var moveX = 0
@@ -54,6 +60,12 @@ class UserInteractionLogic {
     private var canComputerMove = true
     private var whiteComp = 0
     private var blackComp = 0
+
+    private var timeBlack = 600000
+    private var timeWhite = 600000
+//    private var timeBlack = 5000
+//    private var timeWhite = 5000
+    private var timeFormatter = TimeFormatter()
 
     fun initGame(
         rootView: View,
@@ -96,6 +108,7 @@ class UserInteractionLogic {
         attachBaseListeners(fragmentManager)
         createMovesList()
         checkGameType(gameType, computer1Type, computer2Type)
+        timeLoop()
     }
 
     private fun setGameFlags() {
@@ -138,6 +151,7 @@ class UserInteractionLogic {
                     whiteComp = computer2Type
                     blackComp = computer1Type
                 }
+                timeLoop()
                 handleComputerVsComputerMove(whiteComp)
             }, 2000)
         }
@@ -164,18 +178,20 @@ class UserInteractionLogic {
         for (i in 0..7) {
             for (j in 0..7) {
                 board[i][j].setOnClickListener {
-                    when (gameType) {
-                        0 -> {
-                            handlePlayerMove(i, j, rootView)
-                        }
-                        1 -> {
-                            if (gameFlags.playerTurn) {
+                    if (!checkEndOfGame(rootView)) {
+                        when (gameType) {
+                            0 -> {
                                 handlePlayerMove(i, j, rootView)
-                                if (gameFlags.didPlayerMoved && !endOfGame) {
-                                    gameFlags.playerTurn = false
-                                    Handler().postDelayed({
-                                        handleComputerMove(computerType)
-                                    }, 1000)
+                            }
+                            1 -> {
+                                if (gameFlags.playerTurn) {
+                                    handlePlayerMove(i, j, rootView)
+                                    if (gameFlags.didPlayerMoved && !endOfGame) {
+                                        gameFlags.playerTurn = false
+                                        Handler().postDelayed({
+                                            handleComputerMove(computerType)
+                                        }, 1000)
+                                    }
                                 }
                             }
                         }
@@ -190,7 +206,7 @@ class UserInteractionLogic {
         when (computerType) {
             0 -> move = RandomMoveComputer().makeRandomMove(createBaseParametersGroup(), turn)
             1 -> move = BestMoveComputer().makeBestMove(createBaseParametersGroup(), turn, this)
-            2 -> move = MiniMaxComputer().getBestMove(createGameDescription(), 3, turn, piecesList)
+            2 -> move = MiniMaxComputer().getBestMove(createGameDescription(), 2, turn, piecesList)
         }
         Handler().postDelayed({
             pieceFocused = move.piece
@@ -209,7 +225,7 @@ class UserInteractionLogic {
         when (computerType) {
             0 -> move = RandomMoveComputer().makeRandomMove(createBaseParametersGroup(), turn)
             1 -> move = BestMoveComputer().makeBestMove(createBaseParametersGroup(), turn, this)
-            2 -> move = MiniMaxComputer().getBestMove(createGameDescription(), 3, turn, piecesList)
+            2 -> move = MiniMaxComputer().getBestMove(createGameDescription(), 2, turn, piecesList)
         }
         recreateBaseParams(baseParams)
         BoardHelper().resetBoard(piecesList, board, context)
@@ -578,7 +594,7 @@ class UserInteractionLogic {
         handleLogic()
     }
 
-    private fun isWhiteKingShortCastle(positionY: Int, positionX: Int): Boolean {
+    fun isWhiteKingShortCastle(positionY: Int, positionX: Int): Boolean {
         return pieceFocused.type == 5 && pieceFocused.color == 0 && pieceFocused.positionY == 7 && pieceFocused.positionX == 4 && positionY == 7 && positionX == 6
     }
 
@@ -750,7 +766,9 @@ class UserInteractionLogic {
                 rootView,
                 movesWithNoCaptureBlack,
                 movesWithNoCaptureWhite,
-                turn
+                turn,
+                timeBlack,
+                timeWhite
             )
         )
     }
@@ -962,6 +980,8 @@ class UserInteractionLogic {
         chooseKnight = rootView.findViewById(R.id.board_choose_knight)
         chooseRook = rootView.findViewById(R.id.board_choose_rook)
         chooseQueen = rootView.findViewById(R.id.board_choose_queen)
+        timeBlackTextView = rootView.findViewById(R.id.blackTimeTextView)
+        timeWhiteTextView = rootView.findViewById(R.id.whiteTimeTextView)
     }
 
     fun createBaseParametersGroup(): BaseParametersGroup {
@@ -1098,5 +1118,55 @@ class UserInteractionLogic {
             }
         }
         return PieceType.Empty
+    }
+
+    private fun timeLoop() {
+        var looperThread = TimerThread()
+        looperThread.start()
+        Handler().postDelayed({
+            var threadHandler = Handler(looperThread.looper)
+            threadHandler.post(object : Runnable {
+                override fun run() {
+                    if (turn == 1) {
+                        timeBlack -= 50
+                    } else {
+                        timeWhite -= 50
+                    }
+                    showTime()
+                    if (!isEnd()) {
+                        threadHandler.postDelayed(this, 50)
+                    } else {
+                        val activity = rootView.context as MainActivity
+                        activity.runOnUiThread{
+                            checkEndOfGame(rootView)
+                        }
+                        looperThread.looper.quitSafely()
+                    }
+                }
+            })
+        }, 300)
+    }
+
+    private fun showTime() {
+        val activity = rootView.context as MainActivity
+        activity.runOnUiThread {
+            if (timeBlack < 10000) {
+                timeBlackTextView.text = timeFormatter.formatShortTime(timeBlack)
+            } else {
+                timeBlackTextView.text = timeFormatter.formatNormalTime(timeBlack / 1000)
+            }
+            if (timeWhite < 10000) {
+                timeWhiteTextView.text = timeFormatter.formatShortTime(timeWhite)
+            } else {
+                timeWhiteTextView.text = timeFormatter.formatNormalTime(timeWhite / 1000)
+            }
+        }
+    }
+
+    private fun isEnd(): Boolean {
+        if (timeWhite == 0 || timeBlack == 0) {
+            return true
+        }
+        return false
     }
 }

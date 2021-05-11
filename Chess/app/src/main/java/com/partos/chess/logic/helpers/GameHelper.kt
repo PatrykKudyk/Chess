@@ -14,7 +14,13 @@ import com.partos.chess.models.parameters.TakenEndGameParameters
 class GameHelper {
 
     fun checkEndOfGame(givenParams: TakenEndGameParameters): Boolean {
-        if (isStaleMate(givenParams)) {
+        if (givenParams.timeBlack == 0){
+            showWhiteWin(givenParams.rootView)
+            return true
+        } else if (givenParams.timeWhite == 0){
+            showBlackWin(givenParams.rootView)
+            return true
+        } else if (isStaleMate(givenParams)) {
             showStaleMate(givenParams.rootView)
             return true
         } else if (isFiftyMovesWithNoCapture(
@@ -41,6 +47,14 @@ class GameHelper {
 
     private fun showDeadPosition(rootView: View) {
         GameLogic().showEndGameMessage("DEAD POSITION!\nIT IS A DRAW", rootView)
+    }
+
+    private fun showWhiteWin(rootView: View){
+        GameLogic().showEndGameMessage("White wins on time", rootView)
+    }
+
+    private fun showBlackWin(rootView: View){
+        GameLogic().showEndGameMessage("Black wins on time", rootView)
     }
 
     private fun isFiftyMovesWithNoCapture(

@@ -8,30 +8,39 @@ import com.partos.chess.models.parameters.MovesAndFlags
 import kotlinx.coroutines.*
 
 class MinMaxNode(
-    val value: Int,
+    var value: Int,
     val boardMove: BoardMove,
     var moves: ArrayList<MinMaxNode>,
     val turn: Int,
     val depth: Int
 ) {
-
-    fun leaveBestMoves() {
-
+    fun calculateBestMove(): Int {
+        var maxValue = Int.MIN_VALUE
+        for (move in moves){
+            if (move.value > maxValue)
+                maxValue = move.value
+        }
+        return maxValue
     }
 
-    fun leaveWorstMoves() {
-
+    fun calculateWorstMove(): Int {
+        var minValue = Int.MAX_VALUE
+        for (move in moves){
+            if (move.value < minValue)
+                minValue = move.value
+        }
+        return minValue
     }
 
     fun createMovesTree() {
         if (depth <= 0)
             return
-        val oppositeTurn = if (turn == 0) {
-            1
-        } else {
-            0
-        }
-        moves = createBaseMoves(boardMove.gameDescription, oppositeTurn, depth - 1)
+//        val oppositeTurn = if (turn == 0) {
+//            1
+//        } else {
+//            0
+//        }
+        moves = createBaseMoves(boardMove.gameDescription, turn, depth - 1)
         for (move in moves) {
 //            if (!MyApp.searchedNodes.contains(move.boardMove.gameDescription.toString()))
             move.createMovesTree()
@@ -182,5 +191,20 @@ class MinMaxNode(
             }
         }
         return boardMoves
+    }
+
+    fun findBestMove(baseTurn: Int) {
+        if (moves.size != 0){
+            for (move in moves){
+                move.findBestMove(baseTurn)
+            }
+        }
+        if (turn == baseTurn){
+            val maxValue = calculateBestMove()
+            value -= maxValue
+        } else {
+            val minValue = calculateWorstMove()
+            value += minValue
+        }
     }
 }

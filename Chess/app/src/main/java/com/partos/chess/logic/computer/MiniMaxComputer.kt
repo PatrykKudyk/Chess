@@ -5,6 +5,7 @@ import com.partos.chess.logic.helpers.piecesHelpers.PiecesEnumHelper
 import com.partos.chess.logic.helpers.piecesHelpers.PiecesHelper
 import com.partos.chess.models.*
 import com.partos.chess.models.parameters.MovesAndFlags
+import kotlin.random.Random
 
 class MiniMaxComputer {
 
@@ -23,7 +24,7 @@ class MiniMaxComputer {
         for (move in baseMoves){
             move.createMovesTree()
         }
-        val chosenMove = getBestMoveFromNodes(baseMoves, depth)
+        val chosenMove = getBestMoveFromNodes(baseMoves, depth, turn)
 //        val random = Random.nextInt(0, baseMoves.size)
 //        val chosenMove = baseMoves[random]
         val piece = PiecesHelper().findPiece(
@@ -38,8 +39,26 @@ class MiniMaxComputer {
         )
     }
 
-    private fun getBestMoveFromNodes(baseMoves: ArrayList<MinMaxNode>, depth: Int): MinMaxNode {
+    private fun getBestMoveFromNodes(baseMoves: ArrayList<MinMaxNode>, depth: Int, turn: Int): MinMaxNode {
+        for (move in baseMoves){
+            move.findBestMove(turn)
+        }
 
+        var maxValue = Int.MIN_VALUE
+        for (move in baseMoves){
+            if (move.value > maxValue)
+                maxValue = move.value
+        }
+
+        val moves = ArrayList<MinMaxNode>()
+        for (move in baseMoves){
+            if (move.value == maxValue){
+                moves.add(move)
+            }
+        }
+
+        val random = Random.nextInt(0, moves.size)
+        return moves[random]
     }
 
     private fun createBaseMoves(
