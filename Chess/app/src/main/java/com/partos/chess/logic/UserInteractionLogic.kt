@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentManager
 import com.partos.chess.R
 import com.partos.chess.activities.MainActivity
 import com.partos.chess.enums.PieceType
+import com.partos.chess.logic.computer.AlphaBetaComputer
 import com.partos.chess.logic.computer.BestMoveComputer
 import com.partos.chess.logic.computer.MiniMaxComputer
 import com.partos.chess.logic.computer.RandomMoveComputer
@@ -207,6 +208,7 @@ class UserInteractionLogic {
             0 -> move = RandomMoveComputer().makeRandomMove(createBaseParametersGroup(), turn)
             1 -> move = BestMoveComputer().makeBestMove(createBaseParametersGroup(), turn, this)
             2 -> move = MiniMaxComputer().getBestMove(createGameDescription(), 2, turn, piecesList)
+            3 -> move = AlphaBetaComputer().calculateBestMove(createGameDescription(), 2, turn, piecesList)
         }
         Handler().postDelayed({
             pieceFocused = move.piece
@@ -226,6 +228,7 @@ class UserInteractionLogic {
             0 -> move = RandomMoveComputer().makeRandomMove(createBaseParametersGroup(), turn)
             1 -> move = BestMoveComputer().makeBestMove(createBaseParametersGroup(), turn, this)
             2 -> move = MiniMaxComputer().getBestMove(createGameDescription(), 2, turn, piecesList)
+            3 -> move = AlphaBetaComputer().calculateBestMove(createGameDescription(), 3, turn, piecesList)
         }
         recreateBaseParams(baseParams)
         BoardHelper().resetBoard(piecesList, board, context)

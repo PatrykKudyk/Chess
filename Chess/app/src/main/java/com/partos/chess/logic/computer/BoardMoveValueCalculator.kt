@@ -5,12 +5,25 @@ import com.partos.chess.models.GameDescription
 
 class BoardMoveValueCalculator {
 
-    fun calculateMoveValue(gameDescription: GameDescription, turn: Int): Int {
-        val materialAdvantage = calculateMaterialAdvantage(gameDescription, turn)
-        val centerOccupation = calculateCenterOccupation(gameDescription.board, turn)
-
-
-        return materialAdvantage + centerOccupation
+    fun calculateMoveValue(gameDescription: GameDescription, turn: Int, type: Int): Int {
+        when (type){
+            1 -> {
+                return calculateMaterialAdvantage(gameDescription, turn)
+            }
+            2 -> {
+                val materialAdvantage = calculateMaterialAdvantage(gameDescription, turn)
+                val centerOccupation = calculateCenterOccupation(gameDescription.board, turn)
+                return materialAdvantage + centerOccupation
+            }
+            3 -> {
+                val materialAdvantage = calculateMaterialAdvantage(gameDescription, turn)
+                val centerOccupation = calculateCenterOccupation(gameDescription.board, turn)
+                return materialAdvantage + centerOccupation
+            }
+            else -> {
+                return 0
+            }
+        }
     }
 
     private fun calculateCenterOccupation(board: Array<Array<PieceType>>, turn: Int): Int {

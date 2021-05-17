@@ -49,7 +49,7 @@ class GameChoiceListeners {
                 .commit()
         }
         cvscButton.setOnClickListener {
-            val fragment = BoardFragment.newInstance(2, 2, 2)
+            val fragment = BoardFragment.newInstance(2, 3, 3)
 
             fragmentManager
                 .popBackStack()
